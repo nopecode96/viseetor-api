@@ -73,14 +73,14 @@ require("./app/routes/website/marketing.routes")(app);
 
 
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Viseetor API." });
+  res.json({ message: "Welcome to Viseetor API-2." });
 }
 );
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server API2 is running on port ${PORT}.`);
+  console.log(`Server API-2 is running on port ${PORT}.`);
   console.log(new Date().toString());
 }
 );
