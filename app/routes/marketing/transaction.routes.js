@@ -2,7 +2,7 @@ module.exports = app => {
     const authValidation = require("../../../config/auth.config");
     const controller = require("../../controllers/marketing/transaction.controller");
     var router = require("express").Router();
-    
+
     // router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getAccountDetail);
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getTransactions);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
@@ -12,5 +12,5 @@ module.exports = app => {
     router.get("/eventsearch", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllEvent);
     router.get("/paymentbank", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.paymentBank);
     router.post("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createTransaction);
-    app.use('/marketing/transaction', router);
+    app.use('/v2/marketing/transaction', router);
 };

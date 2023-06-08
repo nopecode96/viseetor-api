@@ -5,5 +5,5 @@ module.exports = app => {
 
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDashboardData);
 
-    app.use('/marketing/dashboard', router);
+    app.use('/v2/marketing/dashboard', router);
 }

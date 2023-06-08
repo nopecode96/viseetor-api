@@ -68,5 +68,5 @@ module.exports = app => {
     router.post("/guest/sendinvitation/updateguestbarcodesent", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGuestBarcodeSent);
     router.get("/themes", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.themes);
     router.put("/themesupdate", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.themesSelected);
-    app.use('/marketing/events', router);
+    app.use('/v2/marketing/events', router);
 };

@@ -6,5 +6,5 @@ module.exports = app => {
     router.get("/totalboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getTotalBoard);
     router.get("/list", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getCommissionList);
 
-    app.use('/marketing/commission', router);
+    app.use('/v2/marketing/commission', router);
 }

@@ -29,5 +29,5 @@ module.exports = app => {
     router.post("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.createOne);
     router.put("/noimage", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.editOne);
     router.put("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.editOneWithImage);
-    app.use('/marketing/myclient', router);
+    app.use('/v2/marketing/myclient', router);
 };

@@ -72,7 +72,7 @@ require("./app/routes/website/wedding.routes")(app);
 require("./app/routes/website/marketing.routes")(app);
 
 
-app.get("/", (req, res) => {
+app.get("/v2/", (req, res) => {
   res.json({ message: "Welcome to Viseetor API-2." });
 }
 );
