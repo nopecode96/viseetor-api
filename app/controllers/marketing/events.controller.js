@@ -65,14 +65,14 @@ exports.findEvents = (req, res) => {
                         attributes: ['id', ['title', 'company_name']]
                     },
                     {
-                        model: masterEvent, as: 'event_type',
+                        model: masterEvent,
                         attributes: ['id', 'title']
                     },
                     {
-                        model: regRegencies, as: 'event_city',
+                        model: regRegencies,
                         attributes: ['id', 'name'],
                         include: {
-                            model: regProvincies, as: 'province',
+                            model: regProvincies,
                             attributes: ['id', 'name'],
                         }
                     },

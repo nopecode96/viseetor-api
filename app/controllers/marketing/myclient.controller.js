@@ -123,19 +123,19 @@ exports.getDetail = (req, res) => {
                 attributes: ['id', 'title', 'logo', 'description', 'address', 'contact_person', 'contact_phone', 'updatedAt'],
                 include: [
                     {
-                        model: regRegencies, as: 'city',
+                        model: regRegencies,
                         attributes: ['id', 'name'],
                         include: {
-                            model: regProvincies, as: 'province',
+                            model: regProvincies,
                             attributes: ['id', 'name'],
                         },
                     },
                     {
-                        model: masterIndustry, as: 'industry',
+                        model: masterIndustry,
                         attributes: ['id', 'title']
                     },
                     {
-                        model: masterCompanyStatus, as: "status",
+                        model: masterCompanyStatus,
                         attributes: ['id', 'title']
                     }
                 ],
@@ -197,9 +197,9 @@ exports.getDetailEdit = (req, res) => {
         },
         mstRegency: function (callback) {
             regRegencies.findAll({
-                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('province.name')), 'text']],
+                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
                 include: {
-                    model: regProvincies, as: 'province',
+                    model: regProvincies,
                     attributes: [],
                 }
             })
@@ -211,19 +211,19 @@ exports.getDetailEdit = (req, res) => {
                 attributes: ['id', 'title', 'logo', 'description', 'address', 'contact_person', 'contact_phone', 'updatedAt'],
                 include: [
                     {
-                        model: regRegencies, as: "city",
+                        model: regRegencies,
                         attributes: ['id', 'name'],
                         include: {
-                            model: regProvincies, as: "province",
+                            model: regProvincies,
                             attributes: ['id', 'name'],
                         },
                     },
                     {
-                        model: masterIndustry, as: "industry",
+                        model: masterIndustry,
                         attributes: ['id', 'title']
                     },
                     {
-                        model: masterCompanyStatus, as: "status",
+                        model: masterCompanyStatus,
                         attributes: ['id', 'title']
                     }
                 ],
