@@ -3,6 +3,7 @@ const sequelize = require('sequelize');
 const fs = require("fs");
 var randomstring = require("randomstring");
 const QRCode = require('qrcode')
+const async = require('async')
 
 var functions = require("../../../config/function");
 const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsTicketing, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate } = require("../../models/index.model");
@@ -46,59 +47,66 @@ exports.findEvents = (req, res) => {
         }
     }
 
-    // async.parallel({
-    //     dataEventType: function (callback) {
-    //         masterEvent.findAll({
-    //             where: { published: true },
-    //             attributes: ['id', 'title']
-    //         })
-    //             .then(data => callback(null, data))
-    //     },
-
-    // })
-
-    events.findAndCountAll({
-        where: condition, limit, offset,
-        order: [['updatedAt', 'DESC']],
-        attributes: ['id', 'banner', 'title', 'venue_name', 'event_date', 'invitation_limit', 'published', 'gift_bank', 'updatedAt'],
-        include: [
-            {
-                model: company,
-                attributes: ['id', ['title', 'company_name']]
-            },
-            {
-                model: masterEvent, as: 'event_type',
+    async.parallel({
+        dataEventType: function (callback) {
+            masterEvent.findAll({
+                where: { published: true },
                 attributes: ['id', 'title']
-            },
-            {
-                model: regRegencies, as: 'event_city',
-                attributes: ['id', 'name'],
-                include: {
-                    model: regProvincies, as: 'province',
-                    attributes: ['id', 'name'],
-                }
-            },
-        ]
-    })
-        .then(data => {
-            const response = functions.getPagingData(data, page, limit);
-            // console.log(response);
+            }).then(data => callback(null, data))
+        },
+        dataList: function (callback) {
+            events.findAndCountAll({
+                where: condition, limit, offset,
+                order: [['updatedAt', 'DESC']],
+                attributes: ['id', 'banner', 'title', 'venue_name', 'event_date', 'invitation_limit', 'published', 'gift_bank', 'updatedAt'],
+                include: [
+                    {
+                        model: company,
+                        attributes: ['id', ['title', 'company_name']]
+                    },
+                    {
+                        model: masterEvent, as: 'event_type',
+                        attributes: ['id', 'title']
+                    },
+                    {
+                        model: regRegencies, as: 'event_city',
+                        attributes: ['id', 'name'],
+                        include: {
+                            model: regProvincies, as: 'province',
+                            attributes: ['id', 'name'],
+                        }
+                    },
+                ]
+            }).then(data => {
+                const response = functions.getPagingData(data, page, limit);
+                callback(null, response)
+            })
+
+        }
+    }, function (err, results) {
+        console.log(results);
+        if (err == 'null') {
             res.status(200).send({
                 code: 200,
-                success: true,
-                message: "Datas Found.",
-                data: response
-            });
-        })
-        .catch(err => {
-            // console.log(err);
-            res.status(500).send({
-                code: 500,
                 success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
+                message: err.message,
+            })
+            return;
+        }
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+            data: results
+            // data: {
+            //     // data_mst_industry: results.dataMstIndustry,
+            //     datas: results,
+            // }
+        })
+        return;
+
+    })
+
 
 }
 

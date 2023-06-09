@@ -83,7 +83,8 @@ exports.findMyClient = (req, res) => {
         return;
         // results now equals to: { task1: 1, task2: 2 }
 
-    })
+    }
+    )
 }
 
 exports.getDetail = (req, res) => {
