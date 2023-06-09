@@ -7,6 +7,108 @@ const QRCode = require('qrcode')
 var functions = require("../../../config/function");
 const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsTicketing, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate } = require("../../models/index.model");
 
+exports.findEvents = (req, res) => {
+    const fid_user = req.userid;
+    const { page, size, title, company_name, typeid } = req.query;
+    const { limit, offset } = functions.getPagination(page - 1, size);
+
+    if (title && company_name && typeid) {
+        var condition = {
+            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
+            title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
+            fid_type: typeid,
+            fid_user: fid_user
+        }
+    } else if (title && company_name) {
+        var condition = {
+            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
+            title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
+            fid_user: fid_user
+        }
+    } else if (title) {
+        var condition = {
+            title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
+            fid_user: fid_user
+        }
+    } else if (company_name) {
+        var condition = {
+            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
+            fid_user: fid_user
+        }
+    } else if (typeid) {
+        var condition = {
+            fid_type: typeid,
+            fid_user: fid_user
+        }
+    } else {
+        var condition = {
+            fid_user: fid_user
+        }
+    }
+
+    // async.parallel({
+    //     dataEventType: function (callback) {
+    //         masterEvent.findAll({
+    //             where: { published: true },
+    //             attributes: ['id', 'title']
+    //         })
+    //             .then(data => callback(null, data))
+    //     },
+
+    // })
+
+    events.findAndCountAll({
+        where: condition, limit, offset,
+        order: [['updatedAt', 'DESC']],
+        attributes: ['id', 'banner', 'title', 'venue_name', 'event_date', 'invitation_limit', 'published', 'gift_bank', 'updatedAt'],
+        include: [
+            {
+                model: company,
+                attributes: ['id', ['title', 'company_name']]
+            },
+            {
+                model: masterEvent, as: 'event_type',
+                attributes: ['id', 'title']
+            },
+            {
+                model: regRegencies, as: 'event_city',
+                attributes: ['id', 'name'],
+                include: {
+                    model: regProvincies, as: 'province',
+                    attributes: ['id', 'name'],
+                }
+            },
+        ]
+    })
+        .then(data => {
+            const response = functions.getPagingData(data, page, limit);
+            // console.log(response);
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: "Datas Found.",
+                data: response
+            });
+        })
+        .catch(err => {
+            // console.log(err);
+            res.status(500).send({
+                code: 500,
+                success: false,
+                message:
+                    err.message || "Some error occurred while retrieving data."
+            });
+        });
+
+}
+
+
+//======================
+//======================
+//======================
+//======================
+//======================
+
 exports.dashboardEvent = (req, res) => {
     const { fid_events } = req.query;
 
@@ -107,69 +209,7 @@ exports.allEvent = (req, res) => {
         });
 }
 
-exports.findEvents = (req, res) => {
-    const { page, size, title, company_name, user_id } = req.query;
-    const { limit, offset } = functions.getPagination(page - 1, size);
 
-    if (title && company_name) {
-        var condition = {
-            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
-            title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
-            fid_user: user_id
-        }
-    } else if (title) {
-        var condition = {
-            title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
-            fid_user: user_id
-        }
-    } else if (company_name) {
-        var condition = {
-            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
-            fid_user: user_id
-        }
-    } else {
-        var condition = {
-            fid_user: user_id
-        }
-    }
-
-    events.findAndCountAll({
-        where: condition, limit, offset,
-        order: [['updatedAt', 'DESC']],
-        include: [
-            { model: company, attributes: ['id', ['title', 'company_name']] },
-            { model: masterEvent, attributes: ['id', 'title'] },
-            {
-                model: regRegencies,
-                attributes: ['id', 'name'],
-                include: {
-                    model: regProvincies,
-                    attributes: ['id', 'name'],
-                }
-            },
-        ]
-    })
-        .then(data => {
-            const response = functions.getPagingData(data, page, limit);
-            // console.log(response);
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Datas Found.",
-                data: response
-            });
-        })
-        .catch(err => {
-            // console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-
-}
 
 exports.createOneWithImage = (req, res) => {
     const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_company, fid_regencies, published, fid_user, fid_type } = req.body;

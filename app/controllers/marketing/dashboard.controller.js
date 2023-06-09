@@ -9,6 +9,7 @@ const { events, eventsGuest, company, commission, masterEvent, regRegencies } = 
 exports.getDashboardData = (req, res) => {
     // console.log(req.userid);
     const fid_user = req.userid;
+    // const fid_user = 1;
     const today = new Date();
     // console.log(new Date.now)
 
@@ -32,9 +33,10 @@ exports.getDashboardData = (req, res) => {
                     [sequelize.fn("SUM", sequelize.cast(sequelize.col("nominal"), 'integer')), "total_in"],
                 ],
             })
-                .then(data => callback(null, data[0]))
+                .then(data => callback(null, data))
         },
         dataBalance: function (callback) {
+            // console.log(dataCommission);
             commission.findAll({
                 where: {
                     fid_user: fid_user,
@@ -68,7 +70,7 @@ exports.getDashboardData = (req, res) => {
                 .then(data => callback(null, data))
         }
     }, function (err, results) {
-        // console.log(results.dataCommission);
+        // console.log(results.dataCommission.dataValues.total_in);
         if (err == 'null') {
             res.status(200).send({
                 code: 200,
@@ -85,8 +87,8 @@ exports.getDashboardData = (req, res) => {
                 total_client: results.dataCompany.count,
                 total_events: results.dataEvents.count,
                 total_guest: results.dataGuest.count,
-                total_commission: results.dataCommission,
-                my_balance: results.dataBalance[0].balance,
+                total_commission: (results.dataCommission[0].dataValues.total_in == null) ? 0 : parseInt(results.dataCommission[0].dataValues.total_in),
+                my_balance: results.dataBalance.length == 0 ? 0 : results.dataBalance[0].dataValues.balance,
                 last_events: results.dataEventLastMonth,
             }
         })

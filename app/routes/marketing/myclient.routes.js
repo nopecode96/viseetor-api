@@ -19,15 +19,15 @@ module.exports = app => {
     var upload = multer({ storage: storage })
 
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findMyClient);
+    router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
+    router.get("/detail-edit", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetailEdit);
+    router.post("/save", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.create);
+    router.put("/update", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.update);
     // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboard);
     // router.get("/industry", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllIndustry);
     // router.get("/status", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllCompanyStatus);
-    router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
-    router.get("/detail-edit", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetailEdit);
-    router.get("/regional", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllRegional);
-    router.post("/noimage", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createOneNoImage);
-    router.post("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.createOne);
-    router.put("/noimage", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.editOne);
-    router.put("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.editOneWithImage);
+    // router.get("/regional", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllRegional);
+    // router.post("/noimage", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createOneNoImage);
+    // router.put("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.editOneWithImage);
     app.use('/v2/marketing/myclient', router);
 };

@@ -1,5 +1,5 @@
 const db = require("../../models/index.model");
-const Company = db.company;
+// const Company = db.company;
 const sequelize = require('sequelize');
 const fs = require('fs');
 const async = require('async')
@@ -88,13 +88,13 @@ exports.findMyClient = (req, res) => {
 
 exports.getDetail = (req, res) => {
     const fid_user = req.userid;
-    const { companyid } = req.query;
+    const { id } = req.query;
 
     var condition = {
         fid_user: fid_user,
-        company_id: sequelize.where(sequelize.col('event.company.id'), companyid)
+        company_id: sequelize.where(sequelize.col('event.company.id'), id)
     }
-    var condition2 = { id: companyid, fid_user: fid_user }
+    var condition2 = { id: id, fid_user: fid_user }
 
     async.parallel({
         totalGuest: function (callback) {
@@ -112,24 +112,31 @@ exports.getDetail = (req, res) => {
         },
         totalEvent: function (callback) {
             events.findAndCountAll({
-                where: { fid_company: companyid }
+                where: { fid_company: id }
             })
                 .then(data => callback(null, data))
         },
         dataDetail: function (callback) {
             company.findAll({
                 where: condition2,
+                attributes: ['id', 'title', 'logo', 'description', 'address', 'contact_person', 'contact_phone', 'updatedAt'],
                 include: [
                     {
-                        model: regRegencies,
+                        model: regRegencies, as: 'city',
                         attributes: ['id', 'name'],
                         include: {
-                            model: regProvincies,
+                            model: regProvincies, as: 'province',
                             attributes: ['id', 'name'],
                         },
                     },
-                    { model: masterIndustry, attributes: ['id', 'title'] },
-                    { model: masterCompanyStatus, attributes: ['id', 'title'] }
+                    {
+                        model: masterIndustry, as: 'industry',
+                        attributes: ['id', 'title']
+                    },
+                    {
+                        model: masterCompanyStatus, as: "status",
+                        attributes: ['id', 'title']
+                    }
                 ],
             })
                 .then(data => callback(null, data[0]))
@@ -149,9 +156,9 @@ exports.getDetail = (req, res) => {
             success: true,
             message: 'Data Found',
             data: {
-                total_guest: results.totalGuest.count,
-                total_event: results.totalEvent.count,
-                data_detail: results.dataDetail,
+                totalGuest: results.totalGuest.count,
+                totalEvent: results.totalEvent.count,
+                datas: results.dataDetail,
             }
         })
         return;
@@ -161,9 +168,9 @@ exports.getDetail = (req, res) => {
 
 exports.getDetailEdit = (req, res) => {
     const fid_user = req.userid;
-    const { companyid } = req.query;
+    const { id } = req.query;
 
-    var condition = { id: companyid, fid_user: fid_user }
+    var condition = { id: id, fid_user: fid_user }
 
     async.parallel({
         mstIndustry: function (callback) {
@@ -189,9 +196,9 @@ exports.getDetailEdit = (req, res) => {
         },
         mstRegency: function (callback) {
             regRegencies.findAll({
-                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
+                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('province.name')), 'text']],
                 include: {
-                    model: regProvincies,
+                    model: regProvincies, as: 'province',
                     attributes: [],
                 }
             })
@@ -200,17 +207,24 @@ exports.getDetailEdit = (req, res) => {
         dataDetail: function (callback) {
             company.findAll({
                 where: condition,
+                attributes: ['id', 'title', 'logo', 'description', 'address', 'contact_person', 'contact_phone', 'updatedAt'],
                 include: [
                     {
-                        model: regRegencies,
+                        model: regRegencies, as: "city",
                         attributes: ['id', 'name'],
                         include: {
-                            model: regProvincies,
+                            model: regProvincies, as: "province",
                             attributes: ['id', 'name'],
                         },
                     },
-                    { model: masterIndustry, attributes: ['id', 'title'] },
-                    { model: masterCompanyStatus, attributes: ['id', 'title'] }
+                    {
+                        model: masterIndustry, as: "industry",
+                        attributes: ['id', 'title']
+                    },
+                    {
+                        model: masterCompanyStatus, as: "status",
+                        attributes: ['id', 'title']
+                    }
                 ],
             })
                 .then(data => callback(null, data[0]))
@@ -230,10 +244,10 @@ exports.getDetailEdit = (req, res) => {
             success: true,
             message: 'Data Found',
             data: {
-                master_industry: results.mstIndustry,
-                master_company_status: results.mstStatus,
-                master_regency: results.mstRegency,
-                data_detail: results.dataDetail,
+                datas: results.dataDetail,
+                dataIndustry: results.mstIndustry,
+                dataStatus: results.mstStatus,
+                dataRegency: results.mstRegency,
             }
         })
         return;
@@ -241,40 +255,6 @@ exports.getDetailEdit = (req, res) => {
     });
 }
 
-exports.findAllRegional = (req, res) => {
-    const { searchValue } = req.query;
-    console.log(searchValue);
-    var condition = {
-        searchValue: sequelize.where(sequelize.fn('LOWER', sequelize.col('reg_regencie.name')), 'LIKE', '%' + searchValue + '%')
-    }
-
-    regRegencies.findAll(
-        {
-            where: condition,
-            // attributes: [['id', 'value'], ['name', 'text']],
-            attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
-            include: {
-                model: regProvincies,
-                attributes: [],
-            }
-        },
-    )
-        .then(data => {
-            // console.log(data);
-            res.send(data);
-        })
-        .catch(err => {
-            console.log(err.message);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
-
-
 //========
 //========
 //========
@@ -282,10 +262,10 @@ exports.findAllRegional = (req, res) => {
 //========
 
 
-exports.createOne = (req, res) => {
+exports.create = (req, res) => {
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status } = req.body;
     // console.log(req.body.file);
-    const logo = req.file.filename;
+
 
     if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_user || !fid_company_status) {
         res.status(200).send({
@@ -295,62 +275,51 @@ exports.createOne = (req, res) => {
         });
         return;
     }
-    // console.log(pass);
 
-    Company.create({ title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status, logo })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Create data success."
+    if (!req.file) {
+        company.create({ title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status })
+            .then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Create data success."
+                });
+                return;
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
             });
-            return;
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
+    } else {
+        const logo = req.file.filename;
+        company.create({ title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status, logo })
+            .then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Create data success."
+                });
+                return;
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
             });
-        });
-}
-
-exports.createOneNoImage = (req, res) => {
-    const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status } = req.body;
-    console.log(req.body);
-    if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_user || !fid_company_status) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Error Insert: Field."
-        });
-        return;
     }
-    // console.log(pass);
 
-    Company.create({ title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Create data success."
-            });
-            return;
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
 }
 
-exports.editOne = (req, res) => {
+exports.update = (req, res) => {
     const { id } = req.query;
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status } = req.body;
 
@@ -363,11 +332,11 @@ exports.editOne = (req, res) => {
         return;
     }
 
-    Company.update(
-        { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status },
-        { where: { id: id } }
-    )
-        .then(data => {
+    if (!req.file) {
+        company.update(
+            { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status },
+            { where: { id: id } }
+        ).then(data => {
             res.status(200).send({
                 code: 200,
                 success: true,
@@ -375,50 +344,37 @@ exports.editOne = (req, res) => {
             });
             return;
         })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
+            .catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
             });
-        });
-}
-
-exports.editOneWithImage = (req, res) => {
-    const { id } = req.query;
-    const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status } = req.body;
-    const logo = req.file.filename;
-
-    if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_user || !fid_company_status) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Error Insert: Field."
-        });
-        return;
+    } else {
+        const logo = req.file.filename;
+        company.update(
+            { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status, logo },
+            { where: { id: id } }
+        ).then(data => {
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: "Edit data success."
+            });
+            return;
+        })
+            .catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+            });
     }
 
-    Company.update(
-        { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status, logo },
-        { where: { id: id } }
-    )
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Edit data success."
-            });
-            return;
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
 }
