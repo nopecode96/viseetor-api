@@ -89,7 +89,7 @@ exports.getDashboardData = (req, res) => {
                 total_guest: results.dataGuest.count,
                 total_commission: (results.dataCommission[0].dataValues.total_in == null) ? 0 : parseInt(results.dataCommission[0].dataValues.total_in),
                 my_balance: results.dataBalance.length == 0 ? 0 : results.dataBalance[0].dataValues.balance,
-                last_events: results.dataEventLastMonth,
+                upcoming_event: results.dataEventLastMonth,
             }
         })
         return;
