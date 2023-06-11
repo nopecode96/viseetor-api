@@ -308,7 +308,8 @@ exports.pageCreate = (req, res) => {
 }
 
 exports.create = (req, res) => {
-    const fid_user = req.fid_user;
+    const fid_user = req.userid;
+    // console.log(fid_user);
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_company_status } = req.body;
     // console.log(req.body.file);
 
