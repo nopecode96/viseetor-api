@@ -1,0 +1,5 @@
+INSERT INTO "master_events" ("id", "title", "published", "createdAt", "updatedAt") VALUES (1, 'Wedding Party', 't', '2023-04-08 18:54:00+00', '2023-04-08 18:54:03+00');
+INSERT INTO "master_events" ("id", "title", "published", "createdAt", "updatedAt") VALUES (2, 'Seminar', 't', '2023-04-08 18:54:00+00', '2023-04-08 18:54:03+00');
+INSERT INTO "master_events" ("id", "title", "published", "createdAt", "updatedAt") VALUES (3, 'Gathering', 't', '2023-04-08 18:54:00+00', '2023-04-08 18:54:03+00');
+INSERT INTO "master_events" ("id", "title", "published", "createdAt", "updatedAt") VALUES (4, 'Exhibition', 't', '2023-04-08 18:54:00+00', '2023-04-08 18:54:03+00');
+INSERT INTO "master_events" ("id", "title", "published", "createdAt", "updatedAt") VALUES (5, 'Wisata', 't', '2023-04-08 18:54:00+00', '2023-04-08 18:54:03+00');

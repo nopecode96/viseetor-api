@@ -40,13 +40,13 @@ module.exports = app => {
     var upload3 = multer({ storage: storage3 })
 
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEvents);
-    // router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.create);
+    router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.create);
+    router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboardEvent);
     // router.get("/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEvent);
     // router.get("/company", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllCompany);
     // router.get("/type", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllEventType);
     // router.get("/regional", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllRegional);
-    // router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     // router.post("/noimage", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createOneNoImage);
     // router.post("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.createOneWithImage);
     // router.put("/noimage", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateOneNoImage);

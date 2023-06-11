@@ -21,6 +21,7 @@ module.exports = app => {
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findMyClient);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     router.get("/detail-edit", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetailEdit);
+    router.get("/page-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreate);
     router.post("/save", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.create);
     router.put("/update", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.update);
     // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboard);

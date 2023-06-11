@@ -1,0 +1,2 @@
+INSERT INTO "events_galleries" ("id", "title", "description", "image", "published", "createdAt", "updatedAt", "fid_events") VALUES (1, NULL, NULL, '1683431857168.jpg', 't', '2023-05-07 03:57:37.172+00', '2023-05-07 03:57:37.172+00', 6);
+INSERT INTO "events_galleries" ("id", "title", "description", "image", "published", "createdAt", "updatedAt", "fid_events") VALUES (2, NULL, NULL, '1683431857170.jpg', 't', '2023-05-07 03:57:37.172+00', '2023-05-07 03:57:37.172+00', 6);

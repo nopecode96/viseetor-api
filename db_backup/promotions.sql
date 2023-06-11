@@ -1,0 +1,1 @@
+INSERT INTO "promotions" ("id", "title", "description", "code", "discount", "start_date", "end_date", "usage", "published", "createdAt", "updatedAt", "fid_user") VALUES (1, 'Promo Perdana', 'Promo Pertama', 'MERDEKA', '20', '2023-04-26 14:38:59+00', '2023-05-31 16:02:27+00', NULL, 't', '2023-04-28 14:39:10+00', '2023-04-28 14:39:14+00', 1);

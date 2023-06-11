@@ -1,0 +1,2 @@
+INSERT INTO "events_gift_banks" ("id", "bank_name", "bank_account_number", "bank_account_name", "published", "createdAt", "updatedAt", "fid_events") VALUES (1, 'BCA', '123456679', 'Joko', 't', '2023-05-04 08:37:58.788+00', '2023-05-04 08:37:58.788+00', 2);
+INSERT INTO "events_gift_banks" ("id", "bank_name", "bank_account_number", "bank_account_name", "published", "createdAt", "updatedAt", "fid_events") VALUES (2, 'Jenius', '987654322', 'Lusi', 't', '2023-05-04 08:38:34.165+00', '2023-05-04 08:38:34.165+00', 2);

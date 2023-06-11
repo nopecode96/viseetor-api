@@ -1,0 +1,2 @@
+INSERT INTO "master_bank_payments" ("id", "bank", "account_number", "account_name", "published", "createdAt", "updatedAt") VALUES (1, 'BCA', '2780575720', 'Novy Lavanda', 't', '2023-04-13 02:12:43+00', '2023-04-13 02:12:45+00');
+INSERT INTO "master_bank_payments" ("id", "bank", "account_number", "account_name", "published", "createdAt", "updatedAt") VALUES (2, 'Mandiri Syariah', '1237347744488', 'Novy Lavanda', 't', '2023-04-13 02:12:43+00', '2023-04-13 02:12:45+00');

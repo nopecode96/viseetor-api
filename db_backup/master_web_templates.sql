@@ -1,0 +1,2 @@
+INSERT INTO "master_web_templates" ("id", "title", "template", "published", "createdAt", "updatedAt", "fid_type") VALUES (2, 'Theme Indonesia', 'premium-indonesia', 't', '2023-05-05 14:52:15+00', '2023-05-05 14:52:17+00', 1);
+INSERT INTO "master_web_templates" ("id", "title", "template", "published", "createdAt", "updatedAt", "fid_type") VALUES (1, 'Theme English', 'premium-english', 't', '2023-04-08 18:55:27+00', '2023-04-08 18:55:30+00', 1);

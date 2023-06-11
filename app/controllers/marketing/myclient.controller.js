@@ -188,13 +188,6 @@ exports.getDetailEdit = (req, res) => {
             })
                 .then(data => callback(null, data))
         },
-        mstStatus: function (callback) {
-            masterCompanyStatus.findAll({
-                where: { published: true },
-                attributes: ['id', 'title']
-            })
-                .then(data => callback(null, data))
-        },
         mstRegency: function (callback) {
             regRegencies.findAll({
                 attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
@@ -262,6 +255,57 @@ exports.getDetailEdit = (req, res) => {
 //========
 //========
 
+exports.pageCreate = (req, res) => {
+    async.parallel({
+        mstIndustry: function (callback) {
+            masterIndustry.findAll({
+                where: { published: true },
+                attributes: ['id', 'title']
+            })
+                .then(data => callback(null, data))
+        },
+        mstStatus: function (callback) {
+            masterCompanyStatus.findAll({
+                where: { published: true },
+                attributes: ['id', 'title']
+            })
+                .then(data => callback(null, data))
+        },
+        mstRegency: function (callback) {
+            regRegencies.findAll({
+                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
+                include: {
+                    model: regProvincies,
+                    attributes: [],
+                }
+            })
+                .then(data => callback(null, data))
+        },
+
+    }, function (err, results) {
+        // console.log(results.dataCommission);
+        if (err == 'null') {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: err.message,
+            })
+            return;
+        }
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+            data: {
+                dataIndustry: results.mstIndustry,
+                dataStatus: results.mstStatus,
+                dataRegency: results.mstRegency,
+            }
+        })
+        return;
+        // results now equals to: { task1: 1, task2: 2 }
+    });
+}
 
 exports.create = (req, res) => {
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status } = req.body;

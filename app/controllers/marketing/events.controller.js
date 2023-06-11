@@ -84,7 +84,7 @@ exports.findEvents = (req, res) => {
 
         }
     }, function (err, results) {
-        console.log(results);
+        // console.log(results);
         if (err == 'null') {
             res.status(200).send({
                 code: 200,
@@ -104,9 +104,118 @@ exports.findEvents = (req, res) => {
             // }
         })
         return;
-
     })
+}
 
+exports.create = (req, res) => {
+    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_company, fid_regencies, published, fid_user, fid_type } = req.body;
+    const invitation_limit = 0;
+    const fid_template = 1;
+
+    if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_user || !fid_type) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
+    if (!req.file) {
+        events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
+            .then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Create data success.",
+                    insertID: data.id
+                });
+                return;
+            })
+            .catch(err => {
+                //   console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+                return;
+            });
+
+    } else {
+        const banner = req.file.filename;
+        events.create({ banner, title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
+            .then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Create data success.",
+                    insertID: data.id
+                });
+                return;
+            })
+            .catch(err => {
+                //   console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+                return;
+            });
+    }
+}
+
+exports.getDetail = (req, res) => {
+    const fid_user = req.fid_user;
+    const { id, typeid } = req.query;
+    var condition = { id: id, fid_user: fid_user, }
+    events.findAll({
+        where: condition,
+        include: [
+            {
+                model: regRegencies,
+                attributes: ['id', 'name'],
+                include: {
+                    model: regProvincies,
+                    attributes: ['id', 'name'],
+                },
+            },
+            { model: masterEvent, attributes: ['id', 'title'] },
+            { model: company, attributes: ['id', 'title', 'logo', 'contact_person', 'contact_phone'] },
+            { model: eventsGiftBank, attributes: ['id', 'bank_name', 'bank_account_number', 'bank_account_name'] },
+            { model: eventsWedding },
+        ]
+    })
+        .then(data => {
+            // console.log(data.length);
+
+            if (data.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: 'Datas Not Found.'
+                });
+                return;
+            }
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: 'Datas Found.',
+                data: data[0]
+            });
+            return;
+
+        })
+        .catch(err => {
+            res.status(500).send({
+                code: 500,
+                success: false,
+                message: err.message || "Some error occurred while retrieving data."
+            });
+        });
 
 }
 
@@ -452,55 +561,6 @@ exports.findAllEventType = (req, res) => {
         });
 }
 
-exports.getDetail = (req, res) => {
-    const { id, user_id } = req.query;
-    var condition = { id: id, fid_user: user_id }
-    events.findAll({
-        where: condition,
-        include: [
-            {
-                model: regRegencies,
-                attributes: ['id', 'name'],
-                include: {
-                    model: regProvincies,
-                    attributes: ['id', 'name'],
-                },
-            },
-            { model: masterEvent, attributes: ['id', 'title'] },
-            { model: company, attributes: ['id', 'title', 'logo', 'contact_person', 'contact_phone'] },
-            { model: eventsGiftBank, attributes: ['id', 'bank_name', 'bank_account_number', 'bank_account_name'] },
-            { model: eventsWedding },
-        ]
-    })
-        .then(data => {
-            // console.log(data.length);
-
-            if (data.length == 0) {
-                res.status(200).send({
-                    code: 200,
-                    success: false,
-                    message: 'Datas Not Found.'
-                });
-                return;
-            }
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: 'Datas Found.',
-                data: data[0]
-            });
-            return;
-
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message: err.message || "Some error occurred while retrieving data."
-            });
-        });
-
-}
 
 exports.createOneBank = (req, res) => {
     const { bank_name, bank_account_number, bank_account_name, published, fid_events } = req.body;
