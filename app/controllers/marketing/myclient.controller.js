@@ -308,11 +308,12 @@ exports.pageCreate = (req, res) => {
 }
 
 exports.create = (req, res) => {
-    const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status } = req.body;
+    const fid_user = req.fid_user;
+    const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_company_status } = req.body;
     // console.log(req.body.file);
 
 
-    if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_user || !fid_company_status) {
+    if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_company_status) {
         res.status(200).send({
             code: 200,
             success: false,
