@@ -5,7 +5,7 @@ const fs = require('fs');
 const async = require('async')
 
 var functions = require("../../../config/function");
-const { masterCompanyStatus, regProvincies, regRegencies, masterIndustry, eventsGuest, company, events } = require("../../models/index.model");
+const { masterCompanyStatus, regProvincies, regRegencies, masterIndustry, masterEvent, eventsGuest, company, events } = require("../../models/index.model");
 
 exports.findMyClient = (req, res) => {
     const fid_user = req.userid;
@@ -90,6 +90,7 @@ exports.findMyClient = (req, res) => {
 exports.getDetail = (req, res) => {
     const fid_user = req.userid;
     const { id } = req.query;
+    const today = new Date();
 
     var condition = {
         fid_user: fid_user,
@@ -116,6 +117,28 @@ exports.getDetail = (req, res) => {
                 where: { fid_company: id }
             })
                 .then(data => callback(null, data))
+        },
+        dataEventLastMonth: function (callback) {
+            events.findAll({
+                where: {
+                    fid_user: fid_user,
+                    fid_company: id,
+                    event_date: { [sequelize.Op.gte]: today },
+                },
+                attributes: ['id', 'banner', 'title', 'venue_name', 'invitation_limit', 'event_date'],
+                // limit: 5,
+                order: [['event_date', 'ASC']],
+                include: [
+                    {
+                        model: masterEvent,
+                        attributes: ['title']
+                    },
+                    {
+                        model: regRegencies,
+                        attributes: ['name']
+                    }
+                ]
+            }).then(data => callback(null, data))
         },
         dataDetail: function (callback) {
             company.findAll({
@@ -159,6 +182,7 @@ exports.getDetail = (req, res) => {
             data: {
                 totalGuest: results.totalGuest.count,
                 totalEvent: results.totalEvent.count,
+                dataEventLastMonth: results.dataEventLastMonth,
                 datas: results.dataDetail,
             }
         })

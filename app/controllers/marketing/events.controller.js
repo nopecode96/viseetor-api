@@ -107,12 +107,68 @@ exports.findEvents = (req, res) => {
     })
 }
 
+exports.pageCreate = (req, res) => {
+    const fid_user = req.userid;
+    console.log(fid_user);
+
+    async.parallel({
+        mstEvent: function (callback) {
+            masterEvent.findAll({
+                where: { published: true },
+                attributes: ['id', 'title']
+            })
+                .then(data => callback(null, data))
+        },
+        companies: function (callback) {
+            company.findAll({
+                where: { fid_company_status: 1, fid_user: fid_user },
+                attributes: ['id', 'title']
+            })
+                .then(data => callback(null, data))
+        },
+        mstRegency: function (callback) {
+            regRegencies.findAll({
+                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
+                include: {
+                    model: regProvincies,
+                    attributes: [],
+                }
+            })
+                .then(data => callback(null, data))
+        },
+
+    }, function (err, results) {
+        // console.log(results.dataCommission);
+        if (err == 'null') {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: err.message,
+            })
+            return;
+        }
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+            data: {
+                dataMstEvent: results.mstEvent,
+                companies: results.companies,
+                dataRegency: results.mstRegency,
+            }
+        })
+        return;
+        // results now equals to: { task1: 1, task2: 2 }
+    });
+}
+
 exports.create = (req, res) => {
-    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_company, fid_regencies, published, fid_user, fid_type } = req.body;
+    const fid_user = req.userid;
+    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_company, fid_regencies, published, fid_type } = req.body;
     const invitation_limit = 0;
     const fid_template = 1;
 
-    if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_user || !fid_type) {
+    if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_type) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -169,55 +225,85 @@ exports.create = (req, res) => {
 }
 
 exports.getDetail = (req, res) => {
-    const fid_user = req.fid_user;
+    const fid_user = req.userid;
     const { id, typeid } = req.query;
-    var condition = { id: id, fid_user: fid_user, }
-    events.findAll({
-        where: condition,
-        include: [
-            {
-                model: regRegencies,
-                attributes: ['id', 'name'],
-                include: {
-                    model: regProvincies,
-                    attributes: ['id', 'name'],
-                },
-            },
-            { model: masterEvent, attributes: ['id', 'title'] },
-            { model: company, attributes: ['id', 'title', 'logo', 'contact_person', 'contact_phone'] },
-            { model: eventsGiftBank, attributes: ['id', 'bank_name', 'bank_account_number', 'bank_account_name'] },
-            { model: eventsWedding },
-        ]
-    })
-        .then(data => {
-            // console.log(data.length);
+    var condition = { id: id, fid_user: fid_user, fid_type: typeid }
 
-            if (data.length == 0) {
-                res.status(200).send({
-                    code: 200,
-                    success: false,
-                    message: 'Datas Not Found.'
-                });
-                return;
-            }
+    async.parallel({
+        eventsAttending: function (callback) {
+            eventsGuest.findAll({
+                where: { fid_events: id, attend: true }
+            }).then(data => {
+                const attending = data.length;
+                callback(null, attending)
+            })
+        },
+        eventsGuest: function (callback) {
+            eventsGuest.findAll({
+                where: { fid_events: id, attend: true }
+            }).then(data => {
+                const totalGuest = data.length;
+                callback(null, totalGuest)
+            })
+        },
+        eventDetail: function (callback) {
+            events.findAll({
+                where: condition,
+                include: [
+                    {
+                        model: regRegencies,
+                        attributes: ['id', 'name'],
+                        include: {
+                            model: regProvincies,
+                            attributes: ['id', 'name'],
+                        },
+                    },
+                    { model: masterEvent, attributes: ['id', 'title'] },
+                    { model: company, attributes: ['id', 'title', 'logo', 'contact_person', 'contact_phone'] },
+                    { model: eventsGiftBank, attributes: ['id', 'bank_name', 'bank_account_number', 'bank_account_name'] },
+                    { model: eventsWedding },
+                ]
+            }).then(data => callback(null, data[0]))
+        },
+
+    }, function (err, results) {
+        // console.log(results);
+        if (err == 'null') {
             res.status(200).send({
                 code: 200,
-                success: true,
-                message: 'Datas Found.',
-                data: data[0]
-            });
-            return;
-
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
                 success: false,
-                message: err.message || "Some error occurred while retrieving data."
-            });
-        });
+                message: err.message,
+            })
+            return;
+        }
+
+        const totalGuest = results.eventsGuest ? results.eventsGuest.length : 0;
+        const totalAttend = results.eventsAttending ? results.eventsAttending.length : 0;
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+
+            data: {
+                dashboard: {
+                    pieChartGuest: {
+                        invitationLimit: results.eventDetail.invitation_limit,
+                        totalGuest: totalGuest
+                    },
+                    pieChartGuestAttend: {
+                        totalGuest: totalGuest,
+                        totalAttend: totalAttend
+                    }
+                },
+                eventDetail: results.eventDetail,
+            }
+        })
+        return;
+    })
 
 }
+
 
 
 //======================

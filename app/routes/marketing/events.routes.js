@@ -42,6 +42,7 @@ module.exports = app => {
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEvents);
     router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.create);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
+    router.get("/page-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreate);
     // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboardEvent);
     // router.get("/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEvent);
     // router.get("/company", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllCompany);
