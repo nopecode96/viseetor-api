@@ -182,7 +182,7 @@ exports.getDetail = (req, res) => {
             data: {
                 totalGuest: results.totalGuest.count,
                 totalEvent: results.totalEvent.count,
-                dataEventLastMonth: results.dataEventLastMonth,
+                upcoming_event: results.dataEventLastMonth,
                 datas: results.dataDetail,
             }
         })
