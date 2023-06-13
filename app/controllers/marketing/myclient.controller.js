@@ -381,7 +381,7 @@ exports.create = (req, res) => {
     }
 }
 
-exports.update = (req, res) => {
+exports.updateStatus = (req, res) => {
     const fid_user = req.userid;
     const { id } = req.query;
     const { fid_company_status } = req.body;
@@ -415,7 +415,7 @@ exports.update = (req, res) => {
     });
 }
 
-exports.updateStatus = (req, res) => {
+exports.update = (req, res) => {
     const { id } = req.query;
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status } = req.body;
 
