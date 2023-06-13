@@ -85,9 +85,9 @@ exports.findEvents = (req, res) => {
         }
     }, function (err, results) {
         // console.log(results);
-        if (err == 'null') {
-            res.status(200).send({
-                code: 200,
+        if (err) {
+            res.status(505).send({
+                code: 505,
                 success: false,
                 message: err.message,
             })
@@ -98,18 +98,105 @@ exports.findEvents = (req, res) => {
             success: true,
             message: 'Data Found',
             data: results
-            // data: {
-            //     // data_mst_industry: results.dataMstIndustry,
-            //     datas: results,
-            // }
         })
         return;
     })
 }
 
+exports.getDetail = (req, res) => {
+    const fid_user = req.userid;
+    const { id, typeid } = req.query;
+    var condition = { id: id, fid_user: fid_user, fid_type: typeid }
+
+    async.parallel({
+        eventsAttending: function (callback) {
+            eventsGuest.findAll({
+                where: { fid_events: id, attend: true }
+            }).then(data => {
+                const attending = data.length;
+                callback(null, attending)
+            })
+        },
+        eventsGuest: function (callback) {
+            eventsGuest.findAll({
+                where: { fid_events: id, attend: true }
+            }).then(data => {
+                const totalGuest = data.length;
+                callback(null, totalGuest)
+            })
+        },
+        eventDetail: function (callback) {
+            events.findAll({
+                where: condition,
+                include: [
+                    {
+                        model: regRegencies,
+                        attributes: ['id', 'name'],
+                        include: {
+                            model: regProvincies,
+                            attributes: ['id', 'name'],
+                        },
+                    },
+                    { model: webTemplate, attributes: ['id', 'image', 'title'] },
+                    { model: masterEvent, attributes: ['id', 'title'] },
+                    { model: company, attributes: ['id', 'title', 'logo', 'contact_person', 'contact_phone'] },
+                    { model: eventsWedding },
+                    { model: eventsGiftBank, attributes: ['id', 'bank_name', 'bank_account_number', 'bank_account_name'] },
+                    { model: eventsGallery },
+                ]
+            }).then(data => callback(null, data))
+        },
+
+    }, function (err, results) {
+        // console.log(results);
+        if (err) {
+            res.status(505).send({
+                code: 505,
+                success: false,
+                message: err.message,
+            })
+            return;
+        }
+
+        if (results.eventDetail.length == 0) {
+            res.status(404).send({
+                code: 404,
+                success: false,
+                message: 'Data not found',
+            })
+            return;
+        }
+
+        const totalGuest = results.eventsGuest ? results.eventsGuest.length : 0;
+        const totalAttend = results.eventsAttending ? results.eventsAttending.length : 0;
+        const invitationLimit = results.eventDetail[0].invitation_limit ?? 0;
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+
+            data: {
+                dashboard: {
+                    pieChartGuest: {
+                        invitationLimit: invitationLimit,
+                        totalGuest: totalGuest
+                    },
+                    pieChartGuestAttend: {
+                        totalGuest: totalGuest,
+                        totalAttend: totalAttend
+                    }
+                },
+                eventDetail: results.eventDetail[0],
+            }
+        })
+        return;
+    })
+
+}
+
 exports.pageCreate = (req, res) => {
     const fid_user = req.userid;
-    console.log(fid_user);
 
     async.parallel({
         mstEvent: function (callback) {
@@ -139,7 +226,7 @@ exports.pageCreate = (req, res) => {
 
     }, function (err, results) {
         // console.log(results.dataCommission);
-        if (err == 'null') {
+        if (err) {
             res.status(200).send({
                 code: 200,
                 success: false,
@@ -224,87 +311,6 @@ exports.create = (req, res) => {
     }
 }
 
-exports.getDetail = (req, res) => {
-    const fid_user = req.userid;
-    const { id, typeid } = req.query;
-    var condition = { id: id, fid_user: fid_user, fid_type: typeid }
-
-    async.parallel({
-        eventsAttending: function (callback) {
-            eventsGuest.findAll({
-                where: { fid_events: id, attend: true }
-            }).then(data => {
-                const attending = data.length;
-                callback(null, attending)
-            })
-        },
-        eventsGuest: function (callback) {
-            eventsGuest.findAll({
-                where: { fid_events: id, attend: true }
-            }).then(data => {
-                const totalGuest = data.length;
-                callback(null, totalGuest)
-            })
-        },
-        eventDetail: function (callback) {
-            events.findAll({
-                where: condition,
-                include: [
-                    {
-                        model: regRegencies,
-                        attributes: ['id', 'name'],
-                        include: {
-                            model: regProvincies,
-                            attributes: ['id', 'name'],
-                        },
-                    },
-                    { model: masterEvent, attributes: ['id', 'title'] },
-                    { model: company, attributes: ['id', 'title', 'logo', 'contact_person', 'contact_phone'] },
-                    { model: eventsGiftBank, attributes: ['id', 'bank_name', 'bank_account_number', 'bank_account_name'] },
-                    { model: eventsWedding },
-                ]
-            }).then(data => callback(null, data[0]))
-        },
-
-    }, function (err, results) {
-        // console.log(results);
-        if (err == 'null') {
-            res.status(200).send({
-                code: 200,
-                success: false,
-                message: err.message,
-            })
-            return;
-        }
-
-        const totalGuest = results.eventsGuest ? results.eventsGuest.length : 0;
-        const totalAttend = results.eventsAttending ? results.eventsAttending.length : 0;
-
-        res.status(200).send({
-            code: 200,
-            success: true,
-            message: 'Data Found',
-
-            data: {
-                dashboard: {
-                    pieChartGuest: {
-                        invitationLimit: results.eventDetail.invitation_limit,
-                        totalGuest: totalGuest
-                    },
-                    pieChartGuestAttend: {
-                        totalGuest: totalGuest,
-                        totalAttend: totalAttend
-                    }
-                },
-                eventDetail: results.eventDetail,
-            }
-        })
-        return;
-    })
-
-}
-
-
 
 //======================
 //======================
@@ -312,183 +318,6 @@ exports.getDetail = (req, res) => {
 //======================
 //======================
 
-exports.dashboardEvent = (req, res) => {
-    const { fid_events } = req.query;
-
-
-    events.findAll({
-        where: { id: fid_events },
-        attributes: ['id', 'invitation_limit']
-    })
-        .then(data => {
-            const invitationLimit = data[0].invitation_limit;
-            eventsGuest.findAll({
-                where: { fid_events: fid_events },
-            })
-                .then(data2 => {
-                    // console.log(data2.length);
-                    const totalGuest = data2.length;
-                    const limit = invitationLimit;
-
-                    eventsGuest.findAll({
-                        where: { fid_events: fid_events, attend: true }
-                    })
-                        .then(data3 => {
-                            // console.log(data3);
-                            res.status(200).send({
-                                code: 200,
-                                success: true,
-                                message: "Datas Found.",
-                                data: {
-                                    limit: limit,
-                                    total_guest: totalGuest,
-                                    attending: data3.length
-                                }
-                            });
-                        })
-                        .catch(err => {
-                            res.status(500).send({
-                                code: 500,
-                                success: false,
-                                message:
-                                    err.message || "Some error occurred while retrieving data."
-                            });
-                        });
-
-
-                })
-                .catch(err => {
-                    res.status(500).send({
-                        code: 500,
-                        success: false,
-                        message:
-                            err.message || "Some error occurred while retrieving data."
-                    });
-                });
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
-
-exports.allEvent = (req, res) => {
-    const { company_name, user_id } = req.query;
-
-    if (company_name) {
-        var condition = {
-            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
-            fid_user: user_id
-        }
-    } else {
-        var condition = {
-            fid_user: user_id
-        }
-    }
-
-    events.findAll({
-        where: condition,
-        order: [['event_date', 'ASC']],
-        include: [
-            { model: company, attributes: ['id', ['title', 'company_name']] },
-            { model: masterEvent, attributes: ['id', 'title'] },
-        ]
-    })
-        .then(data => {
-            // console.log(data);
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
-
-
-
-exports.createOneWithImage = (req, res) => {
-    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_company, fid_regencies, published, fid_user, fid_type } = req.body;
-    const invitation_limit = 0;
-    const fid_template = 1;
-    const banner = req.file.filename;
-
-    console.log(fid_regencies);
-
-    if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_user || !fid_type) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Error Insert: Field."
-        });
-        return;
-    }
-
-    events.create({ banner, title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Create data success.",
-                insertID: data.id
-            });
-            return;
-        })
-        .catch(err => {
-            //   console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-            return;
-        });
-
-}
-
-exports.createOneNoImage = (req, res) => {
-    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_company, fid_regencies, published, fid_user, fid_type } = req.body;
-    const invitation_limit = 0;
-    const fid_template = 1;
-
-    if (!title || !description || !event_date || !venue_name || !location_address || !ticketing || !gift_bank || !guest || !fid_company || !fid_user || !fid_type) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Error Insert: Field."
-        });
-        return;
-    }
-
-    events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Create data success.",
-                insertID: data.id
-            });
-            return;
-        })
-        .catch(err => {
-            //   console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-            return;
-        });
-}
 
 exports.updateOneNoImage = (req, res) => {
     const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_regencies } = req.body;

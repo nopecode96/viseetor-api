@@ -36,8 +36,7 @@ exports.findMyClient = (req, res) => {
             masterIndustry.findAll({
                 where: { published: true },
                 attributes: ['id', 'title', 'published']
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
         dataCompany: function (callback) {
             company.findAndCountAll({
@@ -55,22 +54,21 @@ exports.findMyClient = (req, res) => {
                     { model: masterIndustry, attributes: ['id', 'title'] },
                     { model: masterCompanyStatus, attributes: ['id', 'title'] }
                 ]
+            }).then(data => {
+                const response = functions.getPagingData(data, page, limit);
+                callback(null, response)
             })
-                .then(data => {
-                    const response = functions.getPagingData(data, page, limit);
-                    callback(null, response)
-                })
         }
     }, function (err, results) {
-        // console.log(results.dataCommission);
-        if (err == 'null') {
-            res.status(200).send({
-                code: 200,
+        if (err) {
+            res.status(505).send({
+                code: 505,
                 success: false,
                 message: err.message,
             })
             return;
         }
+
         res.status(200).send({
             code: 200,
             success: true,
@@ -81,10 +79,7 @@ exports.findMyClient = (req, res) => {
             }
         })
         return;
-        // results now equals to: { task1: 1, task2: 2 }
-
-    }
-    )
+    })
 }
 
 exports.getDetail = (req, res) => {
@@ -109,8 +104,7 @@ exports.getDetail = (req, res) => {
                         attributes: [['id', 'company_id']],
                     }
                 }
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
         totalEvent: function (callback) {
             events.findAndCountAll({
@@ -163,15 +157,23 @@ exports.getDetail = (req, res) => {
                     }
                 ],
             })
-                .then(data => callback(null, data[0]))
+                .then(data => callback(null, data))
         },
     }, function (err, results) {
-        // console.log(results.dataCommission);
-        if (err == 'null') {
-            res.status(200).send({
-                code: 200,
+        if (err) {
+            res.status(505).send({
+                code: 505,
                 success: false,
                 message: err.message,
+            })
+            return;
+        }
+
+        if (results.dataDetail.length == 0) {
+            res.status(404).send({
+                code: 404,
+                success: false,
+                message: 'Data not found',
             })
             return;
         }
@@ -183,11 +185,10 @@ exports.getDetail = (req, res) => {
                 totalGuest: results.totalGuest.count,
                 totalEvent: results.totalEvent.count,
                 upcoming_event: results.dataEventLastMonth,
-                datas: results.dataDetail,
+                datas: results.dataDetail[0],
             }
         })
         return;
-        // results now equals to: { task1: 1, task2: 2 }
     });
 }
 
@@ -202,15 +203,13 @@ exports.getDetailEdit = (req, res) => {
             masterIndustry.findAll({
                 where: { published: true },
                 attributes: ['id', 'title']
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
         mstStatus: function (callback) {
             masterCompanyStatus.findAll({
                 where: { published: true },
                 attributes: ['id', 'title']
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
         mstRegency: function (callback) {
             regRegencies.findAll({
@@ -219,8 +218,7 @@ exports.getDetailEdit = (req, res) => {
                     model: regProvincies,
                     attributes: [],
                 }
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
         dataDetail: function (callback) {
             company.findAll({
@@ -244,40 +242,41 @@ exports.getDetailEdit = (req, res) => {
                         attributes: ['id', 'title']
                     }
                 ],
-            })
-                .then(data => callback(null, data[0]))
+            }).then(data => callback(null, data))
         },
     }, function (err, results) {
         // console.log(results.dataCommission);
-        if (err == 'null') {
-            res.status(200).send({
-                code: 200,
+        if (err) {
+            res.status(505).send({
+                code: 505,
                 success: false,
                 message: err.message,
             })
             return;
         }
+        if (results.dataDetail.length == 0) {
+            res.status(404).send({
+                code: 404,
+                success: false,
+                message: 'Data not found',
+            })
+            return;
+        }
+
         res.status(200).send({
             code: 200,
             success: true,
             message: 'Data Found',
             data: {
-                datas: results.dataDetail,
                 dataIndustry: results.mstIndustry,
                 dataStatus: results.mstStatus,
                 dataRegency: results.mstRegency,
+                datas: results.dataDetail[0],
             }
         })
         return;
-        // results now equals to: { task1: 1, task2: 2 }
     });
 }
-
-//========
-//========
-//========
-//========
-//========
 
 exports.pageCreate = (req, res) => {
     async.parallel({
@@ -285,15 +284,13 @@ exports.pageCreate = (req, res) => {
             masterIndustry.findAll({
                 where: { published: true },
                 attributes: ['id', 'title']
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
         mstStatus: function (callback) {
             masterCompanyStatus.findAll({
                 where: { published: true },
                 attributes: ['id', 'title']
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
         mstRegency: function (callback) {
             regRegencies.findAll({
@@ -302,15 +299,13 @@ exports.pageCreate = (req, res) => {
                     model: regProvincies,
                     attributes: [],
                 }
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
 
     }, function (err, results) {
-        // console.log(results.dataCommission);
-        if (err == 'null') {
-            res.status(200).send({
-                code: 200,
+        if (err) {
+            res.status(505).send({
+                code: 505,
                 success: false,
                 message: err.message,
             })
@@ -333,10 +328,7 @@ exports.pageCreate = (req, res) => {
 
 exports.create = (req, res) => {
     const fid_user = req.userid;
-    // console.log(fid_user);
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_company_status } = req.body;
-    // console.log(req.body.file);
-
 
     if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_company_status) {
         res.status(200).send({
@@ -359,8 +351,8 @@ exports.create = (req, res) => {
             })
             .catch(err => {
                 console.log(err);
-                res.status(500).send({
-                    code: 500,
+                res.status(505).send({
+                    code: 505,
                     success: false,
                     message:
                         err.message || "Some error occurred while retrieving data."
@@ -379,18 +371,51 @@ exports.create = (req, res) => {
             })
             .catch(err => {
                 console.log(err);
-                res.status(500).send({
-                    code: 500,
+                res.status(505).send({
+                    code: 505,
                     success: false,
                     message:
                         err.message || "Some error occurred while retrieving data."
                 });
             });
     }
-
 }
 
 exports.update = (req, res) => {
+    const fid_user = req.userid;
+    const { id } = req.query;
+    const { fid_company_status } = req.body;
+
+    if (!fid_user || !fid_company_status) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
+    company.update(
+        { fid_user, fid_company_status },
+        { where: { id: id } }
+    ).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Edit data success."
+        });
+        return;
+    }).catch(err => {
+        res.status(505).send({
+            code: 505,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.updateStatus = (req, res) => {
     const { id } = req.query;
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status } = req.body;
 
@@ -414,18 +439,16 @@ exports.update = (req, res) => {
                 message: "Edit data success."
             });
             return;
-        })
-            .catch(err => {
-                console.log(err);
-                res.status(500).send({
-                    code: 500,
-                    success: false,
-                    message:
-                        err.message || "Some error occurred while retrieving data."
-                });
+        }).catch(err => {
+            console.log(err);
+            res.status(505).send({
+                code: 505,
+                success: false,
+                message:
+                    err.message || "Some error occurred while retrieving data."
             });
+        });
     } else {
-        const logo = req.file.filename;
         company.update(
             { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status, logo },
             { where: { id: id } }
@@ -436,16 +459,14 @@ exports.update = (req, res) => {
                 message: "Edit data success."
             });
             return;
-        })
-            .catch(err => {
-                console.log(err);
-                res.status(500).send({
-                    code: 500,
-                    success: false,
-                    message:
-                        err.message || "Some error occurred while retrieving data."
-                });
+        }).catch(err => {
+            console.log(err);
+            res.status(505).send({
+                code: 505,
+                success: false,
+                message:
+                    err.message || "Some error occurred while retrieving data."
             });
+        });
     }
-
 }
