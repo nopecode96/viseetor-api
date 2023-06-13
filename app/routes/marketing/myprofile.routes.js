@@ -19,12 +19,9 @@ module.exports = app => {
     var upload = multer({ storage: storage })
 
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getAccountDetail);
-    router.put("/changepassword", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.changePassword);
-    router.get("/getcity", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllCity);
-    router.get("/getoccupation", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllOccupation);
-    router.get("/getbank", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllBank);
-    router.post("/profile", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createProfile);
-    router.put("/profile", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateProfile);
-    router.put("/changephoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('photo'), controller.changePhoto);
+    router.get("/detail-edit", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetailEdit);
+    router.put("/change-password", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.changePassword);
+    router.put("/update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.update);
+    router.put("/change-photo", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('photo'), controller.changePhoto);
     app.use('/v2/marketing/myprofile', router);
 };

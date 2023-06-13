@@ -1,14 +1,15 @@
 const sequelize = require('sequelize');
 const fs = require('fs');
+const async = require('async')
 
 var functions = require("../../../config/function");
 const { user, userProfile, regRegencies, masterBank, masterOccupation, userType, masterUserStatus, regProvincies } = require("../../models/index.model");
 
 exports.getAccountDetail = (req, res) => {
-    const { userid } = req.query;
+    const fid_user = req.userid;
 
     user.findAll({
-        where: { id: userid },
+        where: { id: fid_user },
         attributes: ['id', 'email', 'name', 'photo', 'published', 'lastLogin', 'createdAt'],
         include: [
             { model: userType, attributes: ['id', 'type_name'] },
@@ -28,38 +29,221 @@ exports.getAccountDetail = (req, res) => {
             }
         ]
 
-    })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Datas Found.",
-                data: data[0]
-            });
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
+    }).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: data[0]
         });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({
+            code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.getDetailEdit = (req, res) => {
+    const fid_user = req.userid;
+
+    async.parallel({
+        mstBank: function (callback) {
+            masterBank.findAll({
+                attributes: ['id', 'title'],
+            }).then(data => callback(null, data))
+        },
+        mstRegency: function (callback) {
+            regRegencies.findAll({
+                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
+                include: {
+                    model: regProvincies,
+                    attributes: [],
+                }
+            }).then(data => callback(null, data))
+        },
+        mstOccupation: function (callback) {
+            masterOccupation.findAll({
+                attributes: ['id', 'title'],
+            }).then(data => callback(null, data))
+        },
+        dataDetail: function (callback) {
+            user.findAll({
+                where: { id: fid_user },
+                attributes: ['id', 'email', 'name', 'photo', 'published', 'lastLogin', 'createdAt'],
+                include: [
+                    { model: userType, attributes: ['id', 'type_name'] },
+                    { model: masterUserStatus, attributes: ['id', 'title'] },
+                    {
+                        model: userProfile,
+                        include: [
+                            {
+                                model: regRegencies,
+                                include: {
+                                    model: regProvincies
+                                }
+                            },
+                            { model: masterBank },
+                            { model: masterOccupation },
+                        ]
+                    }
+                ]
+
+            }).then(data => callback(null, data))
+        },
+
+    }, function (err, results) {
+        if (err) {
+            res.status(505).send({
+                code: 505,
+                success: false,
+                message: err.message,
+            })
+            return;
+        }
+        if (results.dataDetail.length == 0) {
+            res.status(404).send({
+                code: 404,
+                success: false,
+                message: 'Data not found',
+            })
+            return;
+        }
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+            data: {
+                mstBank: results.mstBank,
+                mstRegency: results.mstRegency,
+                mstOccupation: results.mstOccupation,
+                dataDetail: results.dataDetail[0],
+            }
+        })
+        return;
+    })
 }
 
 exports.changePassword = (req, res) => {
-    const { password } = req.body;
-    const { userid } = req.query;
+    const fid_user = req.userid;
+    const { password, repassword } = req.body;
 
-    user.update({ password }, { where: { id: userid } })
+    if (password !== repassword) {
+        res.status(404).send({
+            code: 404,
+            success: false,
+            message: 'Password & Re-Password not match.',
+        })
+        return;
+    }
+
+    user.update(
+        { password },
+        { where: { id: fid_user } }
+    ).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Password has been changed.",
+            // data: data[0]
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({
+            code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.update = (req, res) => {
+    const fid_user = req.userid;
+    const { phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency } = req.body;
+
+    userProfile.findAll({
+        where: { id: fid_user }
+    }).then(data => {
+        console.log(data.length);
+        if (data.length > 0) {
+            userProfile.update({ phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency }, {
+                where: { id: fid_user }
+            }).then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Updated profile success.",
+                });
+                return;
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+                return;
+            });
+        } else {
+            userProfile.create({ phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency, fid_user })
+                .then(data => {
+                    res.status(200).send({
+                        code: 200,
+                        success: true,
+                        message: "Create profile success.",
+                    });
+                    return;
+                }).catch(err => {
+                    console.log(err);
+                    res.status(500).send({
+                        code: 500,
+                        success: false,
+                        message:
+                            err.message || "Some error occurred while retrieving data."
+                    });
+                    return;
+                });
+        }
+    })
+}
+
+exports.changePhoto = (req, res) => {
+    const fid_user = req.userid;
+
+    if (!fid_user) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Id not found."
+        });
+        return;
+    }
+
+    const photo = req.file.filename;
+    if (!req.file) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Please insert photo."
+        });
+        return;
+    }
+
+    user.update({ photo },
+        { where: { id: fid_user } })
         .then(data => {
             res.status(200).send({
                 code: 200,
                 success: true,
-                message: "Password has been changed.",
-                // data: data[0]
+                message: "Updated data success.",
             });
+            return;
         })
         .catch(err => {
             console.log(err);
@@ -69,82 +253,14 @@ exports.changePassword = (req, res) => {
                 message:
                     err.message || "Some error occurred while retrieving data."
             });
+            return;
         });
 }
 
-exports.findAllCity = (req, res) => {
-    const { searchValue } = req.query;
-    var condition = {
-        searchValue: sequelize.where(sequelize.fn('LOWER', sequelize.col('reg_regencie.name')), 'LIKE', '%' + searchValue + '%')
-    }
 
-    regRegencies.findAll(
-        {
-            where: condition,
-            // attributes: [['id', 'value'], ['name', 'text']],
-            attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
-            include: {
-                model: regProvincies,
-                // where: condition,
-                attributes: [],
-            }
-        },
 
-    )
-        .then(data => {
-            // console.log(data);
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
+/////////
 
-exports.findAllOccupation = (req, res) => {
-
-    masterOccupation.findAll(
-        {
-            attributes: ['id', 'title'],
-        }
-    )
-        .then(data => {
-            // console.log(data);
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
-
-exports.findAllBank = (req, res) => {
-    masterBank.findAll(
-        {
-            attributes: ['id', 'title'],
-        }
-    )
-        .then(data => {
-            // console.log(data);
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
 
 exports.createProfile = (req, res) => {
     const { phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_user, fid_bank, fid_occupation, fid_regency } = req.body;
@@ -179,69 +295,3 @@ exports.createProfile = (req, res) => {
             return;
         });
 }
-
-exports.updateProfile = (req, res) => {
-    const { phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency } = req.body;
-    const { id } = req.query;
-
-
-    userProfile.update({ phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency },
-        {
-            where: { id: id }
-        })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Updated data success.",
-            });
-            return;
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-            return;
-        });
-}
-
-exports.changePhoto = (req, res) => {
-    const { id } = req.body;
-    const photo = req.file.filename;
-
-    if (!id) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Error Insert: Id not found."
-        });
-        return;
-    }
-
-    user.update({ photo },
-        { where: { id: id } })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Updated data success.",
-            });
-            return;
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-            return;
-        });
-}
-
-
