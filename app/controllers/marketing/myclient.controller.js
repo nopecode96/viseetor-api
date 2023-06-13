@@ -386,7 +386,7 @@ exports.updateStatus = (req, res) => {
     const { id } = req.query;
     const { fid_company_status } = req.body;
 
-    if (!fid_user || !fid_company_status) {
+    if (!id || !fid_company_status) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -396,13 +396,13 @@ exports.updateStatus = (req, res) => {
     }
 
     company.update(
-        { fid_user, fid_company_status },
-        { where: { id: id } }
+        { fid_company_status },
+        { where: { id: id, fid_user: fid_user } }
     ).then(data => {
         res.status(200).send({
             code: 200,
             success: true,
-            message: "Edit data success."
+            message: "Status has been change."
         });
         return;
     }).catch(err => {

@@ -24,6 +24,7 @@ module.exports = app => {
     router.get("/page-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreate);
     router.post("/save", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.create);
     router.put("/update", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.update);
+    router.put("/change-status", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatus);
     // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboard);
     // router.get("/industry", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllIndustry);
     // router.get("/status", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllCompanyStatus);
