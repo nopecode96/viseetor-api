@@ -15,6 +15,7 @@ exports.findEvents = (req, res) => {
 
     if (title && company_name && typeid) {
         var condition = {
+            event_date: { [sequelize.Op.gte]: today },
             company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
             title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
             fid_type: typeid,
@@ -22,27 +23,32 @@ exports.findEvents = (req, res) => {
         }
     } else if (title && company_name) {
         var condition = {
+            event_date: { [sequelize.Op.gte]: today },
             company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
             title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
             fid_user: fid_user
         }
     } else if (title) {
         var condition = {
+            event_date: { [sequelize.Op.gte]: today },
             title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
             fid_user: fid_user
         }
     } else if (company_name) {
         var condition = {
+            event_date: { [sequelize.Op.gte]: today },
             company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
             fid_user: fid_user
         }
     } else if (typeid) {
         var condition = {
+            event_date: { [sequelize.Op.gte]: today },
             fid_type: typeid,
             fid_user: fid_user
         }
     } else {
         var condition = {
+            event_date: { [sequelize.Op.gte]: today },
             fid_user: fid_user
         }
     }

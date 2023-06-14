@@ -12,5 +12,5 @@ module.exports = app => {
     router.get("/eventsearch", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllEvent);
     router.get("/paymentbank", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.paymentBank);
     router.post("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createTransaction);
-    app.use('/v2/marketing/transaction', router);
+    app.use('/v2/marketing/transactions', router);
 };

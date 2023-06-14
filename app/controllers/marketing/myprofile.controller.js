@@ -1,6 +1,7 @@
 const sequelize = require('sequelize');
 const fs = require('fs');
-const async = require('async')
+const async = require('async');
+const md5 = require('md5');
 
 var functions = require("../../../config/function");
 const { user, userProfile, regRegencies, masterBank, masterOccupation, userType, masterUserStatus, regProvincies } = require("../../models/index.model");
@@ -141,8 +142,10 @@ exports.changePassword = (req, res) => {
         return;
     }
 
+    const md5password = md5(password);
+
     user.update(
-        { password },
+        { password: md5password },
         { where: { id: fid_user } }
     ).then(data => {
         res.status(200).send({

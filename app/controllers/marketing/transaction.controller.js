@@ -7,6 +7,7 @@ var functions = require("../../../config/function");
 const { user, masterPrice, promotion, transaction, events, company, userProfile, regRegencies, regProvincies, userType, masterBankPayment } = require("../../models/index.model");
 
 exports.getTransactions = (req, res) => {
+    const fid_user = req.userid;
     const { page, size, user_id, order_number, status } = req.query;
     const { limit, offset } = functions.getPagination(page - 1, size);
 
@@ -14,21 +15,21 @@ exports.getTransactions = (req, res) => {
         var condition = {
             order_number: sequelize.where(sequelize.fn('LOWER', sequelize.col('order_number')), 'LIKE', '%' + order_number + '%'),
             status: status,
-            fid_user: user_id
+            fid_user: fid_user
         }
     } else if (status) {
         var condition = {
             status: status,
-            fid_user: user_id
+            fid_user: fid_user
         }
     } else if (order_number) {
         var condition = {
             order_number: sequelize.where(sequelize.fn('LOWER', sequelize.col('order_number')), 'LIKE', '%' + order_number + '%'),
-            fid_user: user_id
+            fid_user: fid_user
         }
     } else {
         var condition = {
-            fid_user: user_id
+            fid_user: fid_user
         }
     }
 
