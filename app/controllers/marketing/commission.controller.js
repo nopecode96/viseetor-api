@@ -94,7 +94,7 @@ exports.getCommissionList = (req, res) => {
                 order: [['id', 'DESC']],
             }).then(data => callback(null, data))
         },
-        balance: function (callback) {
+        dataCommission: function (callback) {
             commission.findAndCountAll({
                 where: condition, limit, offset,
                 order: [['id', 'DESC']],
@@ -126,14 +126,11 @@ exports.getCommissionList = (req, res) => {
                 dashboard: {
                     totalIn: totalIn,
                     totalOut: totalOut,
+                    balance: balance
                 },
-                datas: results
+                datas: results.dataCommission
             }
         })
         return;
-
     })
-
-
-
 }
