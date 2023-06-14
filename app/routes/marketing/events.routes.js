@@ -40,6 +40,7 @@ module.exports = app => {
     var upload3 = multer({ storage: storage3 })
 
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEvents);
+    router.get("/expired", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEventsExpired);
     router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.create);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     router.get("/page-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreate);
