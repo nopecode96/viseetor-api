@@ -9,6 +9,8 @@ var functions = require("../../../config/function");
 const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsTicketing, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate } = require("../../models/index.model");
 
 exports.findEvents = (req, res) => {
+    const today = new Date();
+
     const fid_user = req.userid;
     const { page, size, title, company_name, typeid } = req.query;
     const { limit, offset } = functions.getPagination(page - 1, size);
@@ -317,9 +319,6 @@ exports.create = (req, res) => {
     }
 }
 
-
-//======================
-//======================
 //======================
 //======================
 //======================
