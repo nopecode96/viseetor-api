@@ -11,7 +11,7 @@ exports.getAccountDetail = (req, res) => {
 
     user.findAll({
         where: { id: fid_user },
-        attributes: ['id', 'email', 'name', 'photo', 'published', 'lastLogin', 'createdAt'],
+        attributes: ['id', 'username', 'email', 'name', 'photo', 'published', 'lastLogin', 'createdAt'],
         include: [
             { model: userType, attributes: ['id', 'type_name'] },
             { model: masterUserStatus, attributes: ['id', 'title'] },
