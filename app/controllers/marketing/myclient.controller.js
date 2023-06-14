@@ -418,9 +418,9 @@ exports.updateStatus = (req, res) => {
 exports.update = (req, res) => {
     const fid_user = req.userid;
     const { id } = req.query;
-    const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_company_status } = req.body;
+    const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry } = req.body;
 
-    if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_company_status) {
+    if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -431,7 +431,7 @@ exports.update = (req, res) => {
 
     if (!req.file) {
         company.update(
-            { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status },
+            { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user },
             { where: { id: id, fid_user: fid_user } }
         ).then(data => {
             res.status(200).send({
@@ -451,7 +451,7 @@ exports.update = (req, res) => {
         });
     } else {
         company.update(
-            { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status, logo },
+            { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, logo },
             { where: { id: id, fid_user: fid_user } }
         ).then(data => {
             res.status(200).send({
