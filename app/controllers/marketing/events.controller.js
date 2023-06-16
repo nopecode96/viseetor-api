@@ -67,7 +67,7 @@ exports.findEvents = (req, res) => {
         },
         dataCompany: function (callback) {
             company.findAll({
-                where: { fid_company_status: 1 },
+                where: { fid_company_status: 1, fid_user: fid_user },
                 attributes: ['id', 'title']
             }).then(data => callback(null, data))
         },
