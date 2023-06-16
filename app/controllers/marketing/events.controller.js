@@ -12,21 +12,24 @@ exports.findEvents = (req, res) => {
     const today = new Date();
 
     const fid_user = req.userid;
-    const { page, size, title, company_name, typeid } = req.query;
+    // const { page, size, title, company_name, typeid } = req.query;
+    const { page, size, title, companyid, typeid } = req.query;
     const { limit, offset } = functions.getPagination(page - 1, size);
 
-    if (title && company_name && typeid) {
+    if (title && companyid && typeid) {
         var condition = {
             event_date: { [sequelize.Op.gte]: today },
-            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
+            // company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
+            // fid_company_status: sequelize.where(sequelize.fn('LOWER', sequelize.col('fid_company_status.id')), 'LIKE', '%' + title + '%'),
+            fid_company: companyid,
             title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
             fid_type: typeid,
             fid_user: fid_user
         }
-    } else if (title && company_name) {
+    } else if (title && companyid) {
         var condition = {
             event_date: { [sequelize.Op.gte]: today },
-            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
+            fid_company: companyid,
             title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
             fid_user: fid_user
         }
@@ -36,10 +39,10 @@ exports.findEvents = (req, res) => {
             title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
             fid_user: fid_user
         }
-    } else if (company_name) {
+    } else if (companyid) {
         var condition = {
             event_date: { [sequelize.Op.gte]: today },
-            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
+            fid_company: companyid,
             fid_user: fid_user
         }
     } else if (typeid) {
@@ -76,7 +79,8 @@ exports.findEvents = (req, res) => {
                 include: [
                     {
                         model: company,
-                        attributes: ['id', ['title', 'company_name']]
+                        where: { fid_company_status: 1 },
+                        attributes: ['id', ['title', 'company_name'], 'fid_company_status']
                     },
                     {
                         model: masterEvent,
