@@ -179,7 +179,7 @@ exports.update = (req, res) => {
     }
 
     userProfile.findAll({
-        where: { id: fid_user }
+        where: { fid_user: fid_user }
     }).then(data => {
         console.log(data.length);
         if (data.length > 0) {
