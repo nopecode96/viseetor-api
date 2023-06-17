@@ -169,6 +169,15 @@ exports.update = (req, res) => {
     const fid_user = req.userid;
     const { phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency } = req.body;
 
+    if (!phone_number || !gender || !birthday || !address || !hobbies || !instagram || !facebook || !bank_account_number || !bank_account_name || !fid_bank || !fid_occupation || !fid_regency) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
     userProfile.findAll({
         where: { id: fid_user }
     }).then(data => {
