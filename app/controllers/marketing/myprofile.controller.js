@@ -167,9 +167,9 @@ exports.changePassword = (req, res) => {
 
 exports.update = (req, res) => {
     const fid_user = req.userid;
-    const { phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency } = req.body;
+    const { phone_number, gender, birth_place, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency } = req.body;
 
-    if (!phone_number || !gender || !birthday || !address || !hobbies || !instagram || !facebook || !bank_account_number || !bank_account_name || !fid_bank || !fid_occupation || !fid_regency) {
+    if (!phone_number || !gender || !birth_place || !birthday || !address || !hobbies || !instagram || !facebook || !bank_account_number || !bank_account_name || !fid_bank || !fid_occupation || !fid_regency) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -183,7 +183,7 @@ exports.update = (req, res) => {
     }).then(data => {
         console.log(data.length);
         if (data.length > 0) {
-            userProfile.update({ phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency }, {
+            userProfile.update({ phone_number, gender, birth_place, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency }, {
                 where: { id: fid_user }
             }).then(data => {
                 res.status(200).send({
@@ -203,7 +203,7 @@ exports.update = (req, res) => {
                 return;
             });
         } else {
-            userProfile.create({ phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency, fid_user })
+            userProfile.create({ phone_number, gender, birth_place, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency, fid_user })
                 .then(data => {
                     res.status(200).send({
                         code: 200,
