@@ -6,7 +6,8 @@ module.exports = app => {
     // router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getAccountDetail);
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getTransactions);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
-    router.get("/price", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPriceAll);
+    router.get("/create-page", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createTransactionPage);
+    // router.get("/price", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPriceAll);
     router.get("/priceone", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPriceOne);
     router.get("/promocode", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPromoCode);
     router.get("/eventsearch", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllEvent);

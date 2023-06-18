@@ -2,6 +2,7 @@ const { Sequelize, Op } = require('sequelize');
 const fs = require('fs');
 const sequelize = require('sequelize');
 var randomstring = require("randomstring");
+const async = require('async')
 
 var functions = require("../../../config/function");
 const { user, masterPrice, promotion, transaction, events, company, userProfile, regRegencies, regProvincies, userType, masterBankPayment } = require("../../models/index.model");
@@ -145,8 +146,8 @@ exports.getDetail = (req, res) => {
         .then(data => {
             // console.log(data.length)
             if (data.length == 0) {
-                res.status(200).send({
-                    code: 200,
+                res.status(404).send({
+                    code: 404,
                     success: false,
                     message: "Datas Not Found.",
                     // data: data[0]
@@ -171,6 +172,58 @@ exports.getDetail = (req, res) => {
             });
         });
 }
+
+exports.createTransactionPage = (req, res) => {
+    const fid_user = req.userid;
+
+    async.parallel({
+        masterPrice: function (callback) {
+            masterPrice.findAll({
+                where: { published: true },
+                attributes: ['id', 'title', 'description', 'limit_min', 'limit_max', 'unit_price', 'commission']
+            }).then(data => callback(null, data))
+        },
+        dataEvents: function (callback) {
+            events.findAll({
+                where: { fid_user: fid_user },
+                attributes: ['id', 'title'],
+                include: {
+                    model: company,
+                    where: { fid_company_status: 1 }
+                }
+            }).then(data => callback(null, data))
+        },
+        paymentBank: function (callback) {
+            masterBankPayment.findAll({
+                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('bank'), ' | ', sequelize.col('account_number'), ' | ', sequelize.col('account_name')), 'text']],
+            }).then(data => callback(null, data))
+        },
+
+    }, function (err, results) {
+        // console.log(results.dataCommission);
+        if (err) {
+            res.status(505).send({
+                code: 505,
+                success: false,
+                message: err.message,
+            })
+            return;
+        }
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+            data: {
+                masterPrice: results.masterPrice,
+                dataEvents: results.dataEvents,
+                paymentBank: results.paymentBank,
+            }
+        })
+        return;
+    })
+}
+
 
 exports.createTransaction = (req, res) => {
     const { qty, unit_price, unit_commission, total_price, total_payment, total_commission, discount_percent, discount_nominal, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price } = req.body;
