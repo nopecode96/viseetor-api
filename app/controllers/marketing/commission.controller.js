@@ -88,9 +88,12 @@ exports.getWithdrawPage = (req, res) => {
         dataEvents: function (callback) {
             events.findAll({
                 where: { fid_user: fid_user },
-                attributes: [
-                    [sequelize.fn("SUM", sequelize.cast(sequelize.col("nominal"), 'integer')), "total_in"],
-                ],
+                attributes: ['id', 'title'],
+                include: {
+                    model: company,
+                    where: { fid_company_status: 1 },
+                    attributes: ['id, company'],
+                }
             }).then(data => callback(null, data))
         },
 

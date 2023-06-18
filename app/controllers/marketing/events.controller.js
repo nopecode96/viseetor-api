@@ -19,8 +19,6 @@ exports.findEvents = (req, res) => {
     if (title && companyid && typeid) {
         var condition = {
             event_date: { [sequelize.Op.gte]: today },
-            // company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
-            // fid_company_status: sequelize.where(sequelize.fn('LOWER', sequelize.col('fid_company_status.id')), 'LIKE', '%' + title + '%'),
             fid_company: companyid,
             title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
             fid_type: typeid,
@@ -125,21 +123,21 @@ exports.findEventsExpired = (req, res) => {
     const today = new Date();
 
     const fid_user = req.userid;
-    const { page, size, title, company_name, typeid } = req.query;
+    const { page, size, title, companyid, typeid } = req.query;
     const { limit, offset } = functions.getPagination(page - 1, size);
 
-    if (title && company_name && typeid) {
+    if (title && companyid && typeid) {
         var condition = {
             event_date: { [sequelize.Op.lte]: today },
-            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
+            fid_company: companyid,
             title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
             fid_type: typeid,
             fid_user: fid_user
         }
-    } else if (title && company_name) {
+    } else if (title && companyid) {
         var condition = {
             event_date: { [sequelize.Op.lte]: today },
-            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
+            fid_company: companyid,
             title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
             fid_user: fid_user
         }
@@ -149,10 +147,10 @@ exports.findEventsExpired = (req, res) => {
             title: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + title + '%'),
             fid_user: fid_user
         }
-    } else if (company_name) {
+    } else if (companyid) {
         var condition = {
             event_date: { [sequelize.Op.lte]: today },
-            company_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('company.title')), 'LIKE', '%' + company_name + '%'),
+            fid_company: companyid,
             fid_user: fid_user
         }
     } else if (typeid) {
@@ -178,7 +176,7 @@ exports.findEventsExpired = (req, res) => {
         dataCompany: function (callback) {
             company.findAll({
                 where: { fid_company_status: 1 },
-                attributes: ['id', 'title']
+                attributes: ['id', ['title', 'company_name'], 'fid_company_status']
             }).then(data => callback(null, data))
         },
         dataList: function (callback) {
@@ -322,21 +320,45 @@ exports.getDetail = (req, res) => {
 
 }
 
-exports.pageCreate = (req, res) => {
+exports.pageCreateStep1 = (req, res) => {
+    masterEvent.findAll({
+        where: { published: true },
+        attributes: ['id', 'title']
+    }).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Data found.",
+            data: data
+        });
+        return;
+    }).catch(err => {
+        console.log(err);
+        res.status(505).send({
+            code: 505,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.pageCreatesStep2 = (req, res) => {
     const fid_user = req.userid;
+    const { fid_type } = req.query;
 
     async.parallel({
-        mstEvent: function (callback) {
-            masterEvent.findAll({
-                where: { published: true },
-                attributes: ['id', 'title']
-            })
-                .then(data => callback(null, data))
-        },
         companies: function (callback) {
             company.findAll({
                 where: { fid_company_status: 1, fid_user: fid_user },
                 attributes: ['id', 'title']
+            })
+                .then(data => callback(null, data))
+        },
+        webTemplate: function (callback) {
+            webTemplate.findAll({
+                where: { fid_type: fid_type },
+                attributes: ['id', 'image', 'title']
             })
                 .then(data => callback(null, data))
         },
@@ -366,7 +388,7 @@ exports.pageCreate = (req, res) => {
             success: true,
             message: 'Data Found',
             data: {
-                dataMstEvent: results.mstEvent,
+                webTemplate: results.webTemplate,
                 companies: results.companies,
                 dataRegency: results.mstRegency,
             }
@@ -378,11 +400,10 @@ exports.pageCreate = (req, res) => {
 
 exports.create = (req, res) => {
     const fid_user = req.userid;
-    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_company, fid_regencies, published, fid_type } = req.body;
+    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_company, fid_regencies, published, fid_type, fid_template } = req.body;
     const invitation_limit = 0;
-    const fid_template = 1;
 
-    if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_type) {
+    if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_type || !fid_template) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -441,164 +462,6 @@ exports.create = (req, res) => {
 //======================
 //======================
 //======================
-
-
-exports.updateOneNoImage = (req, res) => {
-    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_regencies } = req.body;
-    const { id } = req.query;
-
-    if (!title || !description || !event_date || !venue_name || !location_address) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Error Insert: Field."
-        });
-        return;
-    }
-
-    events.update({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_regencies },
-        { where: { id: id } })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Updated data success.",
-            });
-            return;
-        })
-        .catch(err => {
-            //   console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-            return;
-        });
-}
-
-exports.updateOneWithImage = (req, res) => {
-    const { id } = req.body;
-    const banner = req.file.filename;
-
-    if (!id) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Error Insert: Id not found."
-        });
-        return;
-    }
-
-    events.update({ banner },
-        { where: { id: id } })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Updated data success.",
-            });
-            return;
-        })
-        .catch(err => {
-            //   console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-            return;
-        });
-}
-
-///============Master
-
-exports.findAllRegional = (req, res) => {
-    const { searchValue } = req.query;
-    var condition = {
-        searchValue: sequelize.where(sequelize.fn('LOWER', sequelize.col('reg_regencie.name')), 'LIKE', '%' + searchValue + '%')
-    }
-
-    regRegencies.findAll(
-        {
-            where: condition,
-            // attributes: [['id', 'value'], ['name', 'text']],
-            attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
-            include: {
-                model: regProvincies,
-                attributes: [],
-            }
-        },
-    )
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
-
-exports.findAllCompany = (req, res) => {
-    const { searchValue, fid_user } = req.query;
-    var condition = {
-        searchValue: sequelize.where(sequelize.fn('LOWER', sequelize.col('title')), 'LIKE', '%' + searchValue + '%'),
-        fid_user: fid_user
-    }
-
-    company.findAll(
-        {
-            where: condition,
-            attributes: [['id', 'value'], ['title', 'text']],
-        },
-
-    )
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
-
-exports.findAllEventType = (req, res) => {
-    masterEvent.findAll({ where: { published: true } })
-        .then(data => {
-            // console.log(data.length);
-            if (data.length == 0) {
-                res.status(200).send({
-                    code: 200,
-                    success: false,
-                    message: "Datas Not Found."
-                });
-            }
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Datas Found.",
-                data: data
-            });
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
 
 
 exports.createOneBank = (req, res) => {

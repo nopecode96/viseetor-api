@@ -72,8 +72,9 @@ exports.getTransactions = (req, res) => {
 }
 
 exports.getDetail = (req, res) => {
-    const { order_number } = req.query;
-    if (!order_number) {
+    const { orderno } = req.query;
+    // console.log(orderno)
+    if (!orderno) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -83,7 +84,7 @@ exports.getDetail = (req, res) => {
     }
 
     transaction.findAll({
-        where: { order_number: order_number, published: true },
+        where: { order_number: orderno, published: true },
         include: [
             {
                 model: events,
@@ -142,15 +143,26 @@ exports.getDetail = (req, res) => {
         ]
     })
         .then(data => {
+            // console.log(data.length)
+            if (data.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: "Datas Not Found.",
+                    // data: data[0]
+                });
+                return;
+            }
             res.status(200).send({
                 code: 200,
                 success: true,
                 message: "Datas Found.",
                 data: data[0]
             });
+            return;
         })
         .catch(err => {
-            // console.log(err);
+            console.log(err);
             res.status(500).send({
                 code: 500,
                 success: false,
