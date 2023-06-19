@@ -85,7 +85,7 @@ exports.getPromotionAll = (req, res) => {
 
     promotion.findAll({
         where: condition,
-        attributes: ['id', 'image', 'title', 'description', 'code', 'discount'],
+        attributes: ['id', 'title', 'description', 'code', 'discount', 'start_date', 'end_date'],
     }).then(data => {
         res.status(200).send({
             code: 200,
