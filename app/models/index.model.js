@@ -61,6 +61,8 @@ db.eventsGiftBank = require("./event/events_gift_bank_model")(sequelize, Sequeli
 db.eventsGuest = require("./event/events_guest_model")(sequelize, Sequelize);
 db.eventsTicketing = require("./event/events_ticket_model")(sequelize, Sequelize);
 
+db.information = require("./information/information_model")(sequelize, Sequelize);
+db.informationFor = require("./information/information_for_model")(sequelize, Sequelize);
 
 //Table Relation==========
 //Table Relation==========
@@ -139,6 +141,13 @@ db.commission.belongsTo(db.transaction, { foreignKey: "fid_transaction" });
 
 db.user.hasMany(db.commissionWithdraw, { foreignKey: "fid_user" });
 db.commissionWithdraw.belongsTo(db.user, { foreignKey: "fid_user" });
+
+db.user.hasMany(db.information, { foreignKey: "fid_user" });
+db.information.belongsTo(db.user, { foreignKey: "fid_user" });
+db.information.hasMany(db.informationFor, { foreignKey: "fid_information" });
+db.informationFor.belongsTo(db.information, { foreignKey: "fid_information" });
+db.user.hasMany(db.informationFor, { foreignKey: "fid_user" });
+db.informationFor.belongsTo(db.user, { foreignKey: "fid_user" });
 
 
 module.exports = db;

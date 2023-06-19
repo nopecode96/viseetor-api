@@ -30,10 +30,10 @@ db.sequelize.sync()
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
 // });
-// db.commissionWithdraw.sync(
+// db.information.sync(
 //   { force: true, logging: console.log }
 // )
-// db.promotion.sync(
+// db.informationFor.sync(
 //   { force: true, logging: console.log }
 // )
 // db.transaction.sync(
