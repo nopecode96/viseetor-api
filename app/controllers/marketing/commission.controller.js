@@ -4,7 +4,7 @@ const fs = require("fs");
 const async = require('async')
 
 var functions = require("../../../config/function");
-const { commission, events, eventsGallery, eventsGiftBank, eventsGuest, eventsTicketing, eventsWedding, company, regRegencies, regProvincies, masterEvent } = require("../../models/index.model");
+const { commission, masterBank, userProfile } = require("../../models/index.model");
 
 exports.getCommissionList = (req, res) => {
     const fid_user = req.userid;
@@ -81,21 +81,50 @@ exports.getCommissionList = (req, res) => {
     })
 }
 
-exports.getWithdrawPage = (req, res) => {
+exports.getWidrawalPage = (req, res) => {
     const fid_user = req.userid;
 
     async.parallel({
-        dataEvents: function (callback) {
-            events.findAll({
-                where: { fid_user: fid_user },
-                attributes: ['id', 'title'],
-                include: {
-                    model: company,
-                    where: { fid_company_status: 1 },
-                    attributes: ['id, company'],
-                }
+        balance: function (callback) {
+            commission.findAll({
+                where: { fid_user: fid_user, status: 'SATTLE' },
+                limit: 1,
+                order: [['id', 'DESC']],
             }).then(data => callback(null, data))
         },
+        userBankAccount: function (callback) {
+            userProfile.findAll({
+                where: { fid_user: fid_user },
+                limit: 1,
+                attributes: ['fid_user', 'bank_account_number', 'bank_account_name'],
+                include: {
+                    model: masterBank,
+                    attributes: ['id', 'title']
+                }
+            }).then(data => callback(null, data))
+        }
+    }, function (err, results) {
+        if (err) {
+            res.status(505).send({
+                code: 505,
+                success: false,
+                message: err.message,
+            })
+            return;
+        }
+        const balance = results.balance[0].dataValues.balance ?? 0
 
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+            data: {
+
+                balance: balance,
+                userBankAccount: results.userBankAccount[0],
+
+            }
+        })
+        return;
     })
 }

@@ -1,5 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
   const promotionModel = sequelize.define("promotion", {
+    image: {
+      type: Sequelize.STRING
+    },
     title: {
       type: Sequelize.STRING
     },

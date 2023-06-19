@@ -45,6 +45,7 @@ db.masterBankPayment = require("./master/bank_payment")(sequelize, Sequelize);
 db.transaction = require("./transaction/transaction_model")(sequelize, Sequelize);
 db.promotion = require("./transaction/promotion_model")(sequelize, Sequelize);
 db.commission = require("./transaction/commission_model")(sequelize, Sequelize);
+db.commissionWithdraw = require("./transaction/commission_withdrawal_model")(sequelize, Sequelize);
 
 db.regProvincies = require("./master/reg_provinces_model")(sequelize, Sequelize);
 db.regRegencies = require("./master/reg_regencies_model")(sequelize, Sequelize);
@@ -135,6 +136,9 @@ db.commission.belongsTo(db.user, { foreignKey: "fid_user" });
 
 db.transaction.hasMany(db.commission, { foreignKey: "fid_transaction" });
 db.commission.belongsTo(db.transaction, { foreignKey: "fid_transaction" });
+
+db.user.hasMany(db.commissionWithdraw, { foreignKey: "fid_user" });
+db.commissionWithdraw.belongsTo(db.user, { foreignKey: "fid_user" });
 
 
 module.exports = db;
