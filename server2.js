@@ -67,6 +67,7 @@ require("./app/routes/marketing/events.routes")(app);
 require("./app/routes/marketing/myprofile.routes")(app);
 require("./app/routes/marketing/transaction.routes")(app);
 require("./app/routes/marketing/commission.routes")(app);
+require("./app/routes/marketing/information.routes")(app);
 
 require("./app/routes/website/wedding.routes")(app);
 require("./app/routes/website/marketing.routes")(app);

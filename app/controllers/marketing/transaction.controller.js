@@ -7,6 +7,37 @@ const async = require('async')
 var functions = require("../../../config/function");
 const { user, masterPrice, promotion, transaction, events, company, userProfile, regRegencies, regProvincies, userType, masterBankPayment } = require("../../models/index.model");
 
+exports.getPromotionAll = (req, res) => {
+    const datenow = new Date(Date.now());
+
+    const condition = {
+        start_date: { [Op.lte]: datenow },
+        end_date: { [Op.gte]: datenow },
+    }
+
+    promotion.findAll({
+        where: condition,
+        attributes: ['id', 'title', 'description', 'code', 'discount'],
+    }).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: data
+        });
+        return;
+    }).catch(err => {
+        // console.log(err);
+        res.status(500).send({
+            code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+
+}
+
 exports.getTransactions = (req, res) => {
     const fid_user = req.userid;
     const { page, size, user_id, order_number, status } = req.query;
