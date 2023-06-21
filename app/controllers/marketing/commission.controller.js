@@ -59,7 +59,7 @@ exports.getCommissionList = (req, res) => {
             })
             return;
         }
-        console.log(results.totalIn);
+        // console.log(results.totalIn);
         const totalIn = results.totalIn[0].dataValues.total_in == null ? 0 : results.totalIn[0].dataValues.total_in;
         const totalOut = results.totalOut[0].dataValues.total_out == null ? 0 : results.totalOut[0].dataValues.total_out;
         const balance = results.balance.length == 0 ? 0 : results.balance[0].balance;
