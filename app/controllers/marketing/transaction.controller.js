@@ -211,6 +211,9 @@ exports.createTransactionPage = (req, res) => {
         masterPrice: function (callback) {
             masterPrice.findAll({
                 where: { published: true },
+                order: [
+                    ['id', 'ASC'],
+                ],
                 attributes: ['id', 'title', 'description', 'limit_min', 'limit_max', 'unit_price', 'commission']
             }).then(data => callback(null, data))
         },
