@@ -59,11 +59,12 @@ exports.getCommissionList = (req, res) => {
             })
             return;
         }
-        const totalIn = results.totalIn[0].dataValues.total_in ?? 0
-        const totalOut = results.totalOut[0].dataValues.total_out ?? 0
-        const balance = results.balance[0].dataValues.balance ?? 0
+        console.log(results.totalIn);
+        const totalIn = results.totalIn[0].dataValues.total_in == null ? 0 : results.totalIn[0].dataValues.total_in;
+        const totalOut = results.totalOut[0].dataValues.total_out == null ? 0 : results.totalOut[0].dataValues.total_out;
+        const balance = results.balance.length == 0 ? 0 : results.balance[0].balance;
 
-        console.log(totalIn);
+
 
         res.status(200).send({
             code: 200,
