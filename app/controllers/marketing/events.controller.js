@@ -784,6 +784,12 @@ exports.allEventGuest = (req, res) => {
     }
 
     async.parallel({
+        dataEvents: function (callback) {
+            events.findAll({
+                where: { id: fid_events },
+                attributes: ['id', 'title']
+            }).then(data => callback(null, data))
+        },
         eventLimit: function (callback) {
             events.findAll({
                 where: { id: fid_events },
@@ -848,6 +854,7 @@ exports.allEventGuest = (req, res) => {
                     totalAttend: totalAttend,
                     totalLimit: totalLimit
                 },
+                dataEvent: results.dataEvents,
                 guestList: results.dataGuestList,
             }
         })
