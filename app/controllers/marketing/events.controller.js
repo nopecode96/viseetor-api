@@ -459,13 +459,9 @@ exports.create = (req, res) => {
     }
 }
 
-//======================
-//======================
-//======================
-
-
-exports.createOneBank = (req, res) => {
-    const { bank_name, bank_account_number, bank_account_name, published, fid_events } = req.body;
+exports.createBank = (req, res) => {
+    const published = true;
+    const { bank_name, bank_account_number, bank_account_name, fid_events } = req.body;
     if (!bank_name || !bank_account_name || !bank_account_number || !fid_events) {
         res.status(200).send({
             code: 200,
@@ -497,7 +493,7 @@ exports.createOneBank = (req, res) => {
         });
 }
 
-exports.deleteOneBank = (req, res) => {
+exports.deleteBank = (req, res) => {
     const { id } = req.query;
     if (!id) {
         res.status(200).send({
@@ -530,6 +526,17 @@ exports.deleteOneBank = (req, res) => {
             return;
         });
 }
+
+
+
+//======================
+//======================
+//======================
+
+
+
+
+
 
 ////EventWeddings===========
 ////EventWeddings===========
@@ -769,6 +776,48 @@ exports.deletePhoto = (req, res) => {
 ////====guest====
 ////====guest====
 
+exports.allEventGuest = (req, res) => {
+    const { page, size, name, fid_events } = req.query;
+    const { limit, offset } = functions.getPagination(page - 1, size);
+
+    if (name) {
+        var condition = {
+            name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'),
+            fid_events: fid_events
+        }
+    } else {
+        var condition = {
+            fid_events: fid_events
+        }
+    }
+
+    eventsGuest.findAndCountAll({
+        where: condition, limit, offset,
+        order: [['updatedAt', 'DESC']],
+        // include: {model: events, attributes: ['invitation_limit']}
+
+
+    })
+        .then(data => {
+            const response = functions.getPagingData(data, page, limit);
+            // console.log(response);
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: "Datas Found.",
+                data: response
+            });
+        })
+        .catch(err => {
+            res.status(500).send({
+                code: 500,
+                success: false,
+                message:
+                    err.message || "Some error occurred while retrieving data."
+            });
+        });
+}
+
 exports.createOneGuest = (req, res) => {
     const { phone, email, name, guest_max, fid_events, fid_user } = req.body;
     const guest_actual = 0;
@@ -876,48 +925,6 @@ exports.updateAttendStatusGuest = (req, res) => {
                     err.message || "Some error occurred while retrieving data."
             });
             return;
-        });
-}
-
-exports.allEventGuest = (req, res) => {
-    const { page, size, name, fid_events } = req.query;
-    const { limit, offset } = functions.getPagination(page - 1, size);
-
-    if (name) {
-        var condition = {
-            name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'),
-            fid_events: fid_events
-        }
-    } else {
-        var condition = {
-            fid_events: fid_events
-        }
-    }
-
-    eventsGuest.findAndCountAll({
-        where: condition, limit, offset,
-        order: [['updatedAt', 'DESC']],
-        // include: {model: events, attributes: ['invitation_limit']}
-
-
-    })
-        .then(data => {
-            const response = functions.getPagingData(data, page, limit);
-            // console.log(response);
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Datas Found.",
-                data: response
-            });
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
         });
 }
 

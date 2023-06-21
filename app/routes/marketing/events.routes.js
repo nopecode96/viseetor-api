@@ -45,6 +45,11 @@ module.exports = app => {
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     router.get("/page-create-step1", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreateStep1);
     router.get("/page-create-step2", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreatesStep2);
+    router.post("/bank-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createBank);
+    router.delete("/bank-delete", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteBank);
+    router.get("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
+
+
     // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboardEvent);
     // router.get("/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEvent);
     // router.get("/company", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllCompany);
@@ -54,8 +59,6 @@ module.exports = app => {
     // router.post("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.createOneWithImage);
     // router.put("/noimage", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateOneNoImage);
     // router.put("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.updateOneWithImage);
-    // router.post("/bank", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createOneBank);
-    // router.delete("/bank", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteOneBank);
     // router.post("/wedding", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createWeddingDetail);
     // router.put("/wedding", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateWeddingDetail);
     // router.put("/groomphoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('groom_photo'), controller.putGroomPhoto);
