@@ -244,7 +244,7 @@ exports.getDetail = (req, res) => {
         },
         eventsGuest: function (callback) {
             eventsGuest.findAll({
-                where: { fid_events: id, attend: true }
+                where: { fid_events: id }
             }).then(data => {
                 const totalGuest = data.length;
                 callback(null, totalGuest)
@@ -292,8 +292,8 @@ exports.getDetail = (req, res) => {
             return;
         }
 
-        const totalGuest = results.eventsGuest ? results.eventsGuest.length : 0;
-        const totalAttend = results.eventsAttending ? results.eventsAttending.length : 0;
+        const totalGuest = results.eventsGuest ? results.eventsGuest : 0;
+        const totalAttend = results.eventsAttending ? results.eventsAttending : 0;
         const invitationLimit = results.eventDetail[0].invitation_limit ?? 0;
 
         res.status(200).send({
@@ -526,14 +526,6 @@ exports.deleteBank = (req, res) => {
             return;
         });
 }
-
-
-
-//======================
-//======================
-//======================
-
-
 
 
 
@@ -791,31 +783,77 @@ exports.allEventGuest = (req, res) => {
         }
     }
 
-    eventsGuest.findAndCountAll({
-        where: condition, limit, offset,
-        order: [['updatedAt', 'DESC']],
-        // include: {model: events, attributes: ['invitation_limit']}
+    async.parallel({
+        eventLimit: function (callback) {
+            events.findAll({
+                where: { id: fid_events },
+            }).then(data => callback(null, data))
+        },
+        eventsGuest: function (callback) {
+            eventsGuest.findAll({
+                where: { fid_events: fid_events }
+            }).then(data => {
+                const totalGuest = data.length;
+                callback(null, totalGuest)
+            })
+        },
+        eventsAttending: function (callback) {
+            eventsGuest.findAll({
+                where: { fid_events: fid_events, attend: true }
+            }).then(data => {
+                const attending = data.length;
+                callback(null, attending)
+            })
+        },
+        dataGuestList: function (callback) {
+            eventsGuest.findAndCountAll({
+                where: condition, limit, offset,
+                order: [['updatedAt', 'DESC']],
+            }).then(data => {
+                const response = functions.getPagingData(data, page, limit);
+                callback(null, response)
+            });
+        },
+    }, function (err, results) {
+        if (err) {
+            res.status(505).send({
+                code: 505,
+                success: false,
+                message: err.message,
+            })
+            return;
+        }
 
+        if (results.dataGuestList.length == 0) {
+            res.status(404).send({
+                code: 404,
+                success: false,
+                message: 'Data not found',
+            })
+            return;
+        }
+
+        const totalGuest = results.eventsGuest ? results.eventsGuest : 0;
+        const totalAttend = results.eventsAttending ? results.eventsAttending : 0;
+        const totalLimit = results.eventLimit[0].invitation_limit;
+        console.log(results.eventsGuest)
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+            data: {
+                dashboard: {
+                    totalGuest: totalGuest,
+                    totalAttend: totalAttend,
+                    totalLimit: totalLimit
+                },
+                guestList: results.dataGuestList,
+            }
+        })
+        return;
 
     })
-        .then(data => {
-            const response = functions.getPagingData(data, page, limit);
-            // console.log(response);
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Datas Found.",
-                data: response
-            });
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
 }
 
 exports.createOneGuest = (req, res) => {
@@ -1064,29 +1102,6 @@ exports.updateStatusAttending = (req, res) => {
                             err.message || "Some error occurred while retrieving data."
                     });
                 });
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
-
-exports.themes = (req, res) => {
-    webTemplate.findAll({
-        where: { published: true }
-    })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: 'Data Found',
-                data: data
-            });
-            return;
         })
         .catch(err => {
             res.status(500).send({
