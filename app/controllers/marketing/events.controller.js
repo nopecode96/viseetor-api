@@ -856,51 +856,94 @@ exports.allEventGuest = (req, res) => {
     })
 }
 
-exports.createOneGuest = (req, res) => {
-    const { phone, email, name, guest_max, fid_events, fid_user } = req.body;
+exports.createGuest = (req, res) => {
+    const fid_user = req.userid;
+    const { phone, email, name, guest_max, fid_events } = req.body;
     const guest_actual = 0;
     const invitation_send_count = 0;
     const barcode_send_count = 0;
     const attend = false;
 
-    const barcode = randomstring.generate({
-        length: 16,
-        capitalization: 'uppercase'
-    });
-    if (!phone || !name || !guest_max || !fid_events || !fid_user) {
-        res.status(200).send({
-            code: 200,
+    if (!fid_events) {
+        res.status(404).send({
+            code: 404,
             success: false,
-            message: "Error Insert: Field."
+            message: "Event ID Not Found."
         });
         return;
     }
 
-    eventsGuest.create({ barcode, phone, email, name, guest_max, guest_actual, invitation_send_count, barcode_send_count, attend, fid_events, fid_user })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Create data success.",
-                insertID: data.id
-            });
-            return;
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                code: 500,
+    events.findAll({
+        where: { id: fid_events }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(404).send({
+                code: 404,
                 success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
+                message: "Event ID Not Found."
             });
             return;
-        });
+        }
+
+        var invitationLimit = parseInt(data[0].invitation_limit);
+
+        eventsGuest.findAll({
+            where: { fid_events: fid_events }
+        }).then(data2 => {
+            var totalExistGuest = parseInt(data2.length);
+
+            if (totalExistGuest >= invitationLimit) {
+                res.status(202).send({
+                    code: 202,
+                    success: false,
+                    message: "Your limit has full, please buy limit again."
+                });
+                return;
+            } else {
+                const barcode = randomstring.generate({
+                    length: 16,
+                    capitalization: 'uppercase'
+                });
+                if (!phone || !name || !guest_max || !fid_events || !fid_user) {
+                    res.status(200).send({
+                        code: 200,
+                        success: false,
+                        message: "Error Insert: Field."
+                    });
+                    return;
+                }
+
+                eventsGuest.create({ barcode, phone, email, name, guest_max, guest_actual, invitation_send_count, barcode_send_count, attend, fid_events, fid_user })
+                    .then(data => {
+                        res.status(200).send({
+                            code: 200,
+                            success: true,
+                            message: "Create data guest success.",
+                            insertID: data.id
+                        });
+                        return;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).send({
+                            code: 500,
+                            success: false,
+                            message:
+                                err.message || "Some error occurred while retrieving data."
+                        });
+                        return;
+                    });
+            }
+        })
+    })
+
+
+
 }
 
-exports.deleteOneGuest = (req, res) => {
-    const { id } = req.query;
-    if (!id) {
+exports.deleteGuest = (req, res) => {
+    const { id, fid_events } = req.query;
+    if (!id || !fid_events) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -910,7 +953,7 @@ exports.deleteOneGuest = (req, res) => {
     }
 
     eventsGuest.destroy({
-        where: { "id": id }
+        where: { "id": id, fid_events: fid_events }
     })
         .then(data => {
             res.status(200).send({

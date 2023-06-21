@@ -48,6 +48,8 @@ module.exports = app => {
     router.post("/bank-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createBank);
     router.delete("/bank-delete", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteBank);
     router.get("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
+    router.post("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createGuest);
+    router.delete("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteGuest);
 
 
     // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboardEvent);
@@ -64,7 +66,6 @@ module.exports = app => {
     // router.put("/groomphoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('groom_photo'), controller.putGroomPhoto);
     // router.put("/bridephoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('bride_photo'), controller.putBridePhoto);
     // router.get("/guest/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
-    // router.post("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createOneGuest);
     // router.put("/guest/attend", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateAttendStatusGuest);
     // router.delete("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteOneGuest);
     // router.get("/gallery/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getGalleryList);
