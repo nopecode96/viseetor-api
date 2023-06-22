@@ -304,7 +304,7 @@ exports.getPriceOne = (req, res) => {
 exports.getPromoCode = (req, res) => {
     const { code } = req.query;
     const datenow = new Date(Date.now());
-    console.log(datenow);
+    // console.log(datenow);
 
     var condition = {
         code: code,
