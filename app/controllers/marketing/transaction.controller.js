@@ -260,95 +260,6 @@ exports.createTransactionPage = (req, res) => {
     })
 }
 
-
-exports.createTransaction = (req, res) => {
-    const { qty, unit_price, unit_commission, total_price, total_payment, total_commission, discount_percent, discount_nominal, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price } = req.body;
-    console.log(req.body);
-    const tax = 0;
-    const order_number = randomstring.generate({
-        length: 8,
-        capitalization: 'uppercase'
-    });
-
-    if (!order_number || !qty || !unit_price || !unit_commission || !total_price || !total_payment || !total_commission || !fid_events || !fid_price || !fid_bank_payment || !status) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Error Insert: Field."
-        });
-        return;
-    }
-
-    if (fid_promotion == '') {
-        transaction.create({ order_number, qty, unit_price, unit_commission, total_price, tax, discount_percent, discount_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_price })
-            .then(data => {
-                res.status(200).send({
-                    code: 200,
-                    success: true,
-                    message: "Add New Order Success.",
-                    insertID: data.order_number
-                });
-            })
-            .catch(err => {
-                // console.log(err);
-                res.status(500).send({
-                    code: 500,
-                    success: false,
-                    message:
-                        err || "Some error occurred while retrieving data."
-                });
-            });
-    } else {
-        transaction.create({ order_number, qty, unit_price, unit_commission, total_price, tax, discount_percent, discount_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price })
-            .then(data => {
-                res.status(200).send({
-                    code: 200,
-                    success: true,
-                    message: "Add New Order Success.",
-                    insertID: data.order_number
-                });
-            })
-            .catch(err => {
-                // console.log(err);
-                res.status(500).send({
-                    code: 500,
-                    success: false,
-                    message:
-                        err || "Some error occurred while retrieving data."
-                });
-            });
-    }
-
-
-}
-
-exports.paymentConfirmation = (req, res) => {
-
-}
-
-exports.getPriceAll = (req, res) => {
-    masterPrice.findAll({
-        order: [['id', 'ASC']],
-    })
-        .then(data => {
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Datas Found.",
-                data: data
-            });
-        })
-        .catch(err => {
-            // console.log(err);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
-}
-
 exports.getPriceOne = (req, res) => {
     const { qty } = req.query;
     // console.log(qty);
@@ -357,7 +268,7 @@ exports.getPriceOne = (req, res) => {
         res.status(200).send({
             code: 200,
             success: false,
-            message: "Datas Found.",
+            message: "Datas Not Found.",
             // data: data[0]
         });
         return;
@@ -435,56 +346,68 @@ exports.getPromoCode = (req, res) => {
         });
 }
 
-exports.findAllEvent = (req, res) => {
-    const { searchValue } = req.query;
-    // console.log(searchValue);
-    var condition = {
-        searchValue: sequelize.where(sequelize.fn('LOWER', sequelize.col('events.title')), 'LIKE', '%' + searchValue + '%')
+
+exports.createTransaction = (req, res) => {
+    const { qty, unit_price, unit_commission, total_price, total_payment, total_commission, discount_percent, discount_nominal, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price } = req.body;
+    console.log(req.body);
+    const tax = 0;
+    const order_number = randomstring.generate({
+        length: 8,
+        capitalization: 'uppercase'
+    });
+
+    if (!order_number || !qty || !unit_price || !unit_commission || !total_price || !total_payment || !total_commission || !fid_events || !fid_price || !fid_bank_payment || !status) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
     }
 
-    events.findAll(
-        {
-            where: condition,
-            // attributes: [['id', 'value'], ['name', 'text']],
-            attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('events.title'), ', ', sequelize.col('company.title')), 'text']],
-            include: {
-                model: company,
-                attributes: [],
-            }
-        },
-    )
-        .then(data => {
-            // console.log(data);
-            res.send(data);
-        })
-        .catch(err => {
-            console.log(err.message);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
+    if (fid_promotion == '') {
+        transaction.create({ order_number, qty, unit_price, unit_commission, total_price, tax, discount_percent, discount_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_price })
+            .then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Add New Order Success.",
+                    insertID: data.order_number
+                });
+            })
+            .catch(err => {
+                // console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err || "Some error occurred while retrieving data."
+                });
             });
-        });
+    } else {
+        transaction.create({ order_number, qty, unit_price, unit_commission, total_price, tax, discount_percent, discount_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price })
+            .then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Add New Order Success.",
+                    insertID: data.order_number
+                });
+            })
+            .catch(err => {
+                // console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err || "Some error occurred while retrieving data."
+                });
+            });
+    }
+
+
 }
 
-exports.paymentBank = (req, res) => {
-    masterBankPayment.findAll(
-        {
-            attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('bank'), ' | ', sequelize.col('account_number'), ' | ', sequelize.col('account_name')), 'text']],
-        },
-    )
-        .then(data => {
-            // console.log(data);
-            res.send(data);
-        })
-        .catch(err => {
-            console.log(err.message);
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
+exports.paymentConfirmation = (req, res) => {
+
 }
