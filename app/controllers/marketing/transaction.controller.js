@@ -229,7 +229,9 @@ exports.createTransactionPage = (req, res) => {
         },
         paymentBank: function (callback) {
             masterBankPayment.findAll({
-                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('bank'), ' | ', sequelize.col('account_number'), ' | ', sequelize.col('account_name')), 'text']],
+                where: { published: true },
+                attributes: ['id', 'bank', 'account_number', 'account_name']
+                // attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('bank'), ' | ', sequelize.col('account_number'), ' | ', sequelize.col('account_name')), 'text']],
             }).then(data => callback(null, data))
         },
 
