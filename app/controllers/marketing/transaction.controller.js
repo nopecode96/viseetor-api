@@ -381,8 +381,8 @@ exports.createTransaction = (req, res) => {
 
         if (!fid_promotion) {
             const tax_nominal = parseFloat(total_price) * parseFloat(tax) / 100;
-            const total_before_tax = parseFloat(total_price) + parseFloat(tax_nominal);
-            const total_payment = total_before_tax;
+            const total_before_tax = parseFloat(total_price);
+            const total_payment = parseFloat(total_before_tax) + parseFloat(tax_nominal);
 
             const discount_nominal = 0;
             const discount_percent = 0;
