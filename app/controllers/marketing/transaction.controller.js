@@ -439,67 +439,6 @@ exports.createTransaction = (req, res) => {
     })
 }
 
-// exports.createTransaction = (req, res) => {
-//     const { qty, unit_price, unit_commission, total_price, total_payment, total_commission, discount_percent, discount_nominal, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price } = req.body;
-//     // console.log(req.body);
-//     const tax = 0;
-//     const order_number = randomstring.generate({
-//         length: 8,
-//         capitalization: 'uppercase'
-//     });
-
-//     if (!order_number || !qty || !unit_price || !unit_commission || !total_price || !total_payment || !total_commission || !fid_events || !fid_price || !fid_bank_payment || !status) {
-//         res.status(200).send({
-//             code: 200,
-//             success: false,
-//             message: "Error Insert: Field."
-//         });
-//         return;
-//     }
-
-//     if (fid_promotion == '') {
-//         transaction.create({ order_number, qty, unit_price, unit_commission, total_price, tax, discount_percent, discount_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_price })
-//             .then(data => {
-//                 res.status(200).send({
-//                     code: 200,
-//                     success: true,
-//                     message: "Add New Order Success.",
-//                     insertID: data.order_number
-//                 });
-//             })
-//             .catch(err => {
-//                 // console.log(err);
-//                 res.status(500).send({
-//                     code: 500,
-//                     success: false,
-//                     message:
-//                         err || "Some error occurred while retrieving data."
-//                 });
-//             });
-//     } else {
-//         transaction.create({ order_number, qty, unit_price, unit_commission, total_price, tax, discount_percent, discount_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price })
-//             .then(data => {
-//                 res.status(200).send({
-//                     code: 200,
-//                     success: true,
-//                     message: "Add New Order Success.",
-//                     insertID: data.order_number
-//                 });
-//             })
-//             .catch(err => {
-//                 // console.log(err);
-//                 res.status(500).send({
-//                     code: 500,
-//                     success: false,
-//                     message:
-//                         err || "Some error occurred while retrieving data."
-//                 });
-//             });
-//     }
-
-
-// }
-
 exports.paymentConfirmation = (req, res) => {
 
 }
