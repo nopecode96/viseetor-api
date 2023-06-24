@@ -9,6 +9,6 @@ module.exports = app => {
     router.get("/create-page", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createTransactionPage);
     router.get("/findprice", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPriceOne);
     router.get("/findpromo", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPromoCode);
-    router.post("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createTransaction);
+    router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createTransaction);
     app.use('/v2/marketing/transactions', router);
 };

@@ -30,7 +30,7 @@ db.sequelize.sync()
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
 // });
-// db.information.sync(
+// db.transaction.sync(
 //   { force: true, logging: console.log }
 // )
 // db.informationFor.sync(

@@ -15,13 +15,19 @@ module.exports = (sequelize, Sequelize) => {
         total_price: {
             type: Sequelize.DOUBLE
         },
-        tax: {
-            type: Sequelize.DOUBLE
-        },
         discount_percent: {
             type: Sequelize.DOUBLE
         },
         discount_nominal: {
+            type: Sequelize.DOUBLE
+        },
+        total_before_tax: {
+            type: Sequelize.DOUBLE
+        },
+        tax: {
+            type: Sequelize.DOUBLE
+        },
+        tax_nominal: {
             type: Sequelize.DOUBLE
         },
         total_payment: {
@@ -31,12 +37,12 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DOUBLE
         },
         status: {
-            type: Sequelize.INTEGER //===== 1. Waiting Payment, 2. Payment Confirmed, 3. Invitation Limit Updated  
+            type: Sequelize.STRING //===== UNPAID, PAID  
         },
         published: {
             type: Sequelize.BOOLEAN
         },
     }
-  );
-  return transactionModel;
+    );
+    return transactionModel;
 };

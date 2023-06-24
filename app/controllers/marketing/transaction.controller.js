@@ -346,17 +346,19 @@ exports.getPromoCode = (req, res) => {
         });
 }
 
-
 exports.createTransaction = (req, res) => {
-    const { qty, unit_price, unit_commission, total_price, total_payment, total_commission, discount_percent, discount_nominal, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price } = req.body;
-    console.log(req.body);
-    const tax = 0;
+    const fid_user = req.userid;
+    const { qty, fid_events, fid_price, fid_bank_payment, fid_promotion } = req.body;
+    const tax = process.env.TAX;
+    const status = 'UNPAID';
+    const published = true;
+
     const order_number = randomstring.generate({
         length: 8,
         capitalization: 'uppercase'
     });
 
-    if (!order_number || !qty || !unit_price || !unit_commission || !total_price || !total_payment || !total_commission || !fid_events || !fid_price || !fid_bank_payment || !status) {
+    if (!order_number || !qty || !fid_events || !fid_price || !fid_bank_payment) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -365,48 +367,138 @@ exports.createTransaction = (req, res) => {
         return;
     }
 
-    if (fid_promotion == '') {
-        transaction.create({ order_number, qty, unit_price, unit_commission, total_price, tax, discount_percent, discount_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_price })
-            .then(data => {
-                res.status(200).send({
-                    code: 200,
-                    success: true,
-                    message: "Add New Order Success.",
-                    insertID: data.order_number
-                });
-            })
-            .catch(err => {
-                // console.log(err);
-                res.status(500).send({
-                    code: 500,
-                    success: false,
-                    message:
-                        err || "Some error occurred while retrieving data."
-                });
-            });
-    } else {
-        transaction.create({ order_number, qty, unit_price, unit_commission, total_price, tax, discount_percent, discount_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price })
-            .then(data => {
-                res.status(200).send({
-                    code: 200,
-                    success: true,
-                    message: "Add New Order Success.",
-                    insertID: data.order_number
-                });
-            })
-            .catch(err => {
-                // console.log(err);
-                res.status(500).send({
-                    code: 500,
-                    success: false,
-                    message:
-                        err || "Some error occurred while retrieving data."
-                });
-            });
-    }
+    masterPrice.findAll({
+        where: {
+            limit_min: { [Op.lte]: qty },
+            limit_max: { [Op.gte]: qty }
+        }
+    }).then(data => {
+        const unit_price = data[0].unit_price;
+        const unit_commission = data[0].commission;
+        const total_price = parseFloat(unit_price) * parseFloat(qty);
+        const total_commission = parseFloat(unit_commission) * parseFloat(qty);
+        console.log(unit_commission);
 
+        if (!fid_promotion) {
+            const tax_nominal = parseFloat(total_price) * parseFloat(tax) / 100;
+            const total_before_tax = parseFloat(total_price) + parseFloat(tax_nominal);
+            const total_payment = total_before_tax;
 
+            const discount_nominal = 0;
+            const discount_percent = 0;
+
+            transaction.create({ order_number, qty, unit_price, unit_commission, total_price, discount_percent, discount_nominal, total_before_tax, tax, tax_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_price })
+                .then(data => {
+                    res.status(200).send({
+                        code: 200,
+                        success: true,
+                        message: "Add New Order Success.",
+                        order_number: data.order_number
+                    });
+                })
+                .catch(err => {
+                    // console.log(err);
+                    res.status(500).send({
+                        code: 500,
+                        success: false,
+                        message:
+                            err || "Some error occurred while retrieving data."
+                    });
+                });
+        } else {
+            promotion.findAll({
+                where: { id: fid_promotion }
+            }).then(data2 => {
+                const discount_percent = data2[0].discount;
+                const discount_nominal = parseFloat(total_price) * parseFloat(discount_percent) / 100;
+                const total_before_tax = parseFloat(total_price) - parseFloat(discount_nominal);
+
+                const tax_nominal = parseFloat(total_before_tax) * parseFloat(tax) / 100;
+                const total_payment = parseFloat(total_price) + parseFloat(tax_nominal);
+
+                transaction.create({ order_number, qty, unit_price, unit_commission, total_price, discount_percent, discount_nominal, total_before_tax, tax, tax_nominal, total_payment, total_commission, status, published, fid_promotion, fid_events, fid_user, fid_bank_payment, fid_price })
+                    .then(data => {
+                        res.status(200).send({
+                            code: 200,
+                            success: true,
+                            message: "Add New Order Success.",
+                            order_number: data.order_number
+                        });
+                    })
+                    .catch(err => {
+                        // console.log(err);
+                        res.status(500).send({
+                            code: 500,
+                            success: false,
+                            message:
+                                err || "Some error occurred while retrieving data."
+                        });
+                    });
+            })
+        }
+    })
 }
+
+// exports.createTransaction = (req, res) => {
+//     const { qty, unit_price, unit_commission, total_price, total_payment, total_commission, discount_percent, discount_nominal, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price } = req.body;
+//     // console.log(req.body);
+//     const tax = 0;
+//     const order_number = randomstring.generate({
+//         length: 8,
+//         capitalization: 'uppercase'
+//     });
+
+//     if (!order_number || !qty || !unit_price || !unit_commission || !total_price || !total_payment || !total_commission || !fid_events || !fid_price || !fid_bank_payment || !status) {
+//         res.status(200).send({
+//             code: 200,
+//             success: false,
+//             message: "Error Insert: Field."
+//         });
+//         return;
+//     }
+
+//     if (fid_promotion == '') {
+//         transaction.create({ order_number, qty, unit_price, unit_commission, total_price, tax, discount_percent, discount_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_price })
+//             .then(data => {
+//                 res.status(200).send({
+//                     code: 200,
+//                     success: true,
+//                     message: "Add New Order Success.",
+//                     insertID: data.order_number
+//                 });
+//             })
+//             .catch(err => {
+//                 // console.log(err);
+//                 res.status(500).send({
+//                     code: 500,
+//                     success: false,
+//                     message:
+//                         err || "Some error occurred while retrieving data."
+//                 });
+//             });
+//     } else {
+//         transaction.create({ order_number, qty, unit_price, unit_commission, total_price, tax, discount_percent, discount_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_promotion, fid_price })
+//             .then(data => {
+//                 res.status(200).send({
+//                     code: 200,
+//                     success: true,
+//                     message: "Add New Order Success.",
+//                     insertID: data.order_number
+//                 });
+//             })
+//             .catch(err => {
+//                 // console.log(err);
+//                 res.status(500).send({
+//                     code: 500,
+//                     success: false,
+//                     message:
+//                         err || "Some error occurred while retrieving data."
+//                 });
+//             });
+//     }
+
+
+// }
 
 exports.paymentConfirmation = (req, res) => {
 
