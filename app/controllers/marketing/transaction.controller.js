@@ -76,8 +76,8 @@ exports.getDetail = (req, res) => {
     const { orderno } = req.query;
     // console.log(orderno)
     if (!orderno) {
-        res.status(404).send({
-            code: 404,
+        res.status(204).send({
+            code: 204,
             success: false,
             message: "Error Insert: Field."
         });
@@ -146,8 +146,8 @@ exports.getDetail = (req, res) => {
         .then(data => {
             // console.log(data.length)
             if (data.length == 0) {
-                res.status(404).send({
-                    code: 404,
+                res.status(204).send({
+                    code: 204,
                     success: false,
                     message: "Datas Not Found.",
                     // data: data[0]
@@ -234,8 +234,8 @@ exports.getPriceOne = (req, res) => {
     // console.log(qty);
 
     if (!qty) {
-        res.status(404).send({
-            code: 404,
+        res.status(204).send({
+            code: 204,
             success: false,
             message: "Datas Not Found.",
             // data: data[0]
@@ -288,8 +288,8 @@ exports.getPromoCode = (req, res) => {
     })
         .then(data => {
             if (data.length == 0) {
-                res.status(404).send({
-                    code: 404,
+                res.status(204).send({
+                    code: 204,
                     success: false,
                     message: "Datas Not Found.",
                     // data: data
@@ -328,8 +328,8 @@ exports.createTransaction = (req, res) => {
     });
 
     if (!order_number || !qty || !fid_events || !fid_price || !fid_bank_payment) {
-        res.status(404).send({
-            code: 404,
+        res.status(204).send({
+            code: 204,
             success: false,
             message: "Error Insert: Field."
         });

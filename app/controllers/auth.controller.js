@@ -13,15 +13,15 @@ exports.logincheck = (req, res) => {
     User.findAll({ where: condition })
         .then(data => {
             if (data.length == 0) {
-                res.status(401).send({
-                    code: 401,
+                res.status(203).send({
+                    code: 203,
                     success: false,
                     message: "Logout Now!",
                 });
                 return;
             }
-            res.status(202).send({
-                code: 202,
+            res.status(200).send({
+                code: 200,
                 success: true,
                 message: "You are secure Login!",
             });
@@ -42,8 +42,8 @@ exports.login = (req, res) => {
     let jwtSecretKey = process.env.JWT_SECRET_KEY;
 
     if (!req.body.email && !req.body.password) {
-        res.status(203).send({
-            code: 203,
+        res.status(204).send({
+            code: 204,
             success: false,
             message: "Please insert your email & password!"
         });
@@ -57,8 +57,8 @@ exports.login = (req, res) => {
     })
         .then(data => {
             if (data.length == 0) {
-                res.status(203).send({
-                    code: 203,
+                res.status(204).send({
+                    code: 204,
                     success: false,
                     message: 'Wrong Email/Password!',
                     data: ''
@@ -98,8 +98,8 @@ exports.login = (req, res) => {
                                     const userStatus = data3[0].fid_user_status;
                                     const userStatusTitle = data3[0].master_status_user.title;
                                     if (userStatus == 1) {
-                                        res.status(202).send({
-                                            code: 202,
+                                        res.status(200).send({
+                                            code: 200,
                                             success: true,
                                             message: 'Login Success.',
                                             data: data3[0]

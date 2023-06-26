@@ -170,8 +170,8 @@ exports.getDetail = (req, res) => {
         }
 
         if (results.dataDetail.length == 0) {
-            res.status(404).send({
-                code: 404,
+            res.status(204).send({
+                code: 204,
                 success: false,
                 message: 'Data not found',
             })
@@ -255,8 +255,8 @@ exports.getDetailEdit = (req, res) => {
             return;
         }
         if (results.dataDetail.length == 0) {
-            res.status(404).send({
-                code: 404,
+            res.status(204).send({
+                code: 204,
                 success: false,
                 message: 'Data not found',
             })
@@ -331,8 +331,8 @@ exports.create = (req, res) => {
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_company_status } = req.body;
 
     if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_company_status) {
-        res.status(404).send({
-            code: 404,
+        res.status(204).send({
+            code: 204,
             success: false,
             message: "Error Insert: Field."
         });
@@ -387,8 +387,8 @@ exports.updateStatus = (req, res) => {
     const { fid_company_status } = req.body;
 
     if (!id || !fid_company_status) {
-        res.status(404).send({
-            code: 404,
+        res.status(204).send({
+            code: 204,
             success: false,
             message: "Error Insert: Field."
         });

@@ -47,8 +47,8 @@ exports.updateRead = (req, res) => {
             where: { id: id, fid_user: fid_user }
         }).then(data => {
             if (data.length == 0) {
-                res.status(404).send({
-                    code: 404,
+                res.status(204).send({
+                    code: 204,
                     success: false,
                     message: "Datas Not Found.",
                     data: data

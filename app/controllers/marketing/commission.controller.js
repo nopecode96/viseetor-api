@@ -181,8 +181,8 @@ exports.WidrawalCreate = (req, res) => {
         const nominalx = parseFloat(nominal);
 
         if (nominalx >= balancex) {
-            res.status(422).send({
-                code: 422,
+            res.status(204).send({
+                code: 204,
                 success: false,
                 message: 'Your balance not enough, please check your nominal!',
             })
@@ -192,8 +192,8 @@ exports.WidrawalCreate = (req, res) => {
         commissionWithdraw.create({ wd_number, nominal, bank_name, bank_account_name, bank_account_number, status, fid_user })
             .then(data => {
                 if (data.length == 0) {
-                    res.status(404).send({
-                        code: 404,
+                    res.status(204).send({
+                        code: 204,
                         success: false,
                         message: "Insert data false.",
                         // insertID: data.order_number
