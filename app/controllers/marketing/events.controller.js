@@ -571,6 +571,7 @@ exports.createWeddingDetail = (req, res) => {
 exports.updateWeddingDetail = (req, res) => {
     const { bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite } = req.body;
     const { id } = req.query;
+
     if (!bride_name || !groom_name) {
         res.status(200).send({
             code: 200,
@@ -580,36 +581,58 @@ exports.updateWeddingDetail = (req, res) => {
         return;
     }
 
-    eventsWedding.update({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite },
-        { where: { id: id } }
-    )
-        .then(data => {
-            res.status(202).send({
-                code: 202,
-                success: true,
-                message: "Update data success.",
-                // insertID: data.id
+    eventsWedding.findAll({
+        where: { fid_events: id }
+    }).then(data => {
+        if (data.length == 0) {
+            eventsWedding.create({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, fid_events })
+                .then(data => {
+                    res.status(201).send({
+                        code: 201,
+                        success: true,
+                        message: "Create data success.",
+                        insertID: data.id
+                    });
+                    return;
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(400).send({
+                        code: 400,
+                        success: false,
+                        message:
+                            err.message || "Some error occurred while retrieving data."
+                    });
+                    return;
+                });
+        } else {
+            eventsWedding.update({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite },
+                { where: { id: id } }
+            ).then(data => {
+                res.status(202).send({
+                    code: 202,
+                    success: true,
+                    message: "Update data success.",
+                    // insertID: data.id
+                });
+                return;
+            }).catch(err => {
+                console.log(err);
+                res.status(400).send({
+                    code: 400,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+                return;
             });
-            return;
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(400).send({
-                code: 400,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-            return;
-        });
+        }
+    })
 }
 
 exports.putBridePhoto = (req, res) => {
     const { id } = req.body;
     const bride_photo = req.file.filename;
-
-    console.log(id);
-    console.log(bride_photo);
 
     if (!bride_photo) {
         res.status(200).send({
@@ -622,35 +645,30 @@ exports.putBridePhoto = (req, res) => {
 
     eventsWedding.update({ bride_photo },
         { where: { id: id } }
-    )
-        .then(data => {
-            res.status(201).send({
-                code: 201,
-                success: true,
-                message: "Create data success.",
-                insertID: data.id
-            });
-            return;
-        })
-        .catch(err => {
-            //   console.log(err);
-            res.status(400).send({
-                code: 400,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-            return;
+    ).then(data => {
+        res.status(201).send({
+            code: 201,
+            success: true,
+            message: "Create data success.",
+            insertID: data.id
         });
+        return;
+    }).catch(err => {
+        //   console.log(err);
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+        return;
+    });
 
 }
 
 exports.putGroomPhoto = (req, res) => {
     const { id } = req.body;
     const groom_photo = req.file.filename;
-
-    console.log(id);
-    console.log(groom_photo);
 
     if (!groom_photo) {
         res.status(200).send({
@@ -663,26 +681,24 @@ exports.putGroomPhoto = (req, res) => {
 
     eventsWedding.update({ groom_photo },
         { where: { id: id } }
-    )
-        .then(data => {
-            res.status(201).send({
-                code: 201,
-                success: true,
-                message: "Create data success.",
-                insertID: data.id
-            });
-            return;
-        })
-        .catch(err => {
-            //   console.log(err);
-            res.status(400).send({
-                code: 400,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-            return;
+    ).then(data => {
+        res.status(201).send({
+            code: 201,
+            success: true,
+            message: "Create data success.",
+            insertID: data.id
         });
+        return;
+    }).catch(err => {
+        //   console.log(err);
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+        return;
+    });
 }
 
 

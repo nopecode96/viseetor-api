@@ -233,8 +233,5 @@ exports.WidrawalCreate = (req, res) => {
                 });
                 return;
             });
-
     })
-
-
 }
