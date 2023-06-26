@@ -45,14 +45,14 @@ module.exports = app => {
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     router.get("/page-create-step1", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreateStep1);
     router.get("/page-create-step2", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreatesStep2);
-    router.post("/bank-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createBank);
-    router.delete("/bank-delete", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteBank);
     router.get("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
     router.post("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createGuest);
     router.delete("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteGuest);
     router.put("/wedding/update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateWeddingDetail);
     router.put("/wedding/groomphoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('groom_photo'), controller.putGroomPhoto);
     router.put("/wedding/bridephoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('bride_photo'), controller.putBridePhoto);
+    router.post("/bank-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createBank);
+    router.delete("/bank-delete", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteBank);
 
 
     // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboardEvent);

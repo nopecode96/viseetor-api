@@ -234,6 +234,15 @@ exports.getDetail = (req, res) => {
     var condition = { id: id, fid_user: fid_user, fid_type: typeid }
 
     async.parallel({
+        mstRegency: function (callback) {
+            regRegencies.findAll({
+                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
+                include: {
+                    model: regProvincies,
+                    attributes: [],
+                }
+            }).then(data => callback(null, data))
+        },
         eventsAttending: function (callback) {
             eventsGuest.findAll({
                 where: { fid_events: id, attend: true }
@@ -300,7 +309,6 @@ exports.getDetail = (req, res) => {
             code: 200,
             success: true,
             message: 'Data Found',
-
             data: {
                 dashboard: {
                     pieChartGuest: {
@@ -313,6 +321,7 @@ exports.getDetail = (req, res) => {
                     }
                 },
                 eventDetail: results.eventDetail[0],
+                mstRegency: results.mstRegency
             }
         })
         return;
@@ -457,6 +466,10 @@ exports.create = (req, res) => {
                 return;
             });
     }
+}
+
+exports.updateGiftBankStatus = (req, res) => {
+    // const { fid_events } = 
 }
 
 exports.createBank = (req, res) => {
