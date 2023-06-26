@@ -148,19 +148,31 @@ exports.getWidrawalCreatePage = (req, res) => {
             return;
         }
         const balance = results.balance.length === 0 ? 0 : balance[0].dataValues.balance ?? 0
-        // console.log(results.balance)
+        console.log(results.userBankAccount)
         // const balance = 0;
-
-        res.status(200).send({
-            code: 200,
-            success: true,
-            message: 'Data Found',
-            data: {
-                balance: balance,
-                userBankAccount: results.userBankAccount[0],
-            }
-        })
-        return;
+        if (results.userBankAccount.length === 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Please update your profile detail!',
+                // data: {
+                //     balance: balance,
+                //     userBankAccount: results.userBankAccount[0],
+                // }
+            })
+            return;
+        } else {
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: 'Data Found',
+                data: {
+                    balance: balance,
+                    userBankAccount: results.userBankAccount[0],
+                }
+            })
+            return;
+        }
     })
 }
 
