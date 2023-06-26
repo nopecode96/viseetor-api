@@ -6,8 +6,8 @@ exports.tokenValidation = (req, res, next) => {
   let authToken = req.header('token-access');
 
   if (!authToken) {
-    res.status(200).send({
-      code: 202,
+    res.status(203).send({
+      code: 203,
       status: false,
       message: "Please insert your Access Token"
     });
@@ -18,8 +18,8 @@ exports.tokenValidation = (req, res, next) => {
     var decript = jwt.decode(authToken, jwtSecretKey);
     const verified = jwt.verify(authToken, jwtSecretKey);
     if (!verified) {
-      res.status(200).send({
-        code: 202,
+      res.status(203).send({
+        code: 203,
         status: false,
         message: 'Your Token not Valid',
       });
@@ -31,8 +31,8 @@ exports.tokenValidation = (req, res, next) => {
       })
         .then(data => {
           if (data.length == 0) {
-            res.status(202).send({
-              code: 202,
+            res.status(203).send({
+              code: 203,
               status: false,
               message: 'Your account is Expired, Please login again.',
             });
@@ -45,8 +45,8 @@ exports.tokenValidation = (req, res, next) => {
         })
     }
   } catch (error) {
-    res.status(200).send({
-      code: 202,
+    res.status(204).send({
+      code: 204,
       status: false,
       message: 'Error Token Validation',
       error: error,
@@ -61,8 +61,8 @@ exports.apiKeyValidation = (req, res, next) => {
   let inviteMeApiKey = process.env.API_KEY;
 
   if (!apiKey) {
-    res.status(200).send({
-      code: 202,
+    res.status(204).send({
+      code: 204,
       status: false,
       message: "You dont have API Key Access!"
     });
@@ -71,8 +71,8 @@ exports.apiKeyValidation = (req, res, next) => {
 
   try {
     if (apiKey != inviteMeApiKey) {
-      res.status(200).send({
-        code: 202,
+      res.status(204).send({
+        code: 204,
         status: false,
         message: 'Your API KEY not Valid!',
       });
@@ -80,8 +80,8 @@ exports.apiKeyValidation = (req, res, next) => {
     }
     next();
   } catch (error) {
-    res.status(200).send({
-      code: 202,
+    res.status(204).send({
+      code: 204,
       status: false,
       message: 'Your API KEY not Valid! 1',
       error: error.message,
