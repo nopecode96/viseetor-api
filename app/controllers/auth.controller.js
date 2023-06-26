@@ -13,23 +13,23 @@ exports.logincheck = (req, res) => {
     User.findAll({ where: condition })
         .then(data => {
             if (data.length == 0) {
-                res.status(202).send({
-                    code: 202,
+                res.status(401).send({
+                    code: 401,
                     success: false,
                     message: "Logout Now!",
                 });
                 return;
             }
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: "You are secure Login!",
             });
             return;
         })
         .catch(err => {
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -42,8 +42,8 @@ exports.login = (req, res) => {
     let jwtSecretKey = process.env.JWT_SECRET_KEY;
 
     if (!req.body.email && !req.body.password) {
-        res.status(200).send({
-            code: 200,
+        res.status(203).send({
+            code: 203,
             success: false,
             message: "Please insert your email & password!"
         });
@@ -57,8 +57,8 @@ exports.login = (req, res) => {
     })
         .then(data => {
             if (data.length == 0) {
-                res.status(200).send({
-                    code: 200,
+                res.status(203).send({
+                    code: 203,
                     success: false,
                     message: 'Wrong Email/Password!',
                     data: ''
@@ -88,8 +88,8 @@ exports.login = (req, res) => {
                         })
                             .then(data3 => {
                                 if (data3.length == 0) {
-                                    res.status(200).send({
-                                        code: 200,
+                                    res.status(203).send({
+                                        code: 203,
                                         success: false,
                                         message: 'Your Account not Active, please contact Administrator.'
                                         // data : data2[0]
@@ -98,15 +98,15 @@ exports.login = (req, res) => {
                                     const userStatus = data3[0].fid_user_status;
                                     const userStatusTitle = data3[0].master_status_user.title;
                                     if (userStatus == 1) {
-                                        res.status(200).send({
-                                            code: 200,
+                                        res.status(202).send({
+                                            code: 202,
                                             success: true,
                                             message: 'Login Success.',
                                             data: data3[0]
                                         });
                                     } else {
-                                        res.status(200).send({
-                                            code: 200,
+                                        res.status(203).send({
+                                            code: 203,
                                             success: false,
                                             message: 'Your Account is ' + userStatusTitle + ', please contact Administrator.',
                                         });
@@ -115,16 +115,16 @@ exports.login = (req, res) => {
                             })
                             .catch(err => {
                                 // console.log(err);
-                                res.status(505).send({
-                                    code: 505,
+                                res.status(400).send({
+                                    code: 400,
                                     success: false,
                                     message: err || "Error response 1."
                                 })
                             })
                     })
                     .catch(err => {
-                        res.status(505).send({
-                            code: 505,
+                        res.status(400).send({
+                            code: 400,
                             success: false,
                             message: err || "Error response 2"
                         })

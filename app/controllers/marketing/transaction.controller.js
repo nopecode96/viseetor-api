@@ -7,40 +7,9 @@ const async = require('async')
 var functions = require("../../../config/function");
 const { user, masterPrice, promotion, transaction, events, company, userProfile, regRegencies, regProvincies, userType, masterBankPayment } = require("../../models/index.model");
 
-exports.getPromotionAll = (req, res) => {
-    const datenow = new Date(Date.now());
-
-    const condition = {
-        start_date: { [Op.lte]: datenow },
-        end_date: { [Op.gte]: datenow },
-    }
-
-    promotion.findAll({
-        where: condition,
-        attributes: ['id', 'title', 'description', 'code', 'discount', 'start_date', 'end_date'],
-    }).then(data => {
-        res.status(200).send({
-            code: 200,
-            success: true,
-            message: "Datas Found.",
-            data: data
-        });
-        return;
-    }).catch(err => {
-        // console.log(err);
-        res.status(500).send({
-            code: 500,
-            success: false,
-            message:
-                err.message || "Some error occurred while retrieving data."
-        });
-    });
-
-}
-
 exports.getTransactions = (req, res) => {
     const fid_user = req.userid;
-    const { page, size, user_id, order_number, status } = req.query;
+    const { page, size, order_number, status } = req.query;
     const { limit, offset } = functions.getPagination(page - 1, size);
 
     if (order_number && status) {
@@ -93,8 +62,8 @@ exports.getTransactions = (req, res) => {
         })
         .catch(err => {
             // console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -107,8 +76,8 @@ exports.getDetail = (req, res) => {
     const { orderno } = req.query;
     // console.log(orderno)
     if (!orderno) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -195,8 +164,8 @@ exports.getDetail = (req, res) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -238,8 +207,8 @@ exports.createTransactionPage = (req, res) => {
     }, function (err, results) {
         // console.log(results.dataCommission);
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -265,8 +234,8 @@ exports.getPriceOne = (req, res) => {
     // console.log(qty);
 
     if (!qty) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Datas Not Found.",
             // data: data[0]
@@ -292,8 +261,8 @@ exports.getPriceOne = (req, res) => {
         })
         .catch(err => {
             // console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -319,8 +288,8 @@ exports.getPromoCode = (req, res) => {
     })
         .then(data => {
             if (data.length == 0) {
-                res.status(200).send({
-                    code: 200,
+                res.status(404).send({
+                    code: 404,
                     success: false,
                     message: "Datas Not Found.",
                     // data: data
@@ -337,8 +306,8 @@ exports.getPromoCode = (req, res) => {
         })
         .catch(err => {
             // console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -359,8 +328,8 @@ exports.createTransaction = (req, res) => {
     });
 
     if (!order_number || !qty || !fid_events || !fid_price || !fid_bank_payment) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -389,8 +358,8 @@ exports.createTransaction = (req, res) => {
 
             transaction.create({ order_number, qty, unit_price, unit_commission, total_price, discount_percent, discount_nominal, total_before_tax, tax, tax_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_price })
                 .then(data => {
-                    res.status(200).send({
-                        code: 200,
+                    res.status(201).send({
+                        code: 201,
                         success: true,
                         message: "Add New Order Success.",
                         order_number: data.order_number
@@ -398,8 +367,8 @@ exports.createTransaction = (req, res) => {
                 })
                 .catch(err => {
                     // console.log(err);
-                    res.status(500).send({
-                        code: 500,
+                    res.status(400).send({
+                        code: 400,
                         success: false,
                         message:
                             err || "Some error occurred while retrieving data."
@@ -418,8 +387,8 @@ exports.createTransaction = (req, res) => {
 
                 transaction.create({ order_number, qty, unit_price, unit_commission, total_price, discount_percent, discount_nominal, total_before_tax, tax, tax_nominal, total_payment, total_commission, status, published, fid_promotion, fid_events, fid_user, fid_bank_payment, fid_price })
                     .then(data => {
-                        res.status(200).send({
-                            code: 200,
+                        res.status(201).send({
+                            code: 201,
                             success: true,
                             message: "Add New Order Success.",
                             order_number: data.order_number
@@ -427,8 +396,8 @@ exports.createTransaction = (req, res) => {
                     })
                     .catch(err => {
                         // console.log(err);
-                        res.status(500).send({
-                            code: 500,
+                        res.status(400).send({
+                            code: 400,
                             success: false,
                             message:
                                 err || "Some error occurred while retrieving data."
@@ -442,3 +411,35 @@ exports.createTransaction = (req, res) => {
 exports.paymentConfirmation = (req, res) => {
 
 }
+
+
+// exports.getPromotionAll = (req, res) => {
+//     const datenow = new Date(Date.now());
+
+//     const condition = {
+//         start_date: { [Op.lte]: datenow },
+//         end_date: { [Op.gte]: datenow },
+//     }
+
+//     promotion.findAll({
+//         where: condition,
+//         attributes: ['id', 'title', 'description', 'code', 'discount', 'start_date', 'end_date'],
+//     }).then(data => {
+//         res.status(200).send({
+//             code: 200,
+//             success: true,
+//             message: "Datas Found.",
+//             data: data
+//         });
+//         return;
+//     }).catch(err => {
+//         // console.log(err);
+//         res.status(500).send({
+//             code: 500,
+//             success: false,
+//             message:
+//                 err.message || "Some error occurred while retrieving data."
+//         });
+//     });
+
+// }

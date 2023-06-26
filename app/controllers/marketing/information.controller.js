@@ -29,8 +29,8 @@ exports.getMessage = (req, res) => {
         return;
     }).catch(err => {
         // console.log(err);
-        res.status(500).send({
-            code: 500,
+        res.status(400).send({
+            code: 400,
             success: false,
             message:
                 err.message || "Some error occurred while retrieving data."
@@ -55,8 +55,8 @@ exports.updateRead = (req, res) => {
                 });
                 return;
             }
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: "Data Updated.",
                 // data: data
@@ -65,8 +65,8 @@ exports.updateRead = (req, res) => {
 
         }).catch(err => {
             // console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -96,8 +96,8 @@ exports.getPromotionAll = (req, res) => {
         return;
     }).catch(err => {
         // console.log(err);
-        res.status(500).send({
-            code: 500,
+        res.status(400).send({
+            code: 400,
             success: false,
             message:
                 err.message || "Some error occurred while retrieving data."

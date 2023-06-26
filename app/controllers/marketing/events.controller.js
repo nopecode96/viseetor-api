@@ -102,8 +102,8 @@ exports.findEvents = (req, res) => {
     }, function (err, results) {
         // console.log(results);
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -211,8 +211,8 @@ exports.findEventsExpired = (req, res) => {
     }, function (err, results) {
         // console.log(results);
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -275,8 +275,8 @@ exports.getDetail = (req, res) => {
     }, function (err, results) {
         // console.log(results);
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -334,8 +334,8 @@ exports.pageCreateStep1 = (req, res) => {
         return;
     }).catch(err => {
         console.log(err);
-        res.status(505).send({
-            code: 505,
+        res.status(400).send({
+            code: 400,
             success: false,
             message:
                 err.message || "Some error occurred while retrieving data."
@@ -376,8 +376,8 @@ exports.pageCreatesStep2 = (req, res) => {
     }, function (err, results) {
         // console.log(results.dataCommission);
         if (err) {
-            res.status(200).send({
-                code: 200,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -415,8 +415,8 @@ exports.create = (req, res) => {
     if (!req.file) {
         events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
             .then(data => {
-                res.status(200).send({
-                    code: 200,
+                res.status(201).send({
+                    code: 201,
                     success: true,
                     message: "Create data success.",
                     insertID: data.id
@@ -425,8 +425,8 @@ exports.create = (req, res) => {
             })
             .catch(err => {
                 //   console.log(err);
-                res.status(500).send({
-                    code: 500,
+                res.status(400).send({
+                    code: 400,
                     success: false,
                     message:
                         err.message || "Some error occurred while retrieving data."
@@ -438,8 +438,8 @@ exports.create = (req, res) => {
         const banner = req.file.filename;
         events.create({ banner, title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
             .then(data => {
-                res.status(200).send({
-                    code: 200,
+                res.status(201).send({
+                    code: 201,
                     success: true,
                     message: "Create data success.",
                     insertID: data.id
@@ -448,8 +448,8 @@ exports.create = (req, res) => {
             })
             .catch(err => {
                 //   console.log(err);
-                res.status(500).send({
-                    code: 500,
+                res.status(400).send({
+                    code: 400,
                     success: false,
                     message:
                         err.message || "Some error occurred while retrieving data."
@@ -463,8 +463,8 @@ exports.createBank = (req, res) => {
     const published = true;
     const { bank_name, bank_account_number, bank_account_name, fid_events } = req.body;
     if (!bank_name || !bank_account_name || !bank_account_number || !fid_events) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -473,8 +473,8 @@ exports.createBank = (req, res) => {
 
     eventsGiftBank.create({ bank_name, bank_account_number, bank_account_name, published, fid_events })
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(201).send({
+                code: 201,
                 success: true,
                 message: "Create data success.",
                 insertID: data.id
@@ -483,8 +483,8 @@ exports.createBank = (req, res) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -496,8 +496,8 @@ exports.createBank = (req, res) => {
 exports.deleteBank = (req, res) => {
     const { id } = req.query;
     if (!id) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "ID Not Found."
         });
@@ -508,8 +508,8 @@ exports.deleteBank = (req, res) => {
         where: { "id": id }
     })
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: "Data has been deleted."
             });
@@ -517,8 +517,8 @@ exports.deleteBank = (req, res) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -538,8 +538,8 @@ exports.deleteBank = (req, res) => {
 exports.createWeddingDetail = (req, res) => {
     const { bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, fid_events } = req.body;
     if (!bride_name || !groom_name || !fid_events) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -548,8 +548,8 @@ exports.createWeddingDetail = (req, res) => {
 
     eventsWedding.create({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, fid_events })
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(201).send({
+                code: 201,
                 success: true,
                 message: "Create data success.",
                 insertID: data.id
@@ -558,8 +558,8 @@ exports.createWeddingDetail = (req, res) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -572,8 +572,8 @@ exports.updateWeddingDetail = (req, res) => {
     const { bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite } = req.body;
     const { id } = req.query;
     if (!bride_name || !groom_name) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -584,8 +584,8 @@ exports.updateWeddingDetail = (req, res) => {
         { where: { id: id } }
     )
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: "Update data success.",
                 // insertID: data.id
@@ -594,8 +594,8 @@ exports.updateWeddingDetail = (req, res) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -612,8 +612,8 @@ exports.putBridePhoto = (req, res) => {
     console.log(bride_photo);
 
     if (!bride_photo) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -624,8 +624,8 @@ exports.putBridePhoto = (req, res) => {
         { where: { id: id } }
     )
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(201).send({
+                code: 201,
                 success: true,
                 message: "Create data success.",
                 insertID: data.id
@@ -634,8 +634,8 @@ exports.putBridePhoto = (req, res) => {
         })
         .catch(err => {
             //   console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -653,8 +653,8 @@ exports.putGroomPhoto = (req, res) => {
     console.log(groom_photo);
 
     if (!groom_photo) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -665,8 +665,8 @@ exports.putGroomPhoto = (req, res) => {
         { where: { id: id } }
     )
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(201).send({
+                code: 201,
                 success: true,
                 message: "Create data success.",
                 insertID: data.id
@@ -675,8 +675,8 @@ exports.putGroomPhoto = (req, res) => {
         })
         .catch(err => {
             //   console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -708,8 +708,8 @@ exports.getGalleryList = (req, res) => {
             });
         })
         .catch(err => {
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -722,8 +722,8 @@ exports.uploadPhoto = (req, res) => {
     const images = req.files;
 
     if (!images) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -737,8 +737,8 @@ exports.uploadPhoto = (req, res) => {
 
     eventsGallery.bulkCreate(datas)
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: "Upload Image success."
             });
@@ -746,8 +746,8 @@ exports.uploadPhoto = (req, res) => {
         })
         .catch(err => {
             //   console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -822,8 +822,8 @@ exports.allEventGuest = (req, res) => {
         },
     }, function (err, results) {
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -900,8 +900,8 @@ exports.createGuest = (req, res) => {
             var totalExistGuest = parseInt(data2.length);
 
             if (totalExistGuest >= invitationLimit) {
-                res.status(202).send({
-                    code: 202,
+                res.status(422).send({
+                    code: 422,
                     success: false,
                     message: "Your limit has full, please buy limit again."
                 });
@@ -912,8 +912,8 @@ exports.createGuest = (req, res) => {
                     capitalization: 'uppercase'
                 });
                 if (!phone || !name || !guest_max || !fid_events || !fid_user) {
-                    res.status(200).send({
-                        code: 200,
+                    res.status(404).send({
+                        code: 404,
                         success: false,
                         message: "Error Insert: Field."
                     });
@@ -922,8 +922,8 @@ exports.createGuest = (req, res) => {
 
                 eventsGuest.create({ barcode, phone, email, name, guest_max, guest_actual, invitation_send_count, barcode_send_count, attend, fid_events, fid_user })
                     .then(data => {
-                        res.status(200).send({
-                            code: 200,
+                        res.status(201).send({
+                            code: 201,
                             success: true,
                             message: "Create data guest success.",
                             insertID: data.id
@@ -932,8 +932,8 @@ exports.createGuest = (req, res) => {
                     })
                     .catch(err => {
                         console.log(err);
-                        res.status(500).send({
-                            code: 500,
+                        res.status(400).send({
+                            code: 400,
                             success: false,
                             message:
                                 err.message || "Some error occurred while retrieving data."
@@ -951,8 +951,8 @@ exports.createGuest = (req, res) => {
 exports.deleteGuest = (req, res) => {
     const { id, fid_events } = req.query;
     if (!id || !fid_events) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "ID Not Found."
         });
@@ -963,8 +963,8 @@ exports.deleteGuest = (req, res) => {
         where: { "id": id, fid_events: fid_events }
     })
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: "Data has been deleted."
             });
@@ -972,8 +972,8 @@ exports.deleteGuest = (req, res) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -985,8 +985,8 @@ exports.deleteGuest = (req, res) => {
 exports.updateAttendStatusGuest = (req, res) => {
     const { id, attend } = req.query;
     if (!id) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "ID Not Found."
         });
@@ -997,8 +997,8 @@ exports.updateAttendStatusGuest = (req, res) => {
         attend: attend
     }, { where: { "id": id } })
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: "Data has changes."
             });
@@ -1006,8 +1006,8 @@ exports.updateAttendStatusGuest = (req, res) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -1039,8 +1039,8 @@ exports.updateGuestInvitationSent = (req, res) => {
                     });
                 })
                 .catch(err => {
-                    res.status(500).send({
-                        code: 500,
+                    res.status(400).send({
+                        code: 400,
                         success: false,
                         message:
                             err.message || "Some error occurred while retrieving data."
@@ -1072,8 +1072,8 @@ exports.updateGuestBarcodeSent = (req, res) => {
                     });
                 })
                 .catch(err => {
-                    res.status(500).send({
-                        code: 500,
+                    res.status(400).send({
+                        code: 400,
                         success: false,
                         message:
                             err.message || "Some error occurred while retrieving data."
@@ -1086,8 +1086,8 @@ exports.updateStatusAttending = (req, res) => {
     const { barcode, guest_actual, attend, reason } = req.body;
 
     if (!barcode || !guest_actual || !attend) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Field Not Valid."
         });
@@ -1099,8 +1099,8 @@ exports.updateStatusAttending = (req, res) => {
     })
         .then(data => {
             if (data[0] == 0) {
-                res.status(200).send({
-                    code: 200,
+                res.status(404).send({
+                    code: 404,
                     success: false,
                     message: 'data not found',
                     // data: data2
@@ -1125,16 +1125,16 @@ exports.updateStatusAttending = (req, res) => {
 
                             if (err == 'null') {
                                 console.log(err);
-                                res.status(200).send({
-                                    code: 200,
+                                res.status(400).send({
+                                    code: 400,
                                     success: false,
                                     message: err,
                                     // data: data2
                                 });
                                 return;
                             }
-                            res.status(200).send({
-                                code: 200,
+                            res.status(202).send({
+                                code: 202,
                                 success: true,
                                 message: "Attendance Updated and File QRCode has been created.",
                                 // data: data2
@@ -1145,8 +1145,8 @@ exports.updateStatusAttending = (req, res) => {
                     })
                 })
                 .catch(err => {
-                    res.status(500).send({
-                        code: 500,
+                    res.status(400).send({
+                        code: 400,
                         success: false,
                         message:
                             err.message || "Some error occurred while retrieving data."
@@ -1154,8 +1154,8 @@ exports.updateStatusAttending = (req, res) => {
                 });
         })
         .catch(err => {
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -1168,8 +1168,8 @@ exports.themesSelected = (req, res) => {
 
     events.update({ fid_template: fid_template }, { where: { id: id } })
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: 'Template Updated',
                 data: data
@@ -1177,8 +1177,8 @@ exports.themesSelected = (req, res) => {
             return;
         })
         .catch(err => {
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."

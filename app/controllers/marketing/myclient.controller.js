@@ -61,8 +61,8 @@ exports.findMyClient = (req, res) => {
         }
     }, function (err, results) {
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -161,8 +161,8 @@ exports.getDetail = (req, res) => {
         },
     }, function (err, results) {
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -247,8 +247,8 @@ exports.getDetailEdit = (req, res) => {
     }, function (err, results) {
         // console.log(results.dataCommission);
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -304,8 +304,8 @@ exports.pageCreate = (req, res) => {
 
     }, function (err, results) {
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -331,8 +331,8 @@ exports.create = (req, res) => {
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_company_status } = req.body;
 
     if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_company_status) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -342,8 +342,8 @@ exports.create = (req, res) => {
     if (!req.file) {
         company.create({ title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status })
             .then(data => {
-                res.status(200).send({
-                    code: 200,
+                res.status(201).send({
+                    code: 201,
                     success: true,
                     message: "Create data success."
                 });
@@ -351,8 +351,8 @@ exports.create = (req, res) => {
             })
             .catch(err => {
                 console.log(err);
-                res.status(505).send({
-                    code: 505,
+                res.status(400).send({
+                    code: 400,
                     success: false,
                     message:
                         err.message || "Some error occurred while retrieving data."
@@ -362,8 +362,8 @@ exports.create = (req, res) => {
         const logo = req.file.filename;
         company.create({ title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status, logo })
             .then(data => {
-                res.status(200).send({
-                    code: 200,
+                res.status(201).send({
+                    code: 201,
                     success: true,
                     message: "Create data success."
                 });
@@ -371,8 +371,8 @@ exports.create = (req, res) => {
             })
             .catch(err => {
                 console.log(err);
-                res.status(505).send({
-                    code: 505,
+                res.status(400).send({
+                    code: 400,
                     success: false,
                     message:
                         err.message || "Some error occurred while retrieving data."
@@ -387,8 +387,8 @@ exports.updateStatus = (req, res) => {
     const { fid_company_status } = req.body;
 
     if (!id || !fid_company_status) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -399,15 +399,15 @@ exports.updateStatus = (req, res) => {
         { fid_company_status },
         { where: { id: id, fid_user: fid_user } }
     ).then(data => {
-        res.status(200).send({
-            code: 200,
+        res.status(202).send({
+            code: 202,
             success: true,
             message: "Status has been change."
         });
         return;
     }).catch(err => {
-        res.status(505).send({
-            code: 505,
+        res.status(400).send({
+            code: 400,
             success: false,
             message:
                 err.message || "Some error occurred while retrieving data."
@@ -421,8 +421,8 @@ exports.update = (req, res) => {
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry } = req.body;
 
     if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry) {
-        res.status(200).send({
-            code: 200,
+        res.status(202).send({
+            code: 202,
             success: false,
             message: "Error Insert: Field."
         });
@@ -434,16 +434,16 @@ exports.update = (req, res) => {
             { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user },
             { where: { id: id, fid_user: fid_user } }
         ).then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: "Edit data success."
             });
             return;
         }).catch(err => {
             console.log(err);
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -454,16 +454,16 @@ exports.update = (req, res) => {
             { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, logo },
             { where: { id: id, fid_user: fid_user } }
         ).then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: "Edit data success."
             });
             return;
         }).catch(err => {
-            console.log(err);
-            res.status(505).send({
-                code: 505,
+            // console.log(err);
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."

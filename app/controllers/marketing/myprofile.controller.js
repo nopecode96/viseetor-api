@@ -39,8 +39,8 @@ exports.getAccountDetail = (req, res) => {
         });
     }).catch(err => {
         console.log(err);
-        res.status(500).send({
-            code: 500,
+        res.status(400).send({
+            code: 400,
             success: false,
             message:
                 err.message || "Some error occurred while retrieving data."
@@ -98,8 +98,8 @@ exports.getDetailEdit = (req, res) => {
 
     }, function (err, results) {
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -134,8 +134,8 @@ exports.changePassword = (req, res) => {
     const { password, repassword } = req.body;
 
     if (password !== repassword) {
-        res.status(404).send({
-            code: 404,
+        res.status(401).send({
+            code: 401,
             success: false,
             message: 'Password & Re-Password not match.',
         })
@@ -156,8 +156,8 @@ exports.changePassword = (req, res) => {
         });
     }).catch(err => {
         console.log(err);
-        res.status(500).send({
-            code: 500,
+        res.status(400).send({
+            code: 400,
             success: false,
             message:
                 err.message || "Some error occurred while retrieving data."
@@ -170,8 +170,8 @@ exports.update = (req, res) => {
     const { phone_number, gender, birth_place, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency } = req.body;
 
     if (!phone_number || !gender || !birth_place || !birthday || !address || !hobbies || !instagram || !facebook || !bank_account_number || !bank_account_name || !fid_bank || !fid_occupation || !fid_regency) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Field."
         });
@@ -186,16 +186,16 @@ exports.update = (req, res) => {
             userProfile.update({ phone_number, gender, birth_place, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency }, {
                 where: { id: fid_user }
             }).then(data => {
-                res.status(200).send({
-                    code: 200,
+                res.status(202).send({
+                    code: 202,
                     success: true,
                     message: "Updated profile success.",
                 });
                 return;
             }).catch(err => {
                 console.log(err);
-                res.status(500).send({
-                    code: 500,
+                res.status(400).send({
+                    code: 400,
                     success: false,
                     message:
                         err.message || "Some error occurred while retrieving data."
@@ -205,16 +205,16 @@ exports.update = (req, res) => {
         } else {
             userProfile.create({ phone_number, gender, birth_place, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency, fid_user })
                 .then(data => {
-                    res.status(200).send({
-                        code: 200,
+                    res.status(201).send({
+                        code: 201,
                         success: true,
                         message: "Create profile success.",
                     });
                     return;
                 }).catch(err => {
                     console.log(err);
-                    res.status(500).send({
-                        code: 500,
+                    res.status(400).send({
+                        code: 400,
                         success: false,
                         message:
                             err.message || "Some error occurred while retrieving data."
@@ -229,8 +229,8 @@ exports.changePhoto = (req, res) => {
     const fid_user = req.userid;
 
     if (!fid_user) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Error Insert: Id not found."
         });
@@ -239,8 +239,8 @@ exports.changePhoto = (req, res) => {
 
     const photo = req.file.filename;
     if (!req.file) {
-        res.status(200).send({
-            code: 200,
+        res.status(404).send({
+            code: 404,
             success: false,
             message: "Please insert photo."
         });
@@ -250,8 +250,8 @@ exports.changePhoto = (req, res) => {
     user.update({ photo },
         { where: { id: fid_user } })
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(202).send({
+                code: 202,
                 success: true,
                 message: "Updated data success.",
             });
@@ -259,8 +259,8 @@ exports.changePhoto = (req, res) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
@@ -276,21 +276,11 @@ exports.changePhoto = (req, res) => {
 
 exports.createProfile = (req, res) => {
     const { phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_user, fid_bank, fid_occupation, fid_regency } = req.body;
-    // const { id } = req.query;
-
-    // if( !title || !description || !event_date || !vanue_name || !location_address ){
-    //   res.status(200).send({
-    //     code: 200,
-    //     success: false,
-    //     message: "Error Insert: Field."
-    //   });
-    //   return;
-    // }
 
     userProfile.create({ phone_number, gender, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_user, fid_bank, fid_occupation, fid_regency })
         .then(data => {
-            res.status(200).send({
-                code: 200,
+            res.status(201).send({
+                code: 201,
                 success: true,
                 message: "Create data success.",
             });
@@ -298,8 +288,8 @@ exports.createProfile = (req, res) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."

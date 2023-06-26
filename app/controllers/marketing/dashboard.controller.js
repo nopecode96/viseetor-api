@@ -72,8 +72,8 @@ exports.getDashboardData = (req, res) => {
     }, function (err, results) {
         // console.log(results.dataCommission.dataValues.total_in);
         if (err == 'null') {
-            res.status(200).send({
-                code: 200,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })

@@ -52,8 +52,8 @@ exports.getCommissionList = (req, res) => {
         },
     }, function (err, results) {
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -106,8 +106,8 @@ exports.getWidrawalList = (req, res) => {
         })
         return;
     }).catch(err => {
-        res.status(500).send({
-            code: 500,
+        res.status(400).send({
+            code: 400,
             success: false,
             message:
                 err.message || "Some error occurred while retrieving data."
@@ -140,8 +140,8 @@ exports.getWidrawalCreatePage = (req, res) => {
         }
     }, function (err, results) {
         if (err) {
-            res.status(505).send({
-                code: 505,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message: err.message,
             })
@@ -181,8 +181,8 @@ exports.WidrawalCreate = (req, res) => {
         const nominalx = parseFloat(nominal);
 
         if (nominalx >= balancex) {
-            res.status(404).send({
-                code: 404,
+            res.status(422).send({
+                code: 422,
                 success: false,
                 message: 'Your balance not enough, please check your nominal!',
             })
@@ -201,8 +201,8 @@ exports.WidrawalCreate = (req, res) => {
                     return;
                 }
 
-                res.status(200).send({
-                    code: 200,
+                res.status(201).send({
+                    code: 201,
                     success: true,
                     message: "Widthdrawal has been created.",
                     wd_number: data.wd_number
@@ -211,8 +211,8 @@ exports.WidrawalCreate = (req, res) => {
 
             }).catch(err => {
                 // console.log(err);
-                res.status(500).send({
-                    code: 500,
+                res.status(400).send({
+                    code: 400,
                     success: false,
                     message:
                         err || "Some error occurred while retrieving data."
