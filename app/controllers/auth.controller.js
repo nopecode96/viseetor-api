@@ -13,8 +13,8 @@ exports.logincheck = (req, res) => {
     User.findAll({ where: condition })
         .then(data => {
             if (data.length == 0) {
-                res.status(203).send({
-                    code: 203,
+                res.status(200).send({
+                    code: 200,
                     success: false,
                     message: "Logout Now!",
                 });
@@ -88,8 +88,8 @@ exports.login = (req, res) => {
                         })
                             .then(data3 => {
                                 if (data3.length == 0) {
-                                    res.status(203).send({
-                                        code: 203,
+                                    res.status(200).send({
+                                        code: 200,
                                         success: false,
                                         message: 'Your Account not Active, please contact Administrator.'
                                         // data : data2[0]
@@ -105,8 +105,8 @@ exports.login = (req, res) => {
                                             data: data3[0]
                                         });
                                     } else {
-                                        res.status(203).send({
-                                            code: 203,
+                                        res.status(200).send({
+                                            code: 200,
                                             success: false,
                                             message: 'Your Account is ' + userStatusTitle + ', please contact Administrator.',
                                         });

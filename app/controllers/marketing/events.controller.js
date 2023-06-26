@@ -284,8 +284,8 @@ exports.getDetail = (req, res) => {
         }
 
         if (results.eventDetail.length == 0) {
-            res.status(204).send({
-                code: 204,
+            res.status(200).send({
+                code: 200,
                 success: false,
                 message: 'Data not found',
             })
@@ -404,8 +404,8 @@ exports.create = (req, res) => {
     const invitation_limit = 0;
 
     if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_type || !fid_template) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Error Insert: Field."
         });
@@ -463,8 +463,8 @@ exports.createBank = (req, res) => {
     const published = true;
     const { bank_name, bank_account_number, bank_account_name, fid_events } = req.body;
     if (!bank_name || !bank_account_name || !bank_account_number || !fid_events) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Error Insert: Field."
         });
@@ -496,8 +496,8 @@ exports.createBank = (req, res) => {
 exports.deleteBank = (req, res) => {
     const { id } = req.query;
     if (!id) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "ID Not Found."
         });
@@ -538,8 +538,8 @@ exports.deleteBank = (req, res) => {
 exports.createWeddingDetail = (req, res) => {
     const { bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, fid_events } = req.body;
     if (!bride_name || !groom_name || !fid_events) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Error Insert: Field."
         });
@@ -572,8 +572,8 @@ exports.updateWeddingDetail = (req, res) => {
     const { bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite } = req.body;
     const { id } = req.query;
     if (!bride_name || !groom_name) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Error Insert: Field."
         });
@@ -612,8 +612,8 @@ exports.putBridePhoto = (req, res) => {
     console.log(bride_photo);
 
     if (!bride_photo) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Error Insert: Field."
         });
@@ -653,8 +653,8 @@ exports.putGroomPhoto = (req, res) => {
     console.log(groom_photo);
 
     if (!groom_photo) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Error Insert: Field."
         });
@@ -722,8 +722,8 @@ exports.uploadPhoto = (req, res) => {
     const images = req.files;
 
     if (!images) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Error Insert: Field."
         });
@@ -831,8 +831,8 @@ exports.allEventGuest = (req, res) => {
         }
 
         if (results.dataGuestList.length == 0) {
-            res.status(204).send({
-                code: 204,
+            res.status(200).send({
+                code: 200,
                 success: false,
                 message: 'Data not found',
             })
@@ -872,8 +872,8 @@ exports.createGuest = (req, res) => {
     const attend = false;
 
     if (!fid_events) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Event ID Not Found."
         });
@@ -884,8 +884,8 @@ exports.createGuest = (req, res) => {
         where: { id: fid_events }
     }).then(data => {
         if (data.length == 0) {
-            res.status(204).send({
-                code: 204,
+            res.status(200).send({
+                code: 200,
                 success: false,
                 message: "Event ID Not Found."
             });
@@ -912,8 +912,8 @@ exports.createGuest = (req, res) => {
                     capitalization: 'uppercase'
                 });
                 if (!phone || !name || !guest_max || !fid_events || !fid_user) {
-                    res.status(204).send({
-                        code: 204,
+                    res.status(200).send({
+                        code: 200,
                         success: false,
                         message: "Error Insert: Field."
                     });
@@ -951,8 +951,8 @@ exports.createGuest = (req, res) => {
 exports.deleteGuest = (req, res) => {
     const { id, fid_events } = req.query;
     if (!id || !fid_events) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "ID Not Found."
         });
@@ -985,8 +985,8 @@ exports.deleteGuest = (req, res) => {
 exports.updateAttendStatusGuest = (req, res) => {
     const { id, attend } = req.query;
     if (!id) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "ID Not Found."
         });
@@ -1086,8 +1086,8 @@ exports.updateStatusAttending = (req, res) => {
     const { barcode, guest_actual, attend, reason } = req.body;
 
     if (!barcode || !guest_actual || !attend) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Field Not Valid."
         });
@@ -1099,8 +1099,8 @@ exports.updateStatusAttending = (req, res) => {
     })
         .then(data => {
             if (data[0] == 0) {
-                res.status(204).send({
-                    code: 204,
+                res.status(200).send({
+                    code: 200,
                     success: false,
                     message: 'data not found',
                     // data: data2

@@ -106,8 +106,8 @@ exports.getDetailEdit = (req, res) => {
             return;
         }
         if (results.dataDetail.length == 0) {
-            res.status(204).send({
-                code: 204,
+            res.status(200).send({
+                code: 200,
                 success: false,
                 message: 'Data not found',
             })
@@ -170,8 +170,8 @@ exports.update = (req, res) => {
     const { phone_number, gender, birth_place, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency } = req.body;
 
     if (!phone_number || !gender || !birth_place || !birthday || !address || !hobbies || !instagram || !facebook || !bank_account_number || !bank_account_name || !fid_bank || !fid_occupation || !fid_regency) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Error Insert: Field."
         });
@@ -229,8 +229,8 @@ exports.changePhoto = (req, res) => {
     const fid_user = req.userid;
 
     if (!fid_user) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Error Insert: Id not found."
         });
@@ -239,8 +239,8 @@ exports.changePhoto = (req, res) => {
 
     const photo = req.file.filename;
     if (!req.file) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Please insert photo."
         });

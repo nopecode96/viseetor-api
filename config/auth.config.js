@@ -45,8 +45,8 @@ exports.tokenValidation = (req, res, next) => {
         })
     }
   } catch (error) {
-    res.status(204).send({
-      code: 204,
+    res.status(203).send({
+      code: 203,
       status: false,
       message: 'Error Token Validation',
       error: error,
@@ -61,8 +61,8 @@ exports.apiKeyValidation = (req, res, next) => {
   let inviteMeApiKey = process.env.API_KEY;
 
   if (!apiKey) {
-    res.status(204).send({
-      code: 204,
+    res.status(203).send({
+      code: 203,
       status: false,
       message: "You dont have API Key Access!"
     });
@@ -71,8 +71,8 @@ exports.apiKeyValidation = (req, res, next) => {
 
   try {
     if (apiKey != inviteMeApiKey) {
-      res.status(204).send({
-        code: 204,
+      res.status(203).send({
+        code: 203,
         status: false,
         message: 'Your API KEY not Valid!',
       });
@@ -80,8 +80,8 @@ exports.apiKeyValidation = (req, res, next) => {
     }
     next();
   } catch (error) {
-    res.status(204).send({
-      code: 204,
+    res.status(203).send({
+      code: 203,
       status: false,
       message: 'Your API KEY not Valid! 1',
       error: error.message,
