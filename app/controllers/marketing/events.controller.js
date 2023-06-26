@@ -905,6 +905,7 @@ exports.createGuest = (req, res) => {
     const invitation_send_count = 0;
     const barcode_send_count = 0;
     const attend = false;
+    const invitation_status = 'LISTED'
 
     if (!fid_events) {
         res.status(200).send({
@@ -955,7 +956,7 @@ exports.createGuest = (req, res) => {
                     return;
                 }
 
-                eventsGuest.create({ barcode, phone, email, name, guest_max, guest_actual, invitation_send_count, barcode_send_count, attend, fid_events, fid_user })
+                eventsGuest.create({ barcode, phone, email, name, invitation_status, guest_max, guest_actual, invitation_send_count, barcode_send_count, attend, fid_events, fid_user })
                     .then(data => {
                         res.status(201).send({
                             code: 201,
