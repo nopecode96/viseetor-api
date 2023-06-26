@@ -60,6 +60,7 @@ db.eventsGallery = require("./event/events_gallery_model")(sequelize, Sequelize)
 db.eventsGiftBank = require("./event/events_gift_bank_model")(sequelize, Sequelize);
 db.eventsGuest = require("./event/events_guest_model")(sequelize, Sequelize);
 db.eventsTicketing = require("./event/events_ticket_model")(sequelize, Sequelize);
+db.eventsAppScan = require("./event/events_app_scan_model")(sequelize, Sequelize);
 
 db.information = require("./information/information_model")(sequelize, Sequelize);
 db.informationFor = require("./information/information_for_model")(sequelize, Sequelize);
@@ -109,6 +110,9 @@ db.user.hasMany(db.eventsGuest, { foreignKey: "fid_user" });
 db.eventsGuest.belongsTo(db.user, { foreignKey: "fid_user" });
 db.events.hasMany(db.eventsTicketing, { foreignKey: "fid_events" });
 db.eventsTicketing.belongsTo(db.events, { foreignKey: "fid_events" });
+db.events.hasMany(db.eventsAppScan, { foreignKey: "fid_events" });
+db.eventsAppScan.belongsTo(db.events, { foreignKey: "fid_events" });
+
 db.regRegencies.hasMany(db.events, { foreignKey: "fid_regencies" });
 db.events.belongsTo(db.regRegencies, { foreignKey: "fid_regencies" });
 db.user.hasMany(db.events, { foreignKey: "fid_user" });
@@ -119,6 +123,8 @@ db.masterEvent.hasMany(db.webTemplate, { foreignKey: "fid_type" });
 db.webTemplate.belongsTo(db.masterEvent, { foreignKey: "fid_type" });
 db.webTemplate.hasMany(db.events, { foreignKey: "fid_template" });
 db.events.belongsTo(db.webTemplate, { foreignKey: "fid_template" });
+db.eventsAppScan.hasMany(db.eventsGuest, { foreignKey: "scan_by" });
+db.eventsGuest.belongsTo(db.eventsAppScan, { foreignKey: "scan_by" });
 
 db.events.hasMany(db.transaction, { foreignKey: "fid_events" });
 db.transaction.belongsTo(db.events, { foreignKey: "fid_events" });

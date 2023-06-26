@@ -26,11 +26,12 @@ app.options('*', cors());
 
 const db = require("./app/models/index.model");
 db.sequelize.sync()
+// db.sequelize.sync({ force: true })
 // db.sequelize.sync({ logging: console.log })
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
 // });
-// db.transaction.sync(
+// db.eventsAppScan.sync(
 //   { force: true, logging: console.log }
 // )
 // db.informationFor.sync(
