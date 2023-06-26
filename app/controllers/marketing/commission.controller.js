@@ -147,7 +147,9 @@ exports.getWidrawalCreatePage = (req, res) => {
             })
             return;
         }
-        const balance = results.balance[0].dataValues.balance ?? 0
+        const balance = results.balance.length === 0 ? 0 : balance[0].dataValues.balance ?? 0
+        // console.log(results.balance)
+        // const balance = 0;
 
         res.status(200).send({
             code: 200,
