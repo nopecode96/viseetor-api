@@ -243,6 +243,11 @@ exports.getDetail = (req, res) => {
                 }
             }).then(data => callback(null, data))
         },
+        webTemplate: function (callback) {
+            webTemplate.findAll({
+                where: { fid_type: typeid, published: true }
+            }).then(data => callback(null, data))
+        },
         eventsAttending: function (callback) {
             eventsGuest.findAll({
                 where: { fid_events: id, attend: true }
@@ -321,7 +326,8 @@ exports.getDetail = (req, res) => {
                     }
                 },
                 eventDetail: results.eventDetail[0],
-                mstRegency: results.mstRegency
+                mstRegency: results.mstRegency,
+                webTemplate: results.webTemplate
             }
         })
         return;
