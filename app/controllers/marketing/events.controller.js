@@ -475,7 +475,7 @@ exports.create = (req, res) => {
 }
 
 exports.updateGiftBankStatus = (req, res) => {
-    // const { fid_events } = 
+    // const { fid_events, status } = 
 }
 
 exports.createBank = (req, res) => {
@@ -792,10 +792,6 @@ exports.uploadPhoto = (req, res) => {
 
 }
 
-exports.deletePhoto = (req, res) => {
-    const { id, filename } = req.query;
-
-}
 
 
 ////====guest====
@@ -838,12 +834,12 @@ exports.allEventGuest = (req, res) => {
                 callback(null, totalGuest)
             })
         },
-        eventsAttending: function (callback) {
+        guestConfirmed: function (callback) {
             eventsGuest.findAll({
-                where: { fid_events: fid_events, attend: true }
+                where: { fid_events: fid_events, invitation_status: 'CONFIRMED' }
             }).then(data => {
-                const attending = data.length;
-                callback(null, attending)
+                const confirmed = data.length;
+                callback(null, confirmed)
             })
         },
         dataGuestList: function (callback) {
@@ -875,9 +871,9 @@ exports.allEventGuest = (req, res) => {
         }
 
         const totalGuest = results.eventsGuest ? results.eventsGuest : 0;
-        const totalAttend = results.eventsAttending ? results.eventsAttending : 0;
+        const totalConfirmed = results.guestConfirmed ? results.guestConfirmed : 0;
         const totalLimit = results.eventLimit[0].invitation_limit;
-        console.log(results.eventsGuest)
+        // console.log(results.eventsGuest)
 
         res.status(200).send({
             code: 200,
@@ -886,10 +882,10 @@ exports.allEventGuest = (req, res) => {
             data: {
                 dashboard: {
                     totalGuest: totalGuest,
-                    totalAttend: totalAttend,
+                    totalConfirmed: totalConfirmed,
                     totalLimit: totalLimit
                 },
-                dataEvent: results.dataEvents,
+                dataEvent: results.dataEvents[0],
                 guestList: results.dataGuestList,
             }
         })
