@@ -336,8 +336,9 @@ exports.getDetail = (req, res) => {
 }
 
 exports.updateEvent = (req, res) => {
+    const fid_user = req.userid;
     const { id } = req.query;
-    const { title, event_date, location_address, fid_regencies, location_coordinate_latitude, location_coordinate_longitude, } = req.body;
+    const { title, event_date, location_address, fid_regencies, location_coordinate_latitude, location_coordinate_longitude } = req.body;
 
     if (!title || !event_date || !location_address || !fid_regencies || !location_coordinate_latitude || !location_coordinate_longitude) {
         res.status(200).send({
@@ -348,7 +349,27 @@ exports.updateEvent = (req, res) => {
         return;
     }
 
+    events.update({ title, event_date, location_address, fid_regencies, location_coordinate_latitude, location_coordinate_longitude }, {
+        where: { id: id, fid_user: fid_user }
+    }).then(data => {
+        if (data[0] == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event Id not found.",
+                data: data
+            });
+            return;
+        }
 
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Event Data Updated.",
+            data: data
+        });
+        return;
+    })
 
 }
 

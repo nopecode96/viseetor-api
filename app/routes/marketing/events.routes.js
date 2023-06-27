@@ -41,6 +41,7 @@ module.exports = app => {
 
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEvents);
     router.get("/expired", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEventsExpired);
+    router.put("/update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateEvent);
     router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.create);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     router.get("/page-create-step1", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreateStep1);
