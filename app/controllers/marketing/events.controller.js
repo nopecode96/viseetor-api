@@ -335,6 +335,23 @@ exports.getDetail = (req, res) => {
 
 }
 
+exports.updateEvent = (req, res) => {
+    const { id } = req.query;
+    const { title, event_date, location_address, fid_regencies, location_coordinate_latitude, location_coordinate_longitude, } = req.body;
+
+    if (!title || !event_date || !location_address || !fid_regencies || !location_coordinate_latitude || !location_coordinate_longitude) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
+
+
+}
+
 exports.pageCreateStep1 = (req, res) => {
     masterEvent.findAll({
         where: { published: true },
