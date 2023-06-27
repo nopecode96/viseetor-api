@@ -475,7 +475,43 @@ exports.create = (req, res) => {
 }
 
 exports.updateGiftBankStatus = (req, res) => {
-    // const { fid_events, status } = 
+    const fid_user = req.userid;
+    const { fid_events, gift_bank_status } = req.query;
+
+    if (!fid_events || !gift_bank_status) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
+    events.update({ gift_bank: gift_bank_status }, {
+        where: {
+            id: fid_events,
+            fid_user: fid_user
+        }
+    }).then(data => {
+        // console.log(data);
+        if (data[0] == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event ID not Found."
+            });
+            return;
+        }
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Bank Gift Status Updated.",
+            // fid_events: data
+
+        });
+        return;
+    })
 }
 
 exports.createBank = (req, res) => {

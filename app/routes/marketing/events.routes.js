@@ -53,6 +53,7 @@ module.exports = app => {
     router.put("/wedding/bridephoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('bride_photo'), controller.putBridePhoto);
     router.post("/bank-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createBank);
     router.delete("/bank-delete", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteBank);
+    router.put("/bank-status-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGiftBankStatus);
 
 
     // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboardEvent);
