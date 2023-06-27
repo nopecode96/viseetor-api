@@ -248,9 +248,9 @@ exports.getDetail = (req, res) => {
                 where: { fid_type: typeid, published: true }
             }).then(data => callback(null, data))
         },
-        eventsAttending: function (callback) {
+        guestConfirmed: function (callback) {
             eventsGuest.findAll({
-                where: { fid_events: id, attend: true }
+                where: { fid_events: id, invitation_status: 'CONFIRMED' }
             }).then(data => {
                 const attending = data.length;
                 callback(null, attending)
@@ -307,7 +307,7 @@ exports.getDetail = (req, res) => {
         }
 
         const totalGuest = results.eventsGuest ? results.eventsGuest : 0;
-        const totalAttend = results.eventsAttending ? results.eventsAttending : 0;
+        const guestConfirmed = results.guestConfirmed ? results.guestConfirmed : 0;
         const invitationLimit = results.eventDetail[0].invitation_limit ?? 0;
 
         res.status(200).send({
@@ -322,7 +322,7 @@ exports.getDetail = (req, res) => {
                     },
                     pieChartGuestAttend: {
                         totalGuest: totalGuest,
-                        totalAttend: totalAttend
+                        totalConfirmed: guestConfirmed
                     }
                 },
                 eventDetail: results.eventDetail[0],
