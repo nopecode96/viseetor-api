@@ -338,9 +338,10 @@ exports.getDetail = (req, res) => {
 exports.updateEvent = (req, res) => {
     const fid_user = req.userid;
     const { id } = req.query;
-    const { title, event_date, location_address, fid_regencies, location_coordinate_latitude, location_coordinate_longitude } = req.body;
+    const { title, description, venue_name, event_video_url, event_date, location_address, fid_regencies, location_coordinate_latitude, location_coordinate_longitude } = req.body;
 
-    if (!title || !event_date || !location_address || !fid_regencies || !location_coordinate_latitude || !location_coordinate_longitude) {
+    // console.log(req.body);
+    if (!title || !description || !venue_name || !event_video_url || !event_date || !location_address || !fid_regencies || !location_coordinate_latitude || !location_coordinate_longitude) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -349,7 +350,7 @@ exports.updateEvent = (req, res) => {
         return;
     }
 
-    events.update({ title, event_date, location_address, fid_regencies, location_coordinate_latitude, location_coordinate_longitude }, {
+    events.update({ title, description, venue_name, event_video_url, event_date, location_address, fid_regencies, location_coordinate_latitude, location_coordinate_longitude }, {
         where: { id: id, fid_user: fid_user }
     }).then(data => {
         if (data[0] == 0) {
