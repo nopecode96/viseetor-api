@@ -518,11 +518,14 @@ exports.updateGiftBankStatus = (req, res) => {
     const { id } = req.query;
     const { gift_bank_status } = req.body;
 
-    if (!id || !gift_bank_status) {
+    console.log(id);
+    console.log(gift_bank_status);
+
+    if (!id) {
         res.status(200).send({
             code: 200,
             success: false,
-            message: "Error Insert: Field."
+            message: "Event ID not found."
         });
         return;
     }
