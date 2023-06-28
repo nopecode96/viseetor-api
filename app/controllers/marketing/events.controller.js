@@ -374,6 +374,43 @@ exports.updateEvent = (req, res) => {
 
 }
 
+exports.putBanner = (req, res) => {
+    const { id } = req.query;
+    const banner = req.file.filename;
+
+    if (!banner) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
+    events.update({ banner },
+        { where: { id: id } }
+    ).then(data => {
+        res.status(201).send({
+            code: 201,
+            success: true,
+            message: "Change Banner has been success.",
+            // insertID: data.id
+        });
+        return;
+    }).catch(err => {
+        //   console.log(err);
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+        return;
+    });
+
+}
+
+
 exports.pageCreateStep1 = (req, res) => {
     masterEvent.findAll({
         where: { published: true },
@@ -625,9 +662,6 @@ exports.deleteBank = (req, res) => {
         });
 }
 
-
-
-
 ////EventWeddings===========
 ////EventWeddings===========
 ////EventWeddings===========
@@ -831,9 +865,11 @@ exports.getGalleryList = (req, res) => {
         });
 }
 
-exports.uploadPhoto = (req, res) => {
+exports.uploadGallery = (req, res) => {
     const { fid_events } = req.body;
     const images = req.files;
+
+    // console.log(images)
 
     if (!images) {
         res.status(200).send({
@@ -848,6 +884,7 @@ exports.uploadPhoto = (req, res) => {
     for (let item of images) {
         datas.push({ image: item.filename, fid_events: fid_events, published: true });
     }
+    // console.log(datas)
 
     eventsGallery.bulkCreate(datas)
         .then(data => {
@@ -859,7 +896,7 @@ exports.uploadPhoto = (req, res) => {
             return;
         })
         .catch(err => {
-            //   console.log(err);
+            console.log(err);
             res.status(400).send({
                 code: 400,
                 success: false,

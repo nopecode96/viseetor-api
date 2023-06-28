@@ -42,13 +42,17 @@ module.exports = app => {
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEvents);
     router.get("/expired", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEventsExpired);
     router.put("/update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateEvent);
-    router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.create);
+    router.put("/banner-update", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.putBanner);
+
+    router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.create);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     router.get("/page-create-step1", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreateStep1);
     router.get("/page-create-step2", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreatesStep2);
+
     router.get("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
     router.post("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createGuest);
     router.delete("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteGuest);
+
     router.put("/wedding-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateWeddingDetail);
     router.put("/wedding-groomphoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('groom_photo'), controller.putGroomPhoto);
     router.put("/wedding-bridephoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('bride_photo'), controller.putBridePhoto);
@@ -57,17 +61,8 @@ module.exports = app => {
     router.put("/bank-status-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGiftBankStatus);
     router.put("/themes-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.themesSelected);
 
+    router.post("/gallery-upload", authValidation.apiKeyValidation, authValidation.tokenValidation, upload2.array('image'), controller.uploadGallery);
 
-    // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboardEvent);
-    // router.get("/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEvent);
-    // router.get("/company", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllCompany);
-    // router.get("/type", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllEventType);
-    // router.get("/regional", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllRegional);
-    // router.post("/noimage", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createOneNoImage);
-    // router.post("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.createOneWithImage);
-    // router.put("/noimage", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateOneNoImage);
-    // router.put("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('banner'), controller.updateOneWithImage);
-    // router.post("/wedding", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createWeddingDetail);
     // router.get("/guest/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
     // router.put("/guest/attend", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateAttendStatusGuest);
     // router.delete("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteOneGuest);
