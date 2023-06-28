@@ -514,9 +514,10 @@ exports.create = (req, res) => {
 
 exports.updateGiftBankStatus = (req, res) => {
     const fid_user = req.userid;
-    const { fid_events, gift_bank_status } = req.query;
+    const { id } = req.query;
+    const { gift_bank_status } = req.body;
 
-    if (!fid_events || !gift_bank_status) {
+    if (!id || !gift_bank_status) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -527,7 +528,7 @@ exports.updateGiftBankStatus = (req, res) => {
 
     events.update({ gift_bank: gift_bank_status }, {
         where: {
-            id: fid_events,
+            id: id,
             fid_user: fid_user
         }
     }).then(data => {
