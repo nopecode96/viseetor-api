@@ -700,7 +700,7 @@ exports.updateWeddingDetail = (req, res) => {
                 });
         } else {
             eventsWedding.update({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite },
-                { where: { id: id } }
+                { where: { fid_events: id } }
             ).then(data => {
                 res.status(202).send({
                     code: 202,
