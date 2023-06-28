@@ -724,7 +724,7 @@ exports.updateWeddingDetail = (req, res) => {
 }
 
 exports.putBridePhoto = (req, res) => {
-    const { id } = req.body;
+    const { id } = req.query;
     const bride_photo = req.file.filename;
 
     if (!bride_photo) {
@@ -737,13 +737,13 @@ exports.putBridePhoto = (req, res) => {
     }
 
     eventsWedding.update({ bride_photo },
-        { where: { id: id } }
+        { where: { fid_events: id } }
     ).then(data => {
         res.status(201).send({
             code: 201,
             success: true,
-            message: "Create data success.",
-            insertID: data.id
+            message: "Change photo bride has been success.",
+            // insertID: data.id
         });
         return;
     }).catch(err => {
@@ -760,7 +760,7 @@ exports.putBridePhoto = (req, res) => {
 }
 
 exports.putGroomPhoto = (req, res) => {
-    const { id } = req.body;
+    const { id } = req.query;
     const groom_photo = req.file.filename;
 
     if (!groom_photo) {
@@ -773,12 +773,12 @@ exports.putGroomPhoto = (req, res) => {
     }
 
     eventsWedding.update({ groom_photo },
-        { where: { id: id } }
+        { where: { fid_events: id } }
     ).then(data => {
         res.status(201).send({
             code: 201,
             success: true,
-            message: "Create data success.",
+            message: "Change photo groom has been success.",
             insertID: data.id
         });
         return;
