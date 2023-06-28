@@ -1274,16 +1274,22 @@ exports.updateStatusAttending = (req, res) => {
         });
 }
 
-exports.themesSelected = (req, res) => {
-    const { id, fid_template } = req.body;
+///theme
+///theme
+///theme
 
-    events.update({ fid_template: fid_template }, { where: { id: id } })
+exports.themesSelected = (req, res) => {
+    const fid_user = req.userid;
+    const { id } = req.query;
+    const { fid_template } = req.body;
+
+    events.update({ fid_template: fid_template }, { where: { id: id, fid_user: fid_user } })
         .then(data => {
             res.status(202).send({
                 code: 202,
                 success: true,
                 message: 'Template Updated',
-                data: data
+                // data: data
             });
             return;
         })

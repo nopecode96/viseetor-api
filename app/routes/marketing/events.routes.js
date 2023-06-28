@@ -55,6 +55,7 @@ module.exports = app => {
     router.post("/bank-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createBank);
     router.delete("/bank-delete", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteBank);
     router.put("/bank-status-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGiftBankStatus);
+    router.put("/themes-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.themesSelected);
 
 
     // router.get("/dashboard", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.dashboardEvent);
@@ -77,6 +78,5 @@ module.exports = app => {
     // router.post("/guest/sendinvitation/updateguestinvitationsent", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGuestInvitationSent);
     // router.post("/guest/sendinvitation/updateguestbarcodesent", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGuestBarcodeSent);
     // router.get("/themes", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.themes);
-    // router.put("/themesupdate", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.themesSelected);
     app.use('/v2/marketing/events', router);
 };
