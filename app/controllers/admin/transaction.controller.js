@@ -160,6 +160,7 @@ exports.getDetail = (req, res) => {
 }
 
 exports.paymentReceived = (req, res) => {
+    const fid_user = req.userid;
     const { order_number } = req.body;
 
     if (!order_number) {
@@ -174,16 +175,25 @@ exports.paymentReceived = (req, res) => {
     transaction.findAll({
         where: { order_number: order_number },
     }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Transaction not found."
+            });
+            return;
+        }
+        // console.log(data[0].id)
         const fid_transaction = data[0].id;
         const fid_events = data[0].fid_events;
-        const fid_user = data[0].fid_user;
+        // const fid_user = data[0].fid_user;
         const total_commission = data[0].total_commission;
         const qty = data[0].qty;
 
-        transaction.update({ status: 2 }, {
-            where: { id: fid_transaction, status: 1 }
+        transaction.update({ status: 'PAID' }, {
+            where: { id: fid_transaction, fid_user: fid_user }
         }).then(data2 => {
-            // console.log(fid_user);
+            // console.log(data2);
             if (data2[0] == 0) {
                 res.status(200).send({
                     code: 200,

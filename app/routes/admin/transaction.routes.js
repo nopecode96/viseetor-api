@@ -5,6 +5,6 @@ module.exports = app => {
 
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getTransactions);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
-    router.post("/paymentreceived", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.paymentReceived);
+    router.put("/paymentreceived", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.paymentReceived);
     app.use('/v2/admin/transactions', router);
 };
