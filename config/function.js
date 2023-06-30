@@ -56,8 +56,11 @@ module.exports.getPagingData = function getPagingData(data, page, limit) {
     return { totalItems, datas, totalPages, currentPage };
 }
 
-module.exports.auditLog = function auditLog(action, description, user_agent, module, table_id, fid_user) {
+module.exports.auditLog = function auditLog(action, description, user_agent, module, table_id, fid_user, next) {
     const { auditLogAdmin } = require("../app/models/index.model");
 
-    auditLogAdmin.create()
+    auditLogAdmin.create({ action, description, user_agent, module, table_id, fid_user })
+        .then(data => {
+            next;
+        })
 }

@@ -56,6 +56,70 @@ exports.tokenValidation = (req, res, next) => {
 
 }
 
+exports.tokenAdminValidation = (req, res, next) => {
+  let authToken = req.header('token-access');
+
+  if (!authToken) {
+    res.status(203).send({
+      code: 203,
+      status: false,
+      message: "Please insert your Access Token"
+    });
+    return;
+  }
+  try {
+    let jwtSecretKey = process.env.JWT_SECRET_KEY;
+    var decript = jwt.decode(authToken, jwtSecretKey);
+    const verified = jwt.verify(authToken, jwtSecretKey);
+    if (!verified) {
+      res.status(203).send({
+        code: 203,
+        status: false,
+        message: 'Your Token not Valid',
+      });
+      return;
+    } else {
+      const userId = decript.userId;
+      User.findAll({
+        where: { id: userId, token: authToken }
+      })
+        .then(data => {
+          if (data.length == 0) {
+            res.status(203).send({
+              code: 203,
+              status: false,
+              message: 'Your account is Expired, Please login again.',
+            });
+            return;
+          } else {
+            if (data[0].fid_user_type !== 1) {
+              res.status(203).send({
+                code: 203,
+                status: false,
+                message: 'Your account is not Administrator Roles!',
+              });
+              return;
+            } else {
+              res.locals.userid = userId;
+              req.userid = userId;
+              next();
+            }
+
+          }
+        })
+    }
+  } catch (error) {
+    res.status(203).send({
+      code: 203,
+      status: false,
+      message: 'Error Token Validation',
+      error: error,
+    });
+    return;
+  }
+
+}
+
 exports.apiKeyValidation = (req, res, next) => {
   let apiKey = req.header('apiKey');
   let inviteMeApiKey = process.env.API_KEY;

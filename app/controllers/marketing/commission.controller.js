@@ -192,7 +192,18 @@ exports.WidrawalCreate = (req, res) => {
         const balancex = parseFloat(data[0].balance);
         const nominalx = parseFloat(nominal);
 
-        if (nominalx >= balancex) {
+        if (nominalx < 50000) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Sorry, minimum withdrawal is Rp.50,000!',
+            })
+            return;
+        }
+
+
+
+        if (nominalx > balancex) {
             res.status(200).send({
                 code: 200,
                 success: false,
