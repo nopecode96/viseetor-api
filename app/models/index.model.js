@@ -26,6 +26,8 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+db.auditLogAdmin = require("./audit/audit_log_admin.model")(sequelize, Sequelize);
+
 db.user = require("./user/user.model")(sequelize, Sequelize);
 db.userType = require("./user/user_type.model")(sequelize, Sequelize);
 db.userProfile = require("./user/user_profile.model")(sequelize, Sequelize);
@@ -155,5 +157,7 @@ db.informationFor.belongsTo(db.information, { foreignKey: "fid_information" });
 db.user.hasMany(db.informationFor, { foreignKey: "fid_user" });
 db.informationFor.belongsTo(db.user, { foreignKey: "fid_user" });
 
+db.user.hasMany(db.auditLogAdmin, { foreignKey: "fid_user" });
+db.auditLogAdmin.belongsTo(db.user, { foreignKey: "fid_user" });
 
 module.exports = db;

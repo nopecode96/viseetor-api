@@ -64,8 +64,6 @@ exports.getCommissionList = (req, res) => {
         const totalOut = results.totalOut[0].dataValues.total_out == null ? 0 : results.totalOut[0].dataValues.total_out;
         const balance = results.balance.length == 0 ? 0 : results.balance[0].balance;
 
-
-
         res.status(200).send({
             code: 200,
             success: true,
@@ -180,7 +178,7 @@ exports.WidrawalCreate = (req, res) => {
     const fid_user = req.userid;
     const status = 'PENDING';
     const wd_number = randomstring.generate({
-        length: 6,
+        length: 8,
         capitalization: 'uppercase'
     });
 

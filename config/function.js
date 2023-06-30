@@ -15,12 +15,12 @@
 //     var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
 //         to: to, 
 //         collapse_key: 'your_collapse_key',
-        
+
 //         notification: {
 //             title: title, 
 //             body: body 
 //         },
-        
+
 //         data: {  //you can send only notification or only data(or include both)
 //             my_key: 'my value',
 //             my_another_key: 'my another value'
@@ -44,7 +44,7 @@
 module.exports.getPagination = function getPagination(page, size) {
     const limit = size ? +size : 10;
     const offset = page ? page * limit : 0;
-  
+
     return { limit, offset };
 };
 
@@ -52,7 +52,12 @@ module.exports.getPagingData = function getPagingData(data, page, limit) {
     const { count: totalItems, rows: datas } = data;
     const currentPage = page ? +page : 1;
     const totalPages = Math.ceil(totalItems / limit);
-  
+
     return { totalItems, datas, totalPages, currentPage };
 }
 
+module.exports.auditLog = function auditLog(action, description, user_agent, module, table_id, fid_user) {
+    const { auditLogAdmin } = require("../app/models/index.model");
+
+    auditLogAdmin.create()
+}

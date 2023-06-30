@@ -323,7 +323,7 @@ exports.createTransaction = (req, res) => {
     const published = true;
 
     const order_number = randomstring.generate({
-        length: 8,
+        length: 10,
         capitalization: 'uppercase'
     });
 

@@ -245,7 +245,8 @@ exports.getDetail = (req, res) => {
         },
         webTemplate: function (callback) {
             webTemplate.findAll({
-                where: { fid_type: typeid, published: true }
+                where: { fid_type: typeid, published: true },
+                order: [['id', 'ASC']]
             }).then(data => callback(null, data))
         },
         guestConfirmed: function (callback) {

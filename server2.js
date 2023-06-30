@@ -31,9 +31,9 @@ db.sequelize.sync()
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
 // });
-// db.eventsAppScan.sync(
-//   { force: true, logging: console.log }
-// )
+db.auditLogAdmin.sync(
+  { force: true, logging: console.log }
+)
 // db.informationFor.sync(
 //   { force: true, logging: console.log }
 // )
@@ -55,12 +55,14 @@ app.use(bodyParser.json());
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
 require("./app/routes/auth.routes")(app);
 require("./app/routes/admin/master_event.routes")(app);
 require("./app/routes/admin/master_industry.routes")(app);
 require("./app/routes/admin/master_vanue.routes")(app);
 require("./app/routes/admin/user.routes")(app);
 require("./app/routes/admin/transaction.routes")(app);
+require("./app/routes/admin/commission.routes")(app);
 
 require("./app/routes/marketing/myclient.routes")(app);
 require("./app/routes/marketing/dashboard.routes")(app);
