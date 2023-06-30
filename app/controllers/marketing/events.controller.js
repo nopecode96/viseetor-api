@@ -1049,8 +1049,8 @@ exports.createGuest = (req, res) => {
             var totalExistGuest = parseInt(data2.length);
 
             if (totalExistGuest >= invitationLimit) {
-                res.status(422).send({
-                    code: 422,
+                res.status(200).send({
+                    code: 200,
                     success: false,
                     message: "Your limit has full, please buy limit again."
                 });
