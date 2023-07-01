@@ -175,8 +175,8 @@ exports.findEventsExpired = (req, res) => {
         },
         dataCompany: function (callback) {
             company.findAll({
-                where: { fid_company_status: 1 },
-                attributes: ['id', ['title', 'company_name'], 'fid_company_status']
+                where: { fid_company_status: 1, fid_user: fid_user },
+                attributes: ['id', 'title']
             }).then(data => callback(null, data))
         },
         dataList: function (callback) {
