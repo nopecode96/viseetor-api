@@ -176,7 +176,7 @@ exports.getWidrawalCreatePage = (req, res) => {
 
 exports.WidrawalCreate = (req, res) => {
     const fid_user = req.userid;
-    const status = 'PENDING';
+    const status = 'REQUESTED';
     const wd_number = randomstring.generate({
         length: 8,
         capitalization: 'uppercase'

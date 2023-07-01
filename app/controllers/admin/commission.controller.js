@@ -60,7 +60,7 @@ exports.withdrawUpdateSuccess = (req, res) => {
     const { wd_number } = req.query;
 
     commissionWithdraw.findAll({
-        where: { wd_number: wd_number, status: 'PENDING' }
+        where: { wd_number: wd_number, status: 'REQUESTED' }
     }).then(data => {
         // console.log(data)
         if (data.length == 0) {
@@ -162,7 +162,7 @@ exports.withdrawUpdateReject = (req, res) => {
         const tableid = data[0].id;
 
         commissionWithdraw.update({ status: 'REJECTED' }, {
-            where: { wd_number: wd_number, status: 'PENDING' }
+            where: { wd_number: wd_number, status: 'REQUESTED' }
         }).then(data => {
 
             if (data[0] == 0) {
