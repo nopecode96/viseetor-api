@@ -94,7 +94,7 @@ exports.getWithdrawalList = (req, res) => {
 
 exports.withdrawUpdateSuccess = (req, res) => {
     const fid_user_admin = req.userid;
-    const { wd_number } = req.query;
+    const { wd_number } = req.body;
 
     commissionWithdraw.findAll({
         where: { wd_number: wd_number, status: 'REQUESTED' }
@@ -160,7 +160,7 @@ exports.withdrawUpdateSuccess = (req, res) => {
                             })
                             return;
                         } else {
-                            functions.auditLog('PUT', 'Approved Withdrawal for WD Number ' + wd_number, 'Any', 'commissionWithdraw', tableid, fid_user)
+                            functions.auditLog('PUT', 'Approved Withdrawal for WD Number ' + wd_number, 'Any', 'commissionWithdraw', tableid, fid_user_admin)
                             res.status(200).send({
                                 code: 200,
                                 success: false,
