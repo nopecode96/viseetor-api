@@ -178,7 +178,7 @@ exports.getDetail = (req, res) => {
 }
 
 exports.paymentReceived = (req, res) => {
-    const fid_user = req.userid;
+    const fid_user_admin = req.userid;
     const { order_number } = req.body;
 
     if (!order_number) {
@@ -204,12 +204,12 @@ exports.paymentReceived = (req, res) => {
         // console.log(data[0].id)
         const fid_transaction = data[0].id;
         const fid_events = data[0].fid_events;
-        // const fid_user = data[0].fid_user;
+        const fid_user = data[0].fid_user;
         const total_commission = data[0].total_commission;
         const qty = data[0].qty;
 
         transaction.update({ status: 'PAID' }, {
-            where: { id: fid_transaction, fid_user: fid_user }
+            where: { id: fid_transaction }
         }).then(data2 => {
             // console.log(data2);
             if (data2[0] == 0) {
@@ -233,36 +233,36 @@ exports.paymentReceived = (req, res) => {
                                 where: { fid_user: fid_user },
                                 limit: 1,
                                 order: [['id', 'DESC']],
-                            })
-                                .then(data5 => {
-                                    var balance = '0';
-                                    if (data5.length == 0) {
-                                        balance = '0';
-                                    } else {
-                                        balance = data5[0].balance;
-                                    }
+                            }).then(data5 => {
+                                var balance = '0';
+                                if (data5.length == 0) {
+                                    balance = '0';
+                                } else {
+                                    balance = data5[0].balance;
+                                }
 
-                                    const lastBalance = parseInt(total_commission) + parseInt(balance);
+                                const lastBalance = parseInt(total_commission) + parseInt(balance);
 
-                                    commission.create({
-                                        'description': 'Commission from Order No. #' + order_number,
-                                        'nominal': total_commission,
-                                        'balance': lastBalance,
-                                        'action': 'IN',
-                                        'status': 'SATTLE',
-                                        'fid_user': fid_user,
-                                        'fid_transaction': fid_transaction
-                                    })
-                                        .then(data6 => {
-                                            res.status(200).send({
-                                                code: 200,
-                                                success: true,
-                                                message: "Transaction Completed.",
-                                                data: data6
-                                            });
-                                            return;
-                                        })
+                                commission.create({
+                                    'description': 'Commission from Order No. #' + order_number,
+                                    'nominal': total_commission,
+                                    'balance': lastBalance,
+                                    'action': 'IN',
+                                    'status': 'SATTLE',
+                                    'fid_user': fid_user,
+                                    'fid_transaction': fid_transaction
+                                }).then(data6 => {
+                                    functions.auditLog('PUT', 'Accepted Transaction for Order No. #' + order_number, 'Any', 'transactions', fid_transaction, fid_user_admin)
+                                    functions.auditLog('CREATE', 'Create Commission for Order No. #' + order_number, 'Any', 'commissions', data6.id, fid_user_admin)
+                                    res.status(200).send({
+                                        code: 200,
+                                        success: true,
+                                        message: "Transaction Completed.",
+                                        data: data6
+                                    });
+                                    return;
                                 })
+                            })
                         })
                 })
         })
