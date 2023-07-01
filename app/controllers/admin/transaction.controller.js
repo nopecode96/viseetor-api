@@ -9,15 +9,20 @@ exports.getTransactions = (req, res) => {
     const { page, size, order_number, status, user_email } = req.query;
     const { limit, offset } = functions.getPagination(page - 1, size);
 
-    if (user_email) {
+    console.log(order_number);
+
+    if (order_number && status && user_email) {
+        var condition = {
+            // order_number: sequelize.where(sequelize.fn('LOWER', sequelize.col('order_number')), 'LIKE', '%' + order_number + '%'),
+            order_number: order_number,
+            status: status,
+        }
         var condition2 = {
             email: user_email,
         }
-    }
-
-    if (order_number && status) {
+    } else if (order_number && status) {
         var condition = {
-            order_number: sequelize.where(sequelize.fn('LOWER', sequelize.col('order_number')), 'LIKE', '%' + order_number + '%'),
+            order_number: order_number,
             status: status,
         }
     } else if (status) {
@@ -26,7 +31,12 @@ exports.getTransactions = (req, res) => {
         }
     } else if (order_number) {
         var condition = {
-            order_number: sequelize.where(sequelize.fn('LOWER', sequelize.col('order_number')), 'LIKE', '%' + order_number + '%'),
+            // order_number: sequelize.where(sequelize.fn('LOWER', sequelize.col('order_number')), 'LIKE', '%' + order_number + '%'),
+            order_number: order_number,
+        }
+    } else if (user_email) {
+        var condition2 = {
+            email: user_email,
         }
     }
 
