@@ -6,10 +6,46 @@ var functions = require("../../../config/function");
 const { user, userProfile, commission, commissionWithdraw } = require("../../models/index.model");
 
 exports.getWithdrawalList = (req, res) => {
-    const { page, size, status } = req.query;
+    const { page, size, status, wd_number, user_email } = req.query;
     const { limit, offset } = functions.getPagination(page - 1, size);
 
-    if (status) {
+    if (status && wd_number && user_email) {
+        var condition = {
+            wd_number: wd_number,
+            status: status
+        }
+        var condition2 = {
+            email: user_email,
+        }
+    } else if (status && wd_number) {
+        var condition = {
+            wd_number: wd_number,
+            status: status
+        }
+    } else if (wd_number && user_email) {
+        var condition = {
+            wd_number: wd_number,
+            status: status
+        }
+        var condition2 = {
+            email: user_email,
+        }
+    } else if (status && user_email) {
+        var condition = {
+            status: status
+        }
+        var condition2 = {
+            email: user_email,
+        }
+    } else if (wd_number) {
+        var condition = {
+            wd_number: wd_number
+        }
+    } else if (user_email) {
+        var condition2 = {
+            email: user_email,
+        }
+    } else if (status) {
         var condition = {
             status: status
         }
@@ -19,7 +55,8 @@ exports.getWithdrawalList = (req, res) => {
         where: condition, limit, offset,
         include: {
             model: user,
-            attributes: ['id', 'username', 'name', 'photo'],
+            where: condition2,
+            attributes: ['id', 'username', 'name', 'photo', 'email'],
             include: [
                 {
                     model: userProfile,
