@@ -9,7 +9,7 @@ exports.getTransactions = (req, res) => {
     const { page, size, order_number, status, user_email } = req.query;
     const { limit, offset } = functions.getPagination(page - 1, size);
 
-    console.log(order_number);
+    // console.log(order_number);
 
     if (order_number && status && user_email) {
         var condition = {
@@ -86,13 +86,13 @@ exports.getDetail = (req, res) => {
         res.status(200).send({
             code: 200,
             success: false,
-            message: "Error Insert: Field."
+            message: "Order Number Not Valid"
         });
         return;
     }
 
     transaction.findAll({
-        where: { order_number: order_number, published: true },
+        where: { order_number: order_number },
         include: [
             {
                 model: events,
@@ -149,24 +149,32 @@ exports.getDetail = (req, res) => {
             }
 
         ]
-    })
-        .then(data => {
+    }).then(data => {
+        if (data.length == 0) {
             res.status(200).send({
                 code: 200,
-                success: true,
-                message: "Datas Found.",
-                data: data[0]
-            });
-        })
-        .catch(err => {
-            // console.log(err);
-            res.status(500).send({
-                code: 500,
                 success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
+                message: "Datas Not Found.",
+                // data: data[0]
             });
+            return;
+        }
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: data[0]
         });
+        return;
+    }).catch(err => {
+        // console.log(err);
+        res.status(500).send({
+            code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
 }
 
 exports.paymentReceived = (req, res) => {
