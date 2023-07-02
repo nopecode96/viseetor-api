@@ -1,4 +1,7 @@
 module.exports = app => {
+    const dotenv = require('dotenv');
+    dotenv.config();
+
     const authValidation = require("../../../config/auth.config.js");
     const controller = require("../../controllers/admin/master_vanue.contoller");
     var router = require("express").Router();

@@ -1,4 +1,7 @@
 module.exports = app => {
+    const dotenv = require('dotenv');
+    dotenv.config();
+
     const authValidation = require("../../../config/auth.config");
     const controller = require("../../controllers/marketing/events.controller");
     var router = require("express").Router();
