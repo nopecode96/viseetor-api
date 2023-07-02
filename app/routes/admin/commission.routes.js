@@ -7,5 +7,5 @@ module.exports = app => {
     // router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     router.put("/withdraw-success", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, controller.withdrawUpdateSuccess);
     router.put("/withdraw-reject", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, controller.withdrawUpdateReject);
-    app.use('/v2/admin/commissions', router);
+    app.use('/' + process.env.ENVIRONMENT + '/admin/commissions', router);
 };

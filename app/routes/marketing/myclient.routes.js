@@ -31,5 +31,5 @@ module.exports = app => {
     // router.get("/regional", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllRegional);
     // router.post("/noimage", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createOneNoImage);
     // router.put("/withimage", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('logo'), controller.editOneWithImage);
-    app.use('/v2/marketing/myclient', router);
+    app.use('/' + process.env.ENVIRONMENT + '/marketing/myclient', router);
 };

@@ -8,5 +8,5 @@ module.exports = app => {
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     router.post("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createOne);
     router.put("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.update);
-    app.use('/v2/admin/master/event', router);
+    app.use('/' + process.env.ENVIRONMENT + '/admin/master/event', router);
 };

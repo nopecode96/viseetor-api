@@ -73,5 +73,5 @@ module.exports = app => {
     // router.post("/guest/sendinvitation/updateguestinvitationsent", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGuestInvitationSent);
     // router.post("/guest/sendinvitation/updateguestbarcodesent", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGuestBarcodeSent);
     // router.get("/themes", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.themes);
-    app.use('/v2/marketing/events', router);
+    app.use('/' + process.env.ENVIRONMENT + '/marketing/events', router);
 };

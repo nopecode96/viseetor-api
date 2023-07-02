@@ -9,5 +9,5 @@ module.exports = app => {
     router.get("/widrawal-list", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getWidrawalList);
     router.post("/widrawal-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.WidrawalCreate);
 
-    app.use('/v2/marketing/commission', router);
+    app.use('/' + process.env.ENVIRONMENT + '/marketing/commission', router);
 }
