@@ -6,5 +6,5 @@ module.exports = app => {
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getTransactions);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     router.put("/paymentreceived", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.paymentReceived);
-    app.use('/v2/admin/transactions', router);
+    app.use('/' + process.env.ENVIRONMENT + '/admin/transactions', router);
 };

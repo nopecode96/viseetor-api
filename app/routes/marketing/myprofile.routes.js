@@ -23,5 +23,5 @@ module.exports = app => {
     router.put("/change-password", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.changePassword);
     router.put("/update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.update);
     router.put("/change-photo", authValidation.apiKeyValidation, authValidation.tokenValidation, upload.single('photo'), controller.changePhoto);
-    app.use('/v2/marketing/myprofile', router);
+    app.use('/' + process.env.ENVIRONMENT + '/marketing/myprofile', router);
 };
