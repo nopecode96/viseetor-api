@@ -4,9 +4,10 @@ const fs = require("fs");
 var randomstring = require("randomstring");
 const QRCode = require('qrcode')
 const async = require('async')
+const axios = require("axios")
 
 var functions = require("../../../config/function");
-const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsTicketing, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate } = require("../../models/index.model");
+const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsTicketing, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate, eventsMessage } = require("../../models/index.model");
 
 exports.findEvents = (req, res) => {
     const today = new Date();
@@ -935,7 +936,10 @@ exports.allEventGuest = (req, res) => {
         dataEvents: function (callback) {
             events.findAll({
                 where: { id: fid_events },
-                attributes: ['id', 'title']
+                attributes: ['id', 'title'],
+                include: {
+                    model: eventsMessage
+                }
             }).then(data => callback(null, data))
         },
         eventLimit: function (callback) {
@@ -1165,37 +1169,99 @@ exports.updateAttendStatusGuest = (req, res) => {
         });
 }
 
-exports.updateGuestInvitationSent = (req, res) => {
-    const { guest_id } = req.body;
-    // console.log(guest_id);
+exports.updateGuestInvitationSent = async (req, res) => {
+    const { barcode } = req.query;
+    const url = process.env.API_URL;
 
     eventsGuest.findAll({
-        where: { id: guest_id }
-    })
-        .then(data => {
-            console.log(data[0].invitation_send_count);
-            var existCount = data[0].invitation_send_count;
-            var lastCount = parseInt(existCount) + parseInt(1);
-            // console.log(existCount);
+        where: { barcode: barcode }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(202).send({
+                code: 202,
+                success: false,
+                message: "Guest not found."
+            });
+            return;
+        }
 
-            eventsGuest.update({ invitation_send_count: lastCount }, { where: { id: guest_id } })
-                .then(data2 => {
-                    res.status(200).send({
-                        code: 200,
-                        success: true,
-                        message: "Invitation Sent.",
-                        data: data2
-                    });
-                })
-                .catch(err => {
-                    res.status(400).send({
-                        code: 400,
-                        success: false,
-                        message:
-                            err.message || "Some error occurred while retrieving data."
-                    });
-                });
+        const fid_events = data[0].fid_events;
+        const phone = data[0].phone;
+        const existInvitationSentCount = data[0].invitation_send_count;
+
+        events.findAll({
+            where: { id: fid_events },
+            include: [
+                { model: eventsWedding },
+                { model: eventsMessage }
+            ]
+        }).then(data2 => {
+            const eventType = data2[0].fid_type;
+            const eventTitle = data2[0].title;
+            const eventBanner = process.env.CDN_URL + 'events/' + data2[0].banner;
+            const event_message = data2[0].events_messages[0].content;
+
+
+
+            // res.status(202).send({
+            //     code: 202,
+            //     success: false,
+            //     message: "Guest not found.",
+            //     baanner: eventBanner,
+            //     data: data2[0]
+            // });
+            // return;
+
+
         })
+    })
+
+
+    // const body = querystring.stringify({
+    //     "api_key": "DGHMEESZFIUBWYOW",
+    //     "number_key": "4dkL1S8l4c1RaDH8",
+    //     "phone_no": "+628176789682",
+    //     "url": "http://cdn.viseetor.id/static/company/1678155669291.png",
+    //     "message": "hello",
+    //     "separate_caption": "0"
+    // });
+
+    // await axios.post(url, body, options).then(
+    //     async (response) => {
+
+    //     }
+    // )
+
+
+
+
+    // eventsGuest.findAll({
+    //     where: { id: guest_id }
+    // })
+    //     .then(data => {
+    //         console.log(data[0].invitation_send_count);
+    //         var existCount = data[0].invitation_send_count;
+    //         var lastCount = parseInt(existCount) + parseInt(1);
+    //         // console.log(existCount);
+
+    //         eventsGuest.update({ invitation_send_count: lastCount }, { where: { id: guest_id } })
+    //             .then(data2 => {
+    //                 res.status(200).send({
+    //                     code: 200,
+    //                     success: true,
+    //                     message: "Invitation Sent.",
+    //                     data: data2
+    //                 });
+    //             })
+    //             .catch(err => {
+    //                 res.status(400).send({
+    //                     code: 400,
+    //                     success: false,
+    //                     message:
+    //                         err.message || "Some error occurred while retrieving data."
+    //                 });
+    //             });
+    //     })
 }
 
 exports.updateGuestBarcodeSent = (req, res) => {
