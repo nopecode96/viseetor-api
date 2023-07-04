@@ -1169,7 +1169,7 @@ exports.updateAttendStatusGuest = (req, res) => {
         });
 }
 
-exports.updateGuestInvitationSent = async (req, res) => {
+exports.guestInvitationSent = async (req, res) => {
     const { barcode } = req.query;
     const url = process.env.API_URL;
 
@@ -1187,30 +1187,106 @@ exports.updateGuestInvitationSent = async (req, res) => {
 
         const fid_events = data[0].fid_events;
         const phone = data[0].phone;
+        const guestName = data[0].name;
         const existInvitationSentCount = data[0].invitation_send_count;
 
         events.findAll({
             where: { id: fid_events },
             include: [
+                {
+                    model: regRegencies,
+                    include: {
+                        model: regProvincies
+                    }
+                },
+                { model: company },
                 { model: eventsWedding },
                 { model: eventsMessage }
             ]
         }).then(data2 => {
+            var eventMessage = data2[0].events_messages[0].content;
+            const eventBanner = process.env.CDN_URL + 'event/thumbnail/' + data2[0].events_messages[0].image;
+
             const eventType = data2[0].fid_type;
             const eventTitle = data2[0].title;
-            const eventBanner = process.env.CDN_URL + 'events/' + data2[0].banner;
-            const event_message = data2[0].events_messages[0].content;
+            const eventCompanyName = data2[0].company.title;
+            const eventCompanyContactPerson = data2[0].company.contact_person;
+            const eventCompanyContactNumber = data2[0].company.contact_phone;
+            const eventWedding = data2[0].events_wedding;
+            // const eventBanner = 'http://cdn.viseetor.id/static/event/thumb/1683002731811.jpg';
+
+            const d = new Date(data2[0].event_date);
+
+            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const optionsTime = { timeZoneName: "short", hour: "2-digit", minute: "2-digit" };
+            const weddingDate = d.toLocaleDateString("id", optionsDate);
+            const weddingTime = d.toLocaleTimeString("id", optionsTime).replace('.', ':');
+
+            const venue_name = data2[0].venue_name;
+            const location_address = data2[0].location_address;
+            const city = data2[0].reg_regencie.name;
+            const province = data2[0].reg_regencie.reg_province.name;
+            const address = location_address + ', ' + city + ' - ' + province;
+            const bride_name = eventWedding.bride_name;
+            const groom_name = eventWedding.groom_name;
+            const bride_parent = eventWedding.bride_parent;
+            const groom_parent = eventWedding.groom_parent;
+
+            const em = eventMessage.replace('{{guestName}}', guestName);
+            const em2 = em.replace('{{parentBrideName}}', bride_parent);
+            const em3 = em2.replace('{{parentGroomName}}', groom_parent);
+            const em4 = em3.replaceAll('{{brideName}}', bride_name);
+            const em5 = em4.replaceAll('{{groomName}}', groom_name);
+            const em6 = em5.replace('{{weddingDate}}', weddingDate);
+            const em7 = em6.replace('{{weddingTime}}', weddingTime);
+            const em8 = em7.replace('{{venueName}}', venue_name);
+            const em9 = em8.replace('{{venueAddress}}', address).trim();
+            const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\n\nMohon reply dengan *hallo* untuk mengaktifkan Link URL atau tutup chat ini dan buka kembali.'
+            const eventWAMessage = em9 + woInfo;
+
+            var data = JSON.stringify({
+                "api_key": process.env.WATZAP_KEY,
+                "number_key": process.env.WATZAP_NUMBER_KEY,
+                "phone_no": phone,
+                "url": eventBanner,
+                "message": eventWAMessage,
+                "separate_caption": 0 //(0 for No, 1 for Yes)
+            });
+
+            var config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: process.env.WATZAP_URL + 'send_image_url',
+                headers: { 'Content-Type': 'application/json' },
+                data: data
+            };
+            axios(config)
+                .then(function (response) {
+                    console.log(JSON.stringify(response.data));
+                    if (response.data.message == 'Successfully') {
+                        const updateCount = parseFloat(existInvitationSentCount) + parseFloat('1');
+                        eventsGuest.update({
+                            invitation_status: 'INVITED', invitation_send_count: updateCount
+                        }, {
+                            where: { barcode: barcode }
+                        })
+
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                    res.status(200).send({
+                        code: 200,
+                        success: false,
+                        message: error,
+                        // baner: eventBanner,
+                        // data: data2[0]
+                    });
+                    return;
+                });
 
 
 
-            // res.status(202).send({
-            //     code: 202,
-            //     success: false,
-            //     message: "Guest not found.",
-            //     baanner: eventBanner,
-            //     data: data2[0]
-            // });
-            // return;
+
 
 
         })
