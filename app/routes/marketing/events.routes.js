@@ -49,8 +49,8 @@ module.exports = app => {
 
     router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.create);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
-    router.get("/page-create-step1", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreateStep1);
-    router.get("/page-create-step2", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreatesStep2);
+    router.get("/page-create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.pageCreate);
+    router.get("/find-web-template", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getWebTemplate);
 
     router.get("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
     router.post("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createGuest);

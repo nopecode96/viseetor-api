@@ -413,47 +413,21 @@ exports.putBanner = (req, res) => {
 }
 
 
-exports.pageCreateStep1 = (req, res) => {
-    masterEvent.findAll({
-        where: { published: true },
-        attributes: ['id', 'title']
-    }).then(data => {
-        res.status(200).send({
-            code: 200,
-            success: true,
-            message: "Data found.",
-            data: data
-        });
-        return;
-    }).catch(err => {
-        console.log(err);
-        res.status(400).send({
-            code: 400,
-            success: false,
-            message:
-                err.message || "Some error occurred while retrieving data."
-        });
-    });
-}
-
-exports.pageCreatesStep2 = (req, res) => {
+exports.pageCreate = (req, res) => {
     const fid_user = req.userid;
-    const { fid_type } = req.query;
 
     async.parallel({
-        companies: function (callback) {
+        masterEvent: function (callback) {
+            masterEvent.findAll({
+                where: { published: true },
+                attributes: ['id', 'title']
+            }).then(data => callback(null, data))
+        },
+        company: function (callback) {
             company.findAll({
                 where: { fid_company_status: 1, fid_user: fid_user },
                 attributes: ['id', 'title']
-            })
-                .then(data => callback(null, data))
-        },
-        webTemplate: function (callback) {
-            webTemplate.findAll({
-                where: { fid_type: fid_type },
-                attributes: ['id', 'image', 'title']
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
         mstRegency: function (callback) {
             regRegencies.findAll({
@@ -462,33 +436,52 @@ exports.pageCreatesStep2 = (req, res) => {
                     model: regProvincies,
                     attributes: [],
                 }
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
-
     }, function (err, results) {
-        // console.log(results.dataCommission);
         if (err) {
             res.status(400).send({
                 code: 400,
                 success: false,
-                message: err.message,
-            })
-            return;
+                message:
+                    err.message || "Some error occurred while retrieving data."
+            });
         }
         res.status(200).send({
             code: 200,
             success: true,
-            message: 'Data Found',
-            data: {
-                webTemplate: results.webTemplate,
-                companies: results.companies,
-                dataRegency: results.mstRegency,
-            }
-        })
+            message: "Data found.",
+            data: results
+        });
         return;
-        // results now equals to: { task1: 1, task2: 2 }
-    });
+
+    })
+}
+
+exports.getWebTemplate = (req, res) => {
+    const { fid_type } = req.query;
+
+    webTemplate.findAll({
+        where: { fid_type: fid_type }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Data not found.",
+                // data: results
+            });
+            return;
+        }
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Data found.",
+            data: data
+        });
+        return;
+    })
 }
 
 exports.create = (req, res) => {
@@ -508,6 +501,26 @@ exports.create = (req, res) => {
     if (!req.file) {
         events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
             .then(data => {
+                if (!data) {
+                    res.status(200).send({
+                        code: 200,
+                        success: false,
+                        message: "Create error.",
+                        // insertID: data.id
+                    });
+                    return;
+                }
+
+                const id = data.id;
+
+                eventsMessage.create({
+                    title: 'default',
+                    image: 'default.jpg',
+                    content: '',
+                    fid_events: id
+                })
+
+
                 res.status(201).send({
                     code: 201,
                     success: true,
