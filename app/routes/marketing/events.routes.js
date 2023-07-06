@@ -68,7 +68,7 @@ module.exports = app => {
     router.post("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createGuest);
     router.delete("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteGuest);
     router.put("/guest-send-invitation", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestInvitationSent);
-    router.post("/update-message-template", authValidation.apiKeyValidation, authValidation.tokenValidation, upload4.array('image'), controller.updateMessageTemplate);
+    router.put("/update-message-template", authValidation.apiKeyValidation, authValidation.tokenValidation, upload4.single('image'), controller.updateMessageTemplate);
 
     router.put("/wedding-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateWeddingDetail);
     router.put("/wedding-groomphoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('groom_photo'), controller.putGroomPhoto);
