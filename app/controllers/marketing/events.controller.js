@@ -494,6 +494,8 @@ exports.create = (req, res) => {
     const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, fid_company, fid_regencies, fid_type, fid_template } = req.body;
     const invitation_limit = 0;
 
+    // console.log(title, event_date, venue_name, location_address, fid_company, fid_type, fid_template)
+
     if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_type || !fid_template) {
         res.status(200).send({
             code: 200,
@@ -503,88 +505,62 @@ exports.create = (req, res) => {
         return;
     }
 
-    if (!req.file) {
-        events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
-            .then(data => {
-                if (!data) {
+    events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
+        .then(data => {
+            if (!data) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: "Create error.",
+                    // insertID: data.id
+                });
+                return;
+            }
+
+            const id = data.id;
+
+            masterEvent.findAll({
+                where: { id: fid_type }
+            }).then(data => {
+                if (data.length == 0) {
                     res.status(200).send({
                         code: 200,
                         success: false,
-                        message: "Create error.",
+                        message: "Fid Type Not Found.",
                         // insertID: data.id
                     });
                     return;
                 }
 
-                const id = data.id;
+                const sample_message = data[0].sample_message;
 
-                masterEvent.findAll({
-                    where: { id: fid_type }
+                eventsMessage.create({
+                    title: 'default',
+                    image: 'default.jpg',
+                    content: sample_message,
+                    fid_events: id
                 }).then(data => {
-                    if (data.length == 0) {
-                        res.status(200).send({
-                            code: 200,
-                            success: false,
-                            message: "Fid Type Not Found.",
-                            // insertID: data.id
-                        });
-                        return;
-                    }
-
-                    const sample_message = data[0].sample_message;
-
-                    eventsMessage.create({
-                        title: 'default',
-                        image: 'default.jpg',
-                        content: sample_message,
-                        fid_events: id
-                    }).then(data => {
-                        res.status(201).send({
-                            code: 201,
-                            success: true,
-                            message: "Create data success.",
-                            fid_events: data.id
-                        });
-                        return;
+                    res.status(201).send({
+                        code: 201,
+                        success: true,
+                        message: "Create data success.",
+                        fid_events: data.id
                     });
-                })
+                    return;
+                });
             })
-            .catch(err => {
-                //   console.log(err);
-                res.status(400).send({
-                    code: 400,
-                    success: false,
-                    message:
-                        err.message || "Some error occurred while retrieving data."
-                });
-                return;
+        })
+        .catch(err => {
+            //   console.log(err);
+            res.status(400).send({
+                code: 400,
+                success: false,
+                message:
+                    err
             });
+            return;
+        });
 
-    } else {
-        const banner = req.file.filename;
-        events.create({ banner, title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
-            .then(data => {
-                if (fid_type == '1') {
-                    events
-                }
-                res.status(201).send({
-                    code: 201,
-                    success: true,
-                    message: "Create data success.",
-                    insertID: data.id
-                });
-                return;
-            }).catch(err => {
-                //   console.log(err);
-                res.status(400).send({
-                    code: 400,
-                    success: false,
-                    message:
-                        err.message || "Some error occurred while retrieving data."
-                });
-                return;
-            });
-    }
 }
 
 exports.updateGiftBankStatus = (req, res) => {
