@@ -521,8 +521,8 @@ exports.create = (req, res) => {
 
             masterEvent.findAll({
                 where: { id: fid_type }
-            }).then(data => {
-                if (data.length == 0) {
+            }).then(data2 => {
+                if (data2.length == 0) {
                     res.status(200).send({
                         code: 200,
                         success: false,
@@ -532,19 +532,21 @@ exports.create = (req, res) => {
                     return;
                 }
 
-                const sample_message = data[0].sample_message;
+                const sample_message = data2[0].sample_message;
 
                 eventsMessage.create({
                     title: 'default',
                     image: 'default.jpg',
                     content: sample_message,
+                    published: true,
                     fid_events: id
-                }).then(data => {
+                }).then(data3 => {
+
                     res.status(201).send({
                         code: 201,
                         success: true,
                         message: "Create data success.",
-                        fid_events: data.id
+                        fid_events: id
                     });
                     return;
                 });
