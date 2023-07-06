@@ -486,6 +486,10 @@ exports.getWebTemplate = (req, res) => {
 
 exports.create = (req, res) => {
     const fid_user = req.userid;
+    //publish
+    //banner
+    //bank
+    //tiketing
     const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_company, fid_regencies, published, fid_type, fid_template } = req.body;
     const invitation_limit = 0;
 
@@ -518,16 +522,15 @@ exports.create = (req, res) => {
                     image: 'default.jpg',
                     content: '',
                     fid_events: id
-                })
-
-
-                res.status(201).send({
-                    code: 201,
-                    success: true,
-                    message: "Create data success.",
-                    insertID: data.id
+                }).then(data => {
+                    res.status(201).send({
+                        code: 201,
+                        success: true,
+                        message: "Create data success.",
+                        insertID: data.id
+                    });
+                    return;
                 });
-                return;
             })
             .catch(err => {
                 //   console.log(err);
@@ -544,6 +547,9 @@ exports.create = (req, res) => {
         const banner = req.file.filename;
         events.create({ banner, title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
             .then(data => {
+                if (fid_type == '1') {
+                    events
+                }
                 res.status(201).send({
                     code: 201,
                     success: true,
@@ -551,8 +557,7 @@ exports.create = (req, res) => {
                     insertID: data.id
                 });
                 return;
-            })
-            .catch(err => {
+            }).catch(err => {
                 //   console.log(err);
                 res.status(400).send({
                     code: 400,
@@ -1495,6 +1500,20 @@ exports.themesSelected = (req, res) => {
             });
         });
 }
+
+///message
+///message
+///message
+
+exports.themesSelected = (req, res) => {
+
+}
+
+
+
+///function===========
+///function===========
+///function===========
 
 function decodeBase64Image(dataString) {
     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
