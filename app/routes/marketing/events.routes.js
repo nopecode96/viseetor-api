@@ -42,6 +42,18 @@ module.exports = app => {
     })
     var upload3 = multer({ storage: storage3 })
 
+    var storage4 = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, process.env.MNT_PATH + '/event/thumbnail')
+        },
+        filename: function (req, file, cb) {
+            fileExtension = file.originalname.split('.')[1]
+            cb(null, Date.now() + '.' + fileExtension)
+            // cb(null, file.originalname)
+        }
+    })
+    var upload4 = multer({ storage: storage3 })
+
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEvents);
     router.get("/expired", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEventsExpired);
     router.put("/update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateEvent);
@@ -56,6 +68,7 @@ module.exports = app => {
     router.post("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createGuest);
     router.delete("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteGuest);
     router.put("/guest-send-invitation", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestInvitationSent);
+    router.post("/update-message-template", authValidation.apiKeyValidation, authValidation.tokenValidation, upload4.array('image'), controller.updateMessageTemplate);
 
     router.put("/wedding-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateWeddingDetail);
     router.put("/wedding-groomphoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('groom_photo'), controller.putGroomPhoto);
