@@ -52,7 +52,7 @@ module.exports = app => {
             // cb(null, file.originalname)
         }
     })
-    var upload4 = multer({ storage: storage3 })
+    var upload4 = multer({ storage: storage4 })
 
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEvents);
     router.get("/expired", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findEventsExpired);

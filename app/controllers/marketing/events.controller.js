@@ -1502,7 +1502,7 @@ exports.themesSelected = (req, res) => {
 
 exports.updateMessageTemplate = (req, res) => {
     const { id } = req.params;
-    const { content } = rea.body;
+    const { content } = req.body;
 
     if (!req.file) {
         res.status(200).send({
