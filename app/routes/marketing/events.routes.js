@@ -67,8 +67,10 @@ module.exports = app => {
     router.get("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
     router.post("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createGuest);
     router.delete("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteGuest);
-    router.put("/guest-send-invitation", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestInvitationSent);
     router.put("/update-message-template", authValidation.apiKeyValidation, authValidation.tokenValidation, upload4.single('image'), controller.updateMessageTemplate);
+    router.put("/guest-send-invitation", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestInvitationSent);
+    router.put("/guest-send-barcode", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestBarcodeSent);
+    router.put("/guest/attendingupdate/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatusAttending);
 
     router.put("/wedding-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateWeddingDetail);
     router.put("/wedding-groomphoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('groom_photo'), controller.putGroomPhoto);
@@ -84,7 +86,6 @@ module.exports = app => {
     // router.delete("/guest", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteOneGuest);
     // router.get("/gallery/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getGalleryList);
     // router.post("/gallery/upload", authValidation.apiKeyValidation, authValidation.tokenValidation, upload2.array('image'), controller.uploadPhoto);
-    // router.post("/guest/attendingupdate/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatusAttending);
     // router.post("/guest/sendinvitation/list", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.sentInvitationlist);
     // router.post("/guest/sendinvitation/updateguestbarcodesent", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGuestBarcodeSent);
     // router.get("/themes", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.themes);
