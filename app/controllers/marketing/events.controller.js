@@ -1254,7 +1254,7 @@ exports.guestInvitationSent = async (req, res) => {
             const em8 = em7.replace('{{venueName}}', venue_name);
             const em9 = em8.replace('{{venueAddress}}', address).trim();
             const em10 = em9.replace('{{websiteURL}}', websiteURL);
-            const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\n\nMohon reply dengan *hallo* untuk mengaktifkan Link URL, lalu tutup chat ini dan buka kembali.'
+            const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\n\n```Mohon reply dengan *HI* untuk mengaktifkan Link URL/Website, lalu tutup chat ini dan buka kembali.```'
             const eventWAMessage = em10 + woInfo;
             console.log('process sent invitation step 3');
 
