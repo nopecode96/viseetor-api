@@ -31,9 +31,9 @@ db.sequelize.sync()
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
 // });
-db.masterEvent.sync(
-  { force: true, logging: console.log }
-)
+// db.masterEvent.sync(
+//   { force: true, logging: console.log }
+// )
 // db.eventsMessage.sync(
 //   { force: true, logging: console.log }
 // )
