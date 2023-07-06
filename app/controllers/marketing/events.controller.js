@@ -533,19 +533,20 @@ exports.create = (req, res) => {
                 }
 
                 const sample_message = data2[0].sample_message;
+                const sample_message_barcode = data2[0].sample_message_barcode;
 
                 eventsMessage.create({
                     title: 'default',
                     image: 'default.jpg',
                     content: sample_message,
+                    content_barcode: sample_message_barcode,
                     published: true,
                     fid_events: id
                 }).then(data3 => {
-
                     res.status(201).send({
                         code: 201,
                         success: true,
-                        message: "Create data success.",
+                        message: "Create data event success.",
                         fid_events: id
                     });
                     return;
@@ -1501,8 +1502,9 @@ exports.themesSelected = (req, res) => {
 ///message
 
 exports.updateMessageTemplate = (req, res) => {
-    const { id } = req.params;
-    const { content } = req.body;
+    const { id } = req.query;
+    const { content, content_barcode } = req.body;
+    // console.log(req.params)
 
     if (!req.file) {
         res.status(200).send({
@@ -1515,7 +1517,7 @@ exports.updateMessageTemplate = (req, res) => {
 
     const image = req.file.filename;
 
-    eventsMessage.update({ image, content }, {
+    eventsMessage.update({ image, content, content_barcode }, {
         where: { id: id }
     }).then(data => {
         res.status(200).send({
