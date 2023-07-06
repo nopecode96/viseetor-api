@@ -1189,6 +1189,7 @@ exports.guestInvitationSent = async (req, res) => {
     eventsGuest.findAll({
         where: { barcode: barcode }
     }).then(data => {
+        console.log('process sent invitation step 1');
         if (data.length == 0) {
             res.status(202).send({
                 code: 202,
@@ -1217,7 +1218,7 @@ exports.guestInvitationSent = async (req, res) => {
                 { model: eventsMessage }
             ]
         }).then(data2 => {
-            // console.log(1);
+            console.log('process sent invitation step 2');
             var eventMessage = data2[0].events_messages[0].content;
             const image = process.env.CDN_URL + 'event/thumbnail/' + data2[0].events_messages[0].image;
 
@@ -1255,6 +1256,7 @@ exports.guestInvitationSent = async (req, res) => {
             const em10 = em9.replace('{{websiteURL}}', websiteURL);
             const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\n\nMohon reply dengan *hallo* untuk mengaktifkan Link URL, lalu tutup chat ini dan buka kembali.'
             const eventWAMessage = em10 + woInfo;
+            console.log('process sent invitation step 3');
 
             var data = JSON.stringify({
                 "api_key": process.env.WATZAP_KEY,
@@ -1273,7 +1275,7 @@ exports.guestInvitationSent = async (req, res) => {
                 data: data
             };
             axios(config).then(function (response) {
-                // console.log(2);
+                console.log('process sent invitation step 4');
                 console.log(JSON.stringify(response.data));
                 if (response.data.status == 1005) {
                     res.status(200).send({
@@ -1291,7 +1293,7 @@ exports.guestInvitationSent = async (req, res) => {
                     }, {
                         where: { barcode: barcode }
                     }).then(datafinal => {
-                        console.log(3);
+                        console.log('process sent invitation success');
                         res.status(200).send({
                             code: 200,
                             success: true,
