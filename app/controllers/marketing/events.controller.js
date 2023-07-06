@@ -1522,11 +1522,32 @@ exports.themesSelected = (req, res) => {
 ///message
 ///message
 
-exports.themesSelected = (req, res) => {
+exports.updateMessageTemplate = (req, res) => {
+    const { id } = req.params;
+    const { content } = rea.body;
 
+    if (!req.file) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Image mush have."
+        });
+        return;
+    }
+
+    const image = req.file.filename;
+
+    eventsMessage.update({ image, content }, {
+        where: { id: id }
+    }).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Data has been save."
+        });
+        return;
+    });
 }
-
-
 
 ///function===========
 ///function===========
