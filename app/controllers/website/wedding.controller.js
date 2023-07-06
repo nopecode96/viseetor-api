@@ -67,9 +67,9 @@ exports.getData = (req, res) => {
 }
 
 exports.updateStatusAttending = (req, res) => {
-    const { barcode, guest_actual, attend, reason } = req.body;
+    const { barcode, guest_actual, invitation_status, reason } = req.body;
 
-    if (!barcode || !guest_actual || !attend) {
+    if (!barcode || !guest_actual || !invitation_status) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -94,7 +94,7 @@ exports.updateStatusAttending = (req, res) => {
                 });
                 return;
             } else {
-                eventsGuest.update({ guest_actual, attend, reason }, {
+                eventsGuest.update({ guest_actual, invitation_status, reason }, {
                     where: { barcode: barcode }
                 })
                     .then(data => {
@@ -139,8 +139,8 @@ exports.updateStatusAttending = (req, res) => {
                                 })
                             })
                             .catch(err => {
-                                res.status(500).send({
-                                    code: 500,
+                                res.status(400).send({
+                                    code: 400,
                                     success: false,
                                     message:
                                         err.message || "Some error occurred while retrieving data."
@@ -148,8 +148,8 @@ exports.updateStatusAttending = (req, res) => {
                             });
                     })
                     .catch(err => {
-                        res.status(500).send({
-                            code: 500,
+                        res.status(400).send({
+                            code: 400,
                             success: false,
                             message:
                                 err.message || "Some error occurred while retrieving data."
@@ -158,8 +158,8 @@ exports.updateStatusAttending = (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).send({
-                code: 500,
+            res.status(400).send({
+                code: 400,
                 success: false,
                 message:
                     err.message || "Some error occurred while retrieving data."
