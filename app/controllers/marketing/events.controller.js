@@ -1419,7 +1419,7 @@ exports.guestBarcodeSent = (req, res) => {
                         res.status(200).send({
                             code: 200,
                             success: true,
-                            message: 'Invitation has sent.',
+                            message: 'Barcode Invitation has sent.',
                         });
                         return;
                     })
