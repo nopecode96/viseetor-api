@@ -6,6 +6,9 @@ module.exports = (sequelize, Sequelize) => {
     sample_message: {
       type: Sequelize.TEXT
     },
+    sample_message_barcode: {
+      type: Sequelize.TEXT
+    },
     published: {
       type: Sequelize.BOOLEAN
     },
