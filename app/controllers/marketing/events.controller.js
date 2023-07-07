@@ -234,6 +234,10 @@ exports.getDetail = (req, res) => {
     const { id, typeid } = req.query;
     var condition = { id: id, fid_user: fid_user, fid_type: typeid }
 
+    if (!id || typeid) {
+
+    }
+
     async.parallel({
         mstRegency: function (callback) {
             regRegencies.findAll({
