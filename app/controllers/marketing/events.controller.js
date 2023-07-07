@@ -1206,6 +1206,7 @@ exports.guestInvitationSent = async (req, res) => {
         const fid_events = data[0].fid_events;
         const phone = data[0].phone;
         const guestName = data[0].name;
+        const existInvitationStatus = data[0].invitation_status;
         const existInvitationSentCount = data[0].invitation_send_count;
 
         events.findAll({
@@ -1292,8 +1293,9 @@ exports.guestInvitationSent = async (req, res) => {
 
                 if (response.data.message == 'Successfully') {
                     const updateCount = parseFloat(existInvitationSentCount) + parseFloat('1');
+                    const status = (existInvitationStatus == 'LISTED') ? 'INVITED' : existInvitationStatus;
                     eventsGuest.update({
-                        invitation_status: 'INVITED', invitation_send_count: updateCount
+                        invitation_status: status, invitation_send_count: updateCount
                     }, {
                         where: { barcode: barcode }
                     }).then(datafinal => {
