@@ -256,7 +256,7 @@ exports.getDetail = (req, res) => {
         },
         guestConfirmed: function (callback) {
             eventsGuest.findAll({
-                where: { fid_events: id, invitation_status: 'CONFIRMED' }
+                where: { fid_events: id, invitation_status: 'WILL ATTEND' }
             }).then(data => {
                 const attending = data.length;
                 callback(null, attending)
