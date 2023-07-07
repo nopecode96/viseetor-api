@@ -1478,7 +1478,7 @@ exports.updateStatusAttending = (req, res) => {
             return;
         }
 
-        const invitation_status = (attend == true) ? 'WILL ATTEND' : 'NOT ATTEND';
+        const invitation_status = (attend == 'true') ? 'WILL ATTEND' : 'NOT ATTEND';
 
         eventsGuest.update({ guest_actual, invitation_status, reason }, {
             where: { barcode: barcode }

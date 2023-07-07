@@ -71,7 +71,7 @@ module.exports = app => {
     router.put("/update-message-template", authValidation.apiKeyValidation, authValidation.tokenValidation, upload4.single('image'), controller.updateMessageTemplate);
     router.put("/guest-send-invitation", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestInvitationSent);
     router.put("/guest-send-barcode", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestBarcodeSent);
-    router.put("/guest/attendingupdate/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatusAttending);
+    router.put("/guest/attendingupdate", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatusAttending);
 
     router.put("/wedding-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateWeddingDetail);
     router.put("/wedding-groomphoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('groom_photo'), controller.putGroomPhoto);
