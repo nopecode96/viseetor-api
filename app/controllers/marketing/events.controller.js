@@ -1575,31 +1575,54 @@ exports.themesSelected = (req, res) => {
 ///message
 
 exports.updateMessageTemplate = (req, res) => {
+    const fid_user = req.userid;
     const { id } = req.query;
     const { content, content_barcode } = req.body;
     // console.log(req.params)
 
-    if (!req.file) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Image mush have."
-        });
-        return;
-    }
+    eventsMessage.findAll({
+        where: { id: id },
+        include: {
+            model: events,
+            where: { fid_user: fid_user }
+        }
+    }).then(datax => {
+        if (datax.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Data not found or not you dont have authorize for this content."
+            });
+            return;
 
-    const image = req.file.filename;
+        }
 
-    eventsMessage.update({ image, content, content_barcode }, {
-        where: { id: id }
-    }).then(data => {
-        res.status(200).send({
-            code: 200,
-            success: true,
-            message: "Data has been save."
-        });
-        return;
-    });
+        if (!req.file) {
+            eventsMessage.update({ content, content_barcode }, {
+                where: { id: id }
+            }).then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Data has been save."
+                });
+                return;
+            });
+        } else {
+            const image = req.file.filename;
+
+            eventsMessage.update({ image, content, content_barcode }, {
+                where: { id: id }
+            }).then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Data has been save."
+                });
+                return;
+            });
+        }
+    })
 }
 
 ///function===========

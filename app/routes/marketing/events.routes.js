@@ -47,6 +47,7 @@ module.exports = app => {
             cb(null, process.env.MNT_PATH + '/event/thumbnail')
         },
         filename: function (req, file, cb) {
+            console.log(req);
             fileExtension = file.originalname.split('.')[1]
             cb(null, Date.now() + '.' + fileExtension)
             // cb(null, file.originalname)
