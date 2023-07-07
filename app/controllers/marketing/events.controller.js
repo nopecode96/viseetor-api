@@ -494,7 +494,7 @@ exports.create = (req, res) => {
     const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, fid_company, fid_regencies, fid_type, fid_template } = req.body;
     const invitation_limit = 0;
 
-    // console.log(title, event_date, venue_name, location_address, fid_company, fid_type, fid_template)
+    console.log(title, event_date, venue_name, location_address, fid_company, fid_type, fid_template)
 
     if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_type || !fid_template) {
         res.status(200).send({
