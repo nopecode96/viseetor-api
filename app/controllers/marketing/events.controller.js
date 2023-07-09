@@ -1454,7 +1454,7 @@ exports.guestBarcodeSent = (req, res) => {
                 };
                 axios(config).then(function (response) {
                     console.log(JSON.stringify(response.data));
-                    if (response.data.status == 1005) {
+                    if (response.data.status !== "ok") {
                         res.status(200).send({
                             code: 1005,
                             success: false,
@@ -1463,22 +1463,21 @@ exports.guestBarcodeSent = (req, res) => {
                         return;
                     }
 
-                    if (response.data.message == 'Successfully') {
-                        const updateCount = parseFloat(existBarcodeSentCount) + parseFloat('1');
-                        eventsGuest.update({
-                            invitation_status: 'CONFIRMED', barcode_send_count: updateCount
-                        }, {
-                            where: { barcode: barcode }
-                        }).then(datafinal => {
-                            res.status(200).send({
-                                code: 200,
-                                success: true,
-                                message: 'Barcode Invitation has sent.',
-                                wapi_response: response.data
-                            });
-                            return;
-                        })
-                    }
+                    const updateCount = parseFloat(existBarcodeSentCount) + parseFloat('1');
+                    eventsGuest.update({
+                        invitation_status: 'CONFIRMED', barcode_send_count: updateCount
+                    }, {
+                        where: { barcode: barcode }
+                    }).then(datafinal => {
+                        res.status(200).send({
+                            code: 200,
+                            success: true,
+                            message: 'Barcode Invitation has sent.',
+                            wapi_response: response.data
+                        });
+                        return;
+                    })
+
                 }).catch(function (error) {
                     console.log(error);
                     res.status(200).send({
