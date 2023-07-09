@@ -31,7 +31,10 @@ db.sequelize.sync()
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
 // });
-// db.auditLogAdmin.sync(
+// db.masterEvent.sync(
+//   { force: true, logging: console.log }
+// )
+// db.eventsMessage.sync(
 //   { force: true, logging: console.log }
 // )
 // db.informationFor.sync(
@@ -74,17 +77,16 @@ require("./app/routes/marketing/information.routes")(app);
 
 require("./app/routes/website/wedding.routes")(app);
 require("./app/routes/website/marketing.routes")(app);
-
-
-app.get("/v2/", (req, res) => {
-  res.json({ message: "Welcome to Viseetor API-2." });
-}
-);
+require("./app/routes/thirdparty/motasi.routes")(app);
 
 dotenv.config();
+
+app.get("/" + process.env.ENVIRONMENT + "/", (req, res) => {
+  res.json({ message: "Welcome to Viseetor " + process.env.ENVIRONMENT });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server API-2 is running on port ${PORT}.`);
+  console.log("Server " + process.env.ENVIRONMENT + " is running on port " + PORT);
   console.log(new Date().toString());
-}
-);
+});

@@ -1,4 +1,7 @@
 module.exports = app => {
+    const dotenv = require('dotenv');
+    dotenv.config();
+
     const authValidation = require("../../../config/auth.config");
     const controller = require("../../controllers/marketing/transaction.controller");
     var router = require("express").Router();
@@ -10,5 +13,5 @@ module.exports = app => {
     router.get("/findprice", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPriceOne);
     router.get("/findpromo", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPromoCode);
     router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createTransaction);
-    app.use('/v2/marketing/transactions', router);
+    app.use('/' + process.env.ENVIRONMENT + '/marketing/transactions', router);
 };

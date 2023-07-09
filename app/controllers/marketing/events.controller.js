@@ -4,9 +4,10 @@ const fs = require("fs");
 var randomstring = require("randomstring");
 const QRCode = require('qrcode')
 const async = require('async')
+const axios = require("axios")
 
 var functions = require("../../../config/function");
-const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsTicketing, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate } = require("../../models/index.model");
+const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsTicketing, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate, eventsMessage } = require("../../models/index.model");
 
 exports.findEvents = (req, res) => {
     const today = new Date();
@@ -233,6 +234,10 @@ exports.getDetail = (req, res) => {
     const { id, typeid } = req.query;
     var condition = { id: id, fid_user: fid_user, fid_type: typeid }
 
+    if (!id || typeid) {
+
+    }
+
     async.parallel({
         mstRegency: function (callback) {
             regRegencies.findAll({
@@ -251,7 +256,7 @@ exports.getDetail = (req, res) => {
         },
         guestConfirmed: function (callback) {
             eventsGuest.findAll({
-                where: { fid_events: id, invitation_status: 'CONFIRMED' }
+                where: { fid_events: id, invitation_status: 'WILL ATTEND' }
             }).then(data => {
                 const attending = data.length;
                 callback(null, attending)
@@ -412,47 +417,21 @@ exports.putBanner = (req, res) => {
 }
 
 
-exports.pageCreateStep1 = (req, res) => {
-    masterEvent.findAll({
-        where: { published: true },
-        attributes: ['id', 'title']
-    }).then(data => {
-        res.status(200).send({
-            code: 200,
-            success: true,
-            message: "Data found.",
-            data: data
-        });
-        return;
-    }).catch(err => {
-        console.log(err);
-        res.status(400).send({
-            code: 400,
-            success: false,
-            message:
-                err.message || "Some error occurred while retrieving data."
-        });
-    });
-}
-
-exports.pageCreatesStep2 = (req, res) => {
+exports.pageCreate = (req, res) => {
     const fid_user = req.userid;
-    const { fid_type } = req.query;
 
     async.parallel({
-        companies: function (callback) {
+        masterEvent: function (callback) {
+            masterEvent.findAll({
+                where: { published: true },
+                attributes: ['id', 'title']
+            }).then(data => callback(null, data))
+        },
+        company: function (callback) {
             company.findAll({
                 where: { fid_company_status: 1, fid_user: fid_user },
                 attributes: ['id', 'title']
-            })
-                .then(data => callback(null, data))
-        },
-        webTemplate: function (callback) {
-            webTemplate.findAll({
-                where: { fid_type: fid_type },
-                attributes: ['id', 'image', 'title']
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
         mstRegency: function (callback) {
             regRegencies.findAll({
@@ -461,39 +440,65 @@ exports.pageCreatesStep2 = (req, res) => {
                     model: regProvincies,
                     attributes: [],
                 }
-            })
-                .then(data => callback(null, data))
+            }).then(data => callback(null, data))
         },
-
     }, function (err, results) {
-        // console.log(results.dataCommission);
         if (err) {
             res.status(400).send({
                 code: 400,
                 success: false,
-                message: err.message,
-            })
-            return;
+                message:
+                    err.message || "Some error occurred while retrieving data."
+            });
         }
         res.status(200).send({
             code: 200,
             success: true,
-            message: 'Data Found',
-            data: {
-                webTemplate: results.webTemplate,
-                companies: results.companies,
-                dataRegency: results.mstRegency,
-            }
-        })
+            message: "Data found.",
+            data: results
+        });
         return;
-        // results now equals to: { task1: 1, task2: 2 }
-    });
+
+    })
+}
+
+exports.getWebTemplate = (req, res) => {
+    const { fid_type } = req.query;
+
+    webTemplate.findAll({
+        where: { fid_type: fid_type }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Data not found.",
+                // data: results
+            });
+            return;
+        }
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Data found.",
+            data: data
+        });
+        return;
+    })
 }
 
 exports.create = (req, res) => {
     const fid_user = req.userid;
-    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, fid_company, fid_regencies, published, fid_type, fid_template } = req.body;
+    const published = true;
+    const gift_bank = false;
+    const ticketing = false; //for fid_type = 1;
+    const guest = true; //for fid_type = 1;
+
+    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, fid_company, fid_regencies, fid_type, fid_template } = req.body;
     const invitation_limit = 0;
+
+    console.log(title, event_date, venue_name, location_address, fid_company, fid_type, fid_template)
 
     if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_type || !fid_template) {
         res.status(200).send({
@@ -504,51 +509,65 @@ exports.create = (req, res) => {
         return;
     }
 
-    if (!req.file) {
-        events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
-            .then(data => {
-                res.status(201).send({
-                    code: 201,
-                    success: true,
-                    message: "Create data success.",
-                    insertID: data.id
-                });
-                return;
-            })
-            .catch(err => {
-                //   console.log(err);
-                res.status(400).send({
-                    code: 400,
+    events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
+        .then(data => {
+            if (!data) {
+                res.status(200).send({
+                    code: 200,
                     success: false,
-                    message:
-                        err.message || "Some error occurred while retrieving data."
+                    message: "Create error.",
+                    // insertID: data.id
                 });
                 return;
-            });
+            }
 
-    } else {
-        const banner = req.file.filename;
-        events.create({ banner, title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
-            .then(data => {
-                res.status(201).send({
-                    code: 201,
-                    success: true,
-                    message: "Create data success.",
-                    insertID: data.id
+            const id = data.id;
+
+            masterEvent.findAll({
+                where: { id: fid_type }
+            }).then(data2 => {
+                if (data2.length == 0) {
+                    res.status(200).send({
+                        code: 200,
+                        success: false,
+                        message: "Fid Type Not Found.",
+                        // insertID: data.id
+                    });
+                    return;
+                }
+
+                const sample_message = data2[0].sample_message;
+                const sample_message_barcode = data2[0].sample_message_barcode;
+
+                eventsMessage.create({
+                    title: 'default',
+                    image: 'default.jpg',
+                    content: sample_message,
+                    content_barcode: sample_message_barcode,
+                    published: true,
+                    fid_events: id
+                }).then(data3 => {
+                    res.status(201).send({
+                        code: 201,
+                        success: true,
+                        message: "Create data event success.",
+                        fid_events: id
+                    });
+                    return;
                 });
-                return;
             })
-            .catch(err => {
-                //   console.log(err);
-                res.status(400).send({
-                    code: 400,
-                    success: false,
-                    message:
-                        err.message || "Some error occurred while retrieving data."
-                });
-                return;
+        })
+        .catch(err => {
+            //   console.log(err);
+            res.status(400).send({
+                code: 400,
+                success: false,
+                message:
+                    err
             });
-    }
+            return;
+        });
+
 }
 
 exports.updateGiftBankStatus = (req, res) => {
@@ -935,7 +954,10 @@ exports.allEventGuest = (req, res) => {
         dataEvents: function (callback) {
             events.findAll({
                 where: { id: fid_events },
-                attributes: ['id', 'title']
+                attributes: ['id', 'title'],
+                include: {
+                    model: eventsMessage
+                }
             }).then(data => callback(null, data))
         },
         eventLimit: function (callback) {
@@ -974,6 +996,15 @@ exports.allEventGuest = (req, res) => {
                 code: 400,
                 success: false,
                 message: err.message,
+            })
+            return;
+        }
+
+        if (results.dataEvents.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Data not found',
             })
             return;
         }
@@ -1165,70 +1196,301 @@ exports.updateAttendStatusGuest = (req, res) => {
         });
 }
 
-exports.updateGuestInvitationSent = (req, res) => {
-    const { guest_id } = req.body;
-    // console.log(guest_id);
+exports.guestInvitationSent = async (req, res) => {
+    const { barcode } = req.query;
 
     eventsGuest.findAll({
-        where: { id: guest_id }
-    })
-        .then(data => {
-            console.log(data[0].invitation_send_count);
-            var existCount = data[0].invitation_send_count;
-            var lastCount = parseInt(existCount) + parseInt(1);
-            // console.log(existCount);
+        where: { barcode: barcode }
+    }).then(data => {
+        console.log('process sent invitation step 1');
+        if (data.length == 0) {
+            res.status(202).send({
+                code: 202,
+                success: false,
+                message: "Guest not found."
+            });
+            return;
+        }
 
-            eventsGuest.update({ invitation_send_count: lastCount }, { where: { id: guest_id } })
-                .then(data2 => {
+        const fid_events = data[0].fid_events;
+        const phone = data[0].phone;
+        const guestName = data[0].name;
+        const existInvitationStatus = data[0].invitation_status;
+        const existInvitationSentCount = data[0].invitation_send_count;
+
+        console.log(phone);
+
+        events.findAll({
+            where: { id: fid_events },
+            include: [
+                {
+                    model: regRegencies,
+                    include: {
+                        model: regProvincies
+                    }
+                },
+                { model: company },
+                { model: eventsWedding },
+                { model: eventsMessage }
+            ]
+        }).then(data2 => {
+            console.log('process sent invitation step 2');
+            var eventMessage = data2[0].events_messages[0].content;
+            // const image = process.env.CDN_URL + 'event/thumbnail/' + data2[0].events_messages[0].image;
+            const imageOri = process.env.MNT_PATH + 'event/thumbnail/' + data2[0].events_messages[0].image;
+            var image = base64_encode(imageOri);
+            // console.log(image);
+            const imageFilename = data2[0].events_messages[0].image;
+
+
+            const eventCompanyName = data2[0].company.title;
+            const eventCompanyContactPerson = data2[0].company.contact_person;
+            const eventCompanyContactNumber = data2[0].company.contact_phone;
+            const eventWedding = data2[0].events_wedding;
+
+            const d = new Date(data2[0].event_date);
+            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const optionsTime = { timeZoneName: "short", hour: "2-digit", minute: "2-digit" };
+            const weddingDate = d.toLocaleDateString("id", optionsDate);
+            const weddingTime = d.toLocaleTimeString("id", optionsTime).replace('.', ':');
+
+            const venue_name = data2[0].venue_name;
+            const location_address = data2[0].location_address;
+            const city = data2[0].reg_regencie.name;
+            const province = data2[0].reg_regencie.reg_province.name;
+            const address = location_address + ', ' + city + ' - ' + province;
+            const bride_name = eventWedding.bride_name;
+            const groom_name = eventWedding.groom_name;
+            const bride_parent = eventWedding.bride_parent;
+            const groom_parent = eventWedding.groom_parent;
+            const websiteURL = process.env.WEBSITE_WEDDING_URL + '?id=' + barcode;
+
+            const em = eventMessage.replace('{{guestName}}', guestName);
+            const em2 = em.replace('{{parentBrideName}}', bride_parent);
+            const em3 = em2.replace('{{parentGroomName}}', groom_parent);
+            const em4 = em3.replaceAll('{{brideName}}', bride_name);
+            const em5 = em4.replaceAll('{{groomName}}', groom_name);
+            const em6 = em5.replace('{{weddingDate}}', weddingDate);
+            const em7 = em6.replace('{{weddingTime}}', weddingTime);
+            const em8 = em7.replace('{{venueName}}', venue_name);
+            const em9 = em8.replace('{{venueAddress}}', address).trim();
+            const em10 = em9.replace('{{websiteURL}}', websiteURL);
+            const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\n\n```Mohon reply dengan mengetik "Hi" untuk mengaktifkan Link URL/Website, lalu tutup chat ini dan buka kembali.```\n\nSender by Viseetor.com'
+            const eventWAMessage = em10 + woInfo;
+            console.log('process sent invitation step 3');
+
+            // Body for WATZAP
+            // var data = JSON.stringify({
+            //     "api_key": process.env.WATZAP_KEY,
+            //     "number_key": process.env.WATZAP_NUMBER_KEY,
+            //     "phone_no": phone,
+            //     "url": image,
+            //     "message": eventWAMessage,
+            //     "separate_caption": 0 //(0 for No, 1 for Yes)
+            // });
+
+            // Body for WAPI
+            var data = JSON.stringify({
+                "api_key": process.env.WAPI_API,
+                "device_key": process.env.WAPI_DEVICE,
+                "destination": phone,
+                "image": image,
+                "filename": imageFilename,
+                "caption": eventWAMessage
+            });
+
+            var config = {
+                method: 'post',
+                url: process.env.WAPI_URL + 'send-image',
+                headers: { 'Content-Type': 'application/json' },
+                data: data
+            };
+            axios(config).then(function (response) {
+                console.log('process sent invitation step 4');
+                console.log(response.data);
+                if (response.data.status !== "ok") {
+                    res.status(200).send({
+                        code: 1005,
+                        success: false,
+                        message: response.data.message
+                    });
+                    return;
+                }
+
+                const updateCount = parseFloat(existInvitationSentCount) + parseFloat('1');
+                const status = (existInvitationStatus == 'LISTED') ? 'INVITED' : existInvitationStatus;
+                eventsGuest.update({
+                    invitation_status: status, invitation_send_count: updateCount
+                }, {
+                    where: { barcode: barcode }
+                }).then(datafinal => {
+                    console.log('process sent invitation success');
                     res.status(200).send({
                         code: 200,
                         success: true,
-                        message: "Invitation Sent.",
-                        data: data2
+                        message: 'Invitation has sent.',
+                        wapi_response: response.data
                     });
+                    return;
                 })
-                .catch(err => {
-                    res.status(400).send({
-                        code: 400,
-                        success: false,
-                        message:
-                            err.message || "Some error occurred while retrieving data."
-                    });
+
+            }).catch(function (error) {
+                console.log(error);
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: error,
                 });
+                return;
+            });
         })
+    })
 }
 
-exports.updateGuestBarcodeSent = (req, res) => {
-    const { guest_id } = req.body;
-    // console.log(guest_id);
+exports.guestBarcodeSent = (req, res) => {
+    const { barcode } = req.query;
 
     eventsGuest.findAll({
-        where: { id: guest_id }
-    })
-        .then(data => {
-            // console.log(data[0].barcode_send_count);
-            var existCount = data[0].barcode_send_count;
-            var lastCount = parseInt(existCount) + parseInt(1);
-            // console.log(existCount);
+        where: { barcode: barcode }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(202).send({
+                code: 202,
+                success: false,
+                message: "Guest not found."
+            });
+            return;
+        }
 
-            eventsGuest.update({ barcode_send_count: lastCount }, { where: { id: guest_id } })
-                .then(data2 => {
+        const fid_events = data[0].fid_events;
+        const phone = data[0].phone;
+        const guestName = data[0].name;
+        const existBarcodeSentCount = data[0].barcode_send_count;
+
+        events.findAll({
+            where: { id: fid_events },
+            include: [
+                {
+                    model: regRegencies,
+                    include: {
+                        model: regProvincies
+                    }
+                },
+                { model: company },
+                { model: eventsWedding },
+                { model: eventsMessage }
+            ]
+        }).then(data2 => {
+            var eventMessage = data2[0].events_messages[0].content_barcode;
+            // const image = process.env.CDN_URL + 'event/qrcode/' + barcode + '.png';
+            const imageOri = process.env.MNT_PATH + 'event/qrcode/' + barcode + '.png';
+            fs.access(imageOri, fs.F_OK, (err) => {
+                if (err) {
                     res.status(200).send({
                         code: 200,
-                        success: true,
-                        message: "Barcode Sent.",
-                        data: data2
-                    });
-                })
-                .catch(err => {
-                    res.status(400).send({
-                        code: 400,
                         success: false,
-                        message:
-                            err.message || "Some error occurred while retrieving data."
+                        message: 'Barcode not found, please confirmation before send barcode.',
                     });
+                    return;
+                }
+
+                var image = base64_encode(imageOri);
+                // console.log(image);
+                const imageFilename = barcode + '.png';
+
+                const eventCompanyName = data2[0].company.title;
+                const eventCompanyContactPerson = data2[0].company.contact_person;
+                const eventCompanyContactNumber = data2[0].company.contact_phone;
+                const eventWedding = data2[0].events_wedding;
+
+                const d = new Date(data2[0].event_date);
+                const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const optionsTime = { timeZoneName: "short", hour: "2-digit", minute: "2-digit" };
+                const weddingDate = d.toLocaleDateString("id", optionsDate);
+                const weddingTime = d.toLocaleTimeString("id", optionsTime).replace('.', ':');
+
+                const venue_name = data2[0].venue_name;
+                const location_address = data2[0].location_address;
+                const city = data2[0].reg_regencie.name;
+                const province = data2[0].reg_regencie.reg_province.name;
+                const address = location_address + ', ' + city + ' - ' + province;
+                const bride_name = eventWedding.bride_name;
+                const groom_name = eventWedding.groom_name;
+
+                const em = eventMessage.replace('{{guestName}}', guestName);
+                const em1 = em.replaceAll('{{brideName}}', bride_name);
+                const em2 = em1.replaceAll('{{groomName}}', groom_name);
+                const em3 = em2.replace('{{weddingDate}}', weddingDate);
+                const em4 = em3.replace('{{weddingTime}}', weddingTime);
+                const em5 = em4.replace('{{venueName}}', venue_name);
+                const em6 = em5.replace('{{venueAddress}}', address).trim();
+                const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\nSender by Viseetor.com';
+                const eventWAMessage = em6 + woInfo;
+
+                // var data = JSON.stringify({
+                //     "api_key": process.env.WATZAP_KEY,
+                //     "number_key": process.env.WATZAP_NUMBER_KEY,
+                //     "phone_no": phone,
+                //     "url": image,
+                //     "message": eventWAMessage,
+                //     "separate_caption": 0 //(0 for No, 1 for Yes)
+                // });
+
+                // Body for WAPI
+                var data = JSON.stringify({
+                    "api_key": process.env.WAPI_API,
+                    "device_key": process.env.WAPI_DEVICE,
+                    "destination": phone,
+                    "image": image,
+                    "filename": imageFilename,
+                    "caption": eventWAMessage
                 });
-        })
+
+                var config = {
+                    method: 'post',
+                    url: process.env.WAPI_URL + 'send-image',
+                    headers: { 'Content-Type': 'application/json' },
+                    data: data
+                };
+                axios(config).then(function (response) {
+                    console.log(JSON.stringify(response.data));
+                    if (response.data.status == 1005) {
+                        res.status(200).send({
+                            code: 1005,
+                            success: false,
+                            message: response.data.message
+                        });
+                        return;
+                    }
+
+                    if (response.data.message == 'Successfully') {
+                        const updateCount = parseFloat(existBarcodeSentCount) + parseFloat('1');
+                        eventsGuest.update({
+                            invitation_status: 'CONFIRMED', barcode_send_count: updateCount
+                        }, {
+                            where: { barcode: barcode }
+                        }).then(datafinal => {
+                            res.status(200).send({
+                                code: 200,
+                                success: true,
+                                message: 'Barcode Invitation has sent.',
+                                wapi_response: response.data
+                            });
+                            return;
+                        })
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                    res.status(200).send({
+                        code: 200,
+                        success: false,
+                        message: error,
+                    });
+                    return;
+                });
+            })
+        });
+    });
 }
 
 exports.updateStatusAttending = (req, res) => {
@@ -1243,66 +1505,86 @@ exports.updateStatusAttending = (req, res) => {
         return;
     }
 
-    eventsGuest.update({ guest_actual, attend, reason }, {
+    eventsGuest.findAll({
         where: { barcode: barcode }
-    })
-        .then(data => {
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Guest not found."
+            });
+            return;
+        }
+
+        const guestMax = data[0].guest_max;
+
+        if (parseFloat(guest_actual) > parseFloat(guestMax)) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Guest actual over limit."
+            });
+            return;
+        }
+
+        const invitation_status = (attend == 'true') ? 'WILL ATTEND' : 'NOT ATTEND';
+
+        eventsGuest.update({ guest_actual, invitation_status, reason }, {
+            where: { barcode: barcode }
+        }).then(data => {
             if (data[0] == 0) {
                 res.status(200).send({
                     code: 200,
                     success: false,
-                    message: 'data not found',
-                    // data: data2
+                    message: 'Guest not found.',
                 });
                 return;
             }
+
             eventsGuest.findAll({
                 where: { barcode: barcode }
-            })
-                .then(data2 => {
-                    let stringdata = JSON.stringify(data2[0]);
-                    // Converting the data into base64
-                    QRCode.toDataURL(stringdata, function (err, code) {
-                        if (err) return console.log("error occurred");
-                        // Printing the code
-                        // console.log(code)
-                        // const buffer = Buffer.from(code, "base64");
+            }).then(data2 => {
+                let stringdata = JSON.stringify(data2[0]);
+                QRCode.toDataURL(stringdata, function (err, code) {
+                    if (err) return console.log("error occurred");
+                    if (err) {
+                        res.status(200).send({
+                            code: 200,
+                            success: false,
+                            message: err,
+                        });
+                        return;
+                    }
 
-                        var imageBuffer = decodeBase64Image(code);
-
-                        fs.writeFile(process.env.MNT_PATH + 'event/qrcode/' + barcode + '.png', imageBuffer.data, function (err) {
-
-                            if (err == 'null') {
-                                console.log(err);
-                                res.status(400).send({
-                                    code: 400,
-                                    success: false,
-                                    message: err,
-                                    // data: data2
-                                });
-                                return;
-                            }
-                            res.status(202).send({
-                                code: 202,
-                                success: true,
-                                message: "Attendance Updated and File QRCode has been created.",
-                                // data: data2
+                    var imageBuffer = decodeBase64Image(code);
+                    fs.writeFile(process.env.MNT_PATH + 'event/qrcode/' + barcode + '.png', imageBuffer.data, function (err) {
+                        if (err == 'null') {
+                            console.log(err);
+                            res.status(400).send({
+                                code: 400,
+                                success: false,
+                                message: err,
                             });
                             return;
+                        }
+                        res.status(202).send({
+                            code: 202,
+                            success: true,
+                            message: "Attendance Updated and File QRCode has been created.",
                         });
-
-                    })
-                })
-                .catch(err => {
-                    res.status(400).send({
-                        code: 400,
-                        success: false,
-                        message:
-                            err.message || "Some error occurred while retrieving data."
+                        return;
                     });
+                })
+            }).catch(err => {
+                res.status(400).send({
+                    code: 400,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
                 });
-        })
-        .catch(err => {
+            });
+        }).catch(err => {
             res.status(400).send({
                 code: 400,
                 success: false,
@@ -1310,6 +1592,7 @@ exports.updateStatusAttending = (req, res) => {
                     err.message || "Some error occurred while retrieving data."
             });
         });
+    })
 }
 
 ///theme
@@ -1341,6 +1624,65 @@ exports.themesSelected = (req, res) => {
         });
 }
 
+///message
+///message
+///message
+
+exports.updateMessageTemplate = (req, res) => {
+    const fid_user = req.userid;
+    const { id } = req.query;
+    const { content, content_barcode } = req.body;
+    // console.log(req.params)
+
+    eventsMessage.findAll({
+        where: { id: id },
+        include: {
+            model: events,
+            where: { fid_user: fid_user }
+        }
+    }).then(datax => {
+        if (datax.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Data not found or not you dont have authorize for this content."
+            });
+            return;
+
+        }
+
+        if (!req.file) {
+            eventsMessage.update({ content, content_barcode }, {
+                where: { id: id }
+            }).then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Data has been save."
+                });
+                return;
+            });
+        } else {
+            const image = req.file.filename;
+
+            eventsMessage.update({ image, content, content_barcode }, {
+                where: { id: id }
+            }).then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Data has been save."
+                });
+                return;
+            });
+        }
+    })
+}
+
+///function===========
+///function===========
+///function===========
+
 function decodeBase64Image(dataString) {
     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
         response = {};
@@ -1353,4 +1695,8 @@ function decodeBase64Image(dataString) {
     response.data = new Buffer(matches[2], 'base64');
 
     return response;
+}
+
+function base64_encode(file) {
+    return "data:image/gif;base64," + fs.readFileSync(file, 'base64');
 }

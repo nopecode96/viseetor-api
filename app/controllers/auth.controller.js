@@ -42,8 +42,8 @@ exports.login = (req, res) => {
     let jwtSecretKey = process.env.JWT_SECRET_KEY;
 
     if (!req.body.email && !req.body.password) {
-        res.status(204).send({
-            code: 204,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Please insert your email & password!"
         });
@@ -57,8 +57,8 @@ exports.login = (req, res) => {
     })
         .then(data => {
             if (data.length == 0) {
-                res.status(204).send({
-                    code: 204,
+                res.status(200).send({
+                    code: 200,
                     success: false,
                     message: 'Wrong Email/Password!',
                     data: ''

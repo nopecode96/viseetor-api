@@ -1,18 +1,20 @@
 module.exports = (sequelize, Sequelize) => {
-  const masterEvent = sequelize.define("master_event", {
+  const eventMessage = sequelize.define("events_message", {
     title: {
       type: Sequelize.STRING
     },
-    sample_message: {
+    image: {
+      type: Sequelize.STRING
+    },
+    content: {
       type: Sequelize.TEXT
     },
-    sample_message_barcode: {
+    content_barcode: {
       type: Sequelize.TEXT
     },
     published: {
       type: Sequelize.BOOLEAN
     },
-  }
-  );
-  return masterEvent;
+  });
+  return eventMessage;
 };

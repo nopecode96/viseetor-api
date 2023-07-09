@@ -63,6 +63,7 @@ db.eventsGiftBank = require("./event/events_gift_bank_model")(sequelize, Sequeli
 db.eventsGuest = require("./event/events_guest_model")(sequelize, Sequelize);
 db.eventsTicketing = require("./event/events_ticket_model")(sequelize, Sequelize);
 db.eventsAppScan = require("./event/events_app_scan_model")(sequelize, Sequelize);
+db.eventsMessage = require("./event/event_message_model")(sequelize, Sequelize);
 
 db.information = require("./information/information_model")(sequelize, Sequelize);
 db.informationFor = require("./information/information_for_model")(sequelize, Sequelize);
@@ -114,6 +115,8 @@ db.events.hasMany(db.eventsTicketing, { foreignKey: "fid_events" });
 db.eventsTicketing.belongsTo(db.events, { foreignKey: "fid_events" });
 db.events.hasMany(db.eventsAppScan, { foreignKey: "fid_events" });
 db.eventsAppScan.belongsTo(db.events, { foreignKey: "fid_events" });
+db.events.hasMany(db.eventsMessage, { foreignKey: "fid_events" });
+db.eventsMessage.belongsTo(db.events, { foreignKey: "fid_events" });
 
 db.regRegencies.hasMany(db.events, { foreignKey: "fid_regencies" });
 db.events.belongsTo(db.regRegencies, { foreignKey: "fid_regencies" });
