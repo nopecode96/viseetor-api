@@ -1384,6 +1384,7 @@ exports.guestBarcodeSent = (req, res) => {
             var eventMessage = data2[0].events_messages[0].content_barcode;
             // const image = process.env.CDN_URL + 'event/qrcode/' + barcode + '.png';
             const imageOri = process.env.MNT_PATH + 'event/qrcode/' + barcode + '.png';
+            console.log(imageOri);
             fs.access(imageOri, fs.F_OK, (err) => {
                 if (err) {
                     res.status(200).send({
@@ -1459,6 +1460,7 @@ exports.guestBarcodeSent = (req, res) => {
                             code: 1005,
                             success: false,
                             message: response.data.message
+
                         });
                         return;
                     }
@@ -1697,5 +1699,6 @@ function decodeBase64Image(dataString) {
 }
 
 function base64_encode(file) {
-    return "data:image/gif;base64," + fs.readFileSync(file, 'base64');
+    var bitmap = fs.readFileSync(file);
+    return new Buffer(bitmap).toString('base64');
 }
