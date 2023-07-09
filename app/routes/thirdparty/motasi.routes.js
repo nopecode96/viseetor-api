@@ -6,6 +6,5 @@ module.exports = app => {
     var router = require("express").Router();
 
     router.post("/motasi", controller.webhook);
-    // router.post("/logincheck", authValidation.apiKeyValidation, controller.logincheck);
     app.use('/' + process.env.ENVIRONMENT + '/thirdpary', router);
 };

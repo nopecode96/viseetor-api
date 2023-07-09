@@ -77,7 +77,6 @@ require("./app/routes/marketing/information.routes")(app);
 
 require("./app/routes/website/wedding.routes")(app);
 require("./app/routes/website/marketing.routes")(app);
-
 require("./app/routes/thirdparty/motasi.routes")(app);
 
 dotenv.config();
