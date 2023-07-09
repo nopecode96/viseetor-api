@@ -1218,6 +1218,8 @@ exports.guestInvitationSent = async (req, res) => {
         const existInvitationStatus = data[0].invitation_status;
         const existInvitationSentCount = data[0].invitation_send_count;
 
+        console.log(phone);
+
         events.findAll({
             where: { id: fid_events },
             include: [
@@ -1234,7 +1236,12 @@ exports.guestInvitationSent = async (req, res) => {
         }).then(data2 => {
             console.log('process sent invitation step 2');
             var eventMessage = data2[0].events_messages[0].content;
-            const image = process.env.CDN_URL + 'event/thumbnail/' + data2[0].events_messages[0].image;
+            // const image = process.env.CDN_URL + 'event/thumbnail/' + data2[0].events_messages[0].image;
+            const imageOri = process.env.MNT_PATH + 'event/thumbnail/' + data2[0].events_messages[0].image;
+            var image = base64_encode(imageOri);
+            // console.log(image);
+            const imageFilename = data2[0].events_messages[0].image;
+
 
             const eventCompanyName = data2[0].company.title;
             const eventCompanyContactPerson = data2[0].company.contact_person;
@@ -1268,30 +1275,40 @@ exports.guestInvitationSent = async (req, res) => {
             const em8 = em7.replace('{{venueName}}', venue_name);
             const em9 = em8.replace('{{venueAddress}}', address).trim();
             const em10 = em9.replace('{{websiteURL}}', websiteURL);
-            const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\n\n```Mohon reply dengan mengetik "Hi" untuk mengaktifkan Link URL/Website, lalu tutup chat ini dan buka kembali.```'
+            const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\n\n```Mohon reply dengan mengetik "Hi" untuk mengaktifkan Link URL/Website, lalu tutup chat ini dan buka kembali.```\n\nSender by Viseetor.com'
             const eventWAMessage = em10 + woInfo;
             console.log('process sent invitation step 3');
 
+            // Body for WATZAP
+            // var data = JSON.stringify({
+            //     "api_key": process.env.WATZAP_KEY,
+            //     "number_key": process.env.WATZAP_NUMBER_KEY,
+            //     "phone_no": phone,
+            //     "url": image,
+            //     "message": eventWAMessage,
+            //     "separate_caption": 0 //(0 for No, 1 for Yes)
+            // });
+
+            // Body for WAPI
             var data = JSON.stringify({
-                "api_key": process.env.WATZAP_KEY,
-                "number_key": process.env.WATZAP_NUMBER_KEY,
-                "phone_no": phone,
-                "url": image,
-                "message": eventWAMessage,
-                "separate_caption": 0 //(0 for No, 1 for Yes)
+                "api_key": process.env.WAPI_API,
+                "device_key": process.env.WAPI_DEVICE,
+                "destination": phone,
+                "image": image,
+                "filename": imageFilename,
+                "caption": eventWAMessage
             });
 
             var config = {
                 method: 'post',
-                maxBodyLength: Infinity,
-                url: process.env.WATZAP_URL + 'send_image_url',
+                url: process.env.WAPI_URL + 'send-image',
                 headers: { 'Content-Type': 'application/json' },
                 data: data
             };
             axios(config).then(function (response) {
                 console.log('process sent invitation step 4');
-                console.log(JSON.stringify(response.data));
-                if (response.data.status == 1005) {
+                console.log(response.data);
+                if (response.data.status !== "ok") {
                     res.status(200).send({
                         code: 1005,
                         success: false,
@@ -1300,23 +1317,23 @@ exports.guestInvitationSent = async (req, res) => {
                     return;
                 }
 
-                if (response.data.message == 'Successfully') {
-                    const updateCount = parseFloat(existInvitationSentCount) + parseFloat('1');
-                    const status = (existInvitationStatus == 'LISTED') ? 'INVITED' : existInvitationStatus;
-                    eventsGuest.update({
-                        invitation_status: status, invitation_send_count: updateCount
-                    }, {
-                        where: { barcode: barcode }
-                    }).then(datafinal => {
-                        console.log('process sent invitation success');
-                        res.status(200).send({
-                            code: 200,
-                            success: true,
-                            message: 'Invitation has sent.',
-                        });
-                        return;
-                    })
-                }
+                const updateCount = parseFloat(existInvitationSentCount) + parseFloat('1');
+                const status = (existInvitationStatus == 'LISTED') ? 'INVITED' : existInvitationStatus;
+                eventsGuest.update({
+                    invitation_status: status, invitation_send_count: updateCount
+                }, {
+                    where: { barcode: barcode }
+                }).then(datafinal => {
+                    console.log('process sent invitation success');
+                    res.status(200).send({
+                        code: 200,
+                        success: true,
+                        message: 'Invitation has sent.',
+                        wapi_response: response.data
+                    });
+                    return;
+                })
+
             }).catch(function (error) {
                 console.log(error);
                 res.status(200).send({
@@ -1365,89 +1382,118 @@ exports.guestBarcodeSent = (req, res) => {
             ]
         }).then(data2 => {
             var eventMessage = data2[0].events_messages[0].content_barcode;
-            const image = process.env.CDN_URL + 'event/qrcode/' + barcode + '.png';
-
-            const eventCompanyName = data2[0].company.title;
-            const eventCompanyContactPerson = data2[0].company.contact_person;
-            const eventCompanyContactNumber = data2[0].company.contact_phone;
-            const eventWedding = data2[0].events_wedding;
-
-            const d = new Date(data2[0].event_date);
-            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const optionsTime = { timeZoneName: "short", hour: "2-digit", minute: "2-digit" };
-            const weddingDate = d.toLocaleDateString("id", optionsDate);
-            const weddingTime = d.toLocaleTimeString("id", optionsTime).replace('.', ':');
-
-            const venue_name = data2[0].venue_name;
-            const location_address = data2[0].location_address;
-            const city = data2[0].reg_regencie.name;
-            const province = data2[0].reg_regencie.reg_province.name;
-            const address = location_address + ', ' + city + ' - ' + province;
-            const bride_name = eventWedding.bride_name;
-            const groom_name = eventWedding.groom_name;
-            const bride_parent = eventWedding.bride_parent;
-            const groom_parent = eventWedding.groom_parent;
-
-            const em = eventMessage.replace('{{guestName}}', guestName);
-            const em1 = em.replaceAll('{{brideName}}', bride_name);
-            const em2 = em1.replaceAll('{{groomName}}', groom_name);
-            const em3 = em2.replace('{{weddingDate}}', weddingDate);
-            const em4 = em3.replace('{{weddingTime}}', weddingTime);
-            const em5 = em4.replace('{{venueName}}', venue_name);
-            const em6 = em5.replace('{{venueAddress}}', address).trim();
-            const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName;
-            const eventWAMessage = em6 + woInfo;
-
-            var data = JSON.stringify({
-                "api_key": process.env.WATZAP_KEY,
-                "number_key": process.env.WATZAP_NUMBER_KEY,
-                "phone_no": phone,
-                "url": image,
-                "message": eventWAMessage,
-                "separate_caption": 0 //(0 for No, 1 for Yes)
-            });
-            var config = {
-                method: 'post',
-                maxBodyLength: Infinity,
-                url: process.env.WATZAP_URL + 'send_image_url',
-                headers: { 'Content-Type': 'application/json' },
-                data: data
-            };
-            axios(config).then(function (response) {
-                console.log(JSON.stringify(response.data));
-                if (response.data.status == 1005) {
+            // const image = process.env.CDN_URL + 'event/qrcode/' + barcode + '.png';
+            const imageOri = process.env.MNT_PATH + 'event/qrcode/' + barcode + '.png';
+            fs.access(imageOri, fs.F_OK, (err) => {
+                if (err) {
                     res.status(200).send({
-                        code: 1005,
+                        code: 200,
                         success: false,
-                        message: response.data.message
+                        message: 'Barcode not found, please confirmation before send barcode.',
                     });
                     return;
                 }
 
-                if (response.data.message == 'Successfully') {
-                    const updateCount = parseFloat(existBarcodeSentCount) + parseFloat('1');
-                    eventsGuest.update({
-                        invitation_status: 'CONFIRMED', barcode_send_count: updateCount
-                    }, {
-                        where: { barcode: barcode }
-                    }).then(datafinal => {
+                var image = base64_encode(imageOri);
+                // console.log(image);
+                const imageFilename = barcode + '.png';
+
+                const eventCompanyName = data2[0].company.title;
+                const eventCompanyContactPerson = data2[0].company.contact_person;
+                const eventCompanyContactNumber = data2[0].company.contact_phone;
+                const eventWedding = data2[0].events_wedding;
+
+                const d = new Date(data2[0].event_date);
+                const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const optionsTime = { timeZoneName: "short", hour: "2-digit", minute: "2-digit" };
+                const weddingDate = d.toLocaleDateString("id", optionsDate);
+                const weddingTime = d.toLocaleTimeString("id", optionsTime).replace('.', ':');
+
+                const venue_name = data2[0].venue_name;
+                const location_address = data2[0].location_address;
+                const city = data2[0].reg_regencie.name;
+                const province = data2[0].reg_regencie.reg_province.name;
+                const address = location_address + ', ' + city + ' - ' + province;
+                const bride_name = eventWedding.bride_name;
+                const groom_name = eventWedding.groom_name;
+
+                const em = eventMessage.replace('{{guestName}}', guestName);
+                const em1 = em.replaceAll('{{brideName}}', bride_name);
+                const em2 = em1.replaceAll('{{groomName}}', groom_name);
+                const em3 = em2.replace('{{weddingDate}}', weddingDate);
+                const em4 = em3.replace('{{weddingTime}}', weddingTime);
+                const em5 = em4.replace('{{venueName}}', venue_name);
+                const em6 = em5.replace('{{venueAddress}}', address).trim();
+                const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\nSender by Viseetor.com';
+                const eventWAMessage = em6 + woInfo;
+
+                // var data = JSON.stringify({
+                //     "api_key": process.env.WATZAP_KEY,
+                //     "number_key": process.env.WATZAP_NUMBER_KEY,
+                //     "phone_no": phone,
+                //     "url": image,
+                //     "message": eventWAMessage,
+                //     "separate_caption": 0 //(0 for No, 1 for Yes)
+                // });
+
+                // Body for WAPI
+                var data = JSON.stringify({
+                    "api_key": process.env.WAPI_API,
+                    "device_key": process.env.WAPI_DEVICE,
+                    "destination": phone,
+                    "image": image,
+                    "filename": imageFilename,
+                    "caption": eventWAMessage
+                });
+
+                var config = {
+                    method: 'post',
+                    url: process.env.WAPI_URL + 'send-image',
+                    headers: { 'Content-Type': 'application/json' },
+                    data: data
+                };
+                axios(config).then(function (response) {
+                    console.log(JSON.stringify(response.data));
+                    if (response.data.status == 1005) {
                         res.status(200).send({
-                            code: 200,
-                            success: true,
-                            message: 'Barcode Invitation has sent.',
+                            code: 1005,
+                            success: false,
+                            message: response.data.message
                         });
                         return;
-                    })
-                }
-            }).catch(function (error) {
-                console.log(error);
-                res.status(200).send({
-                    code: 200,
-                    success: false,
-                    message: error,
+                    }
+
+                    if (response.data.message == 'Successfully') {
+                        const updateCount = parseFloat(existBarcodeSentCount) + parseFloat('1');
+                        eventsGuest.update({
+                            invitation_status: 'CONFIRMED', barcode_send_count: updateCount
+                        }, {
+                            where: { barcode: barcode }
+                        }).then(datafinal => {
+                            res.status(200).send({
+                                code: 200,
+                                success: true,
+                                message: 'Barcode Invitation has sent.',
+                                wapi_response: response.data
+                            });
+                            return;
+                        })
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                    res.status(200).send({
+                        code: 200,
+                        success: false,
+                        message: error,
+                    });
+                    return;
                 });
-                return;
-            });
+            })
+
+
+
+
+
 
 
         });
@@ -1656,4 +1702,8 @@ function decodeBase64Image(dataString) {
     response.data = new Buffer(matches[2], 'base64');
 
     return response;
+}
+
+function base64_encode(file) {
+    return "data:image/gif;base64," + fs.readFileSync(file, 'base64');
 }
