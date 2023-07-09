@@ -1000,6 +1000,15 @@ exports.allEventGuest = (req, res) => {
             return;
         }
 
+        if (results.dataEvents.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Data not found',
+            })
+            return;
+        }
+
         if (results.dataGuestList.length == 0) {
             res.status(200).send({
                 code: 200,
