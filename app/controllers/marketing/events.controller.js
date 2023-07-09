@@ -1489,13 +1489,6 @@ exports.guestBarcodeSent = (req, res) => {
                     return;
                 });
             })
-
-
-
-
-
-
-
         });
     });
 }
