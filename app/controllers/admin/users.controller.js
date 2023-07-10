@@ -125,7 +125,7 @@ exports.createUserMarketing = (req, res) => {
     const createdBy = fid_user_admin;
     const { username, name, phone_number, email, password_str } = req.body;
 
-    console.log(username, name, phone_number, email, password_str)
+    // console.log(username, name, phone_number, email, password_str)
     if (!username || !name || !email || !phone_number || !password_str) {
         res.status(200).send({
             code: 200,
@@ -173,8 +173,7 @@ exports.createUserMarketing = (req, res) => {
                             });
                             return;
                         })
-                })
-                .catch(err => {
+                }).catch(err => {
                     console.log(err);
                     res.status(500).send({
                         code: 500,
@@ -185,4 +184,10 @@ exports.createUserMarketing = (req, res) => {
                 });
         })
     })
+}
+
+exports.updateStatusUserMarketing = (req, res) => {
+    const { id, status } = req.body;
+
+
 }
