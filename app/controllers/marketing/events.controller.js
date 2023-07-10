@@ -523,10 +523,49 @@ exports.create = (req, res) => {
 
             const id = data.id;
 
+            if (fid_type == '1') {
+                eventsWedding.create({ fid_events: id })
+                    .then(dat2 => {
+                        masterEvent.findAll({
+                            where: { id: fid_type }
+                        }).then(data2 => {
+                            if (data2.length == 0) {
+                                res.status(200).send({
+                                    code: 200,
+                                    success: false,
+                                    message: "Fid Type Not Found.",
+                                    // insertID: data.id
+                                });
+                                return;
+                            }
+
+                            const sample_message = data2[0].sample_message;
+                            const sample_message_barcode = data2[0].sample_message_barcode;
+
+                            eventsMessage.create({
+                                title: 'default',
+                                image: 'default.jpg',
+                                content: sample_message,
+                                content_barcode: sample_message_barcode,
+                                published: true,
+                                fid_events: id
+                            }).then(data2a => {
+                                res.status(201).send({
+                                    code: 201,
+                                    success: true,
+                                    message: "Create data event success.",
+                                    fid_events: id
+                                });
+                                return;
+                            });
+                        })
+                    })
+            }
+
             masterEvent.findAll({
                 where: { id: fid_type }
-            }).then(data2 => {
-                if (data2.length == 0) {
+            }).then(data3 => {
+                if (data3.length == 0) {
                     res.status(200).send({
                         code: 200,
                         success: false,
@@ -536,8 +575,8 @@ exports.create = (req, res) => {
                     return;
                 }
 
-                const sample_message = data2[0].sample_message;
-                const sample_message_barcode = data2[0].sample_message_barcode;
+                const sample_message = data3[0].sample_message;
+                const sample_message_barcode = data3[0].sample_message_barcode;
 
                 eventsMessage.create({
                     title: 'default',
@@ -546,7 +585,7 @@ exports.create = (req, res) => {
                     content_barcode: sample_message_barcode,
                     published: true,
                     fid_events: id
-                }).then(data3 => {
+                }).then(data3a => {
                     res.status(201).send({
                         code: 201,
                         success: true,
