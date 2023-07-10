@@ -33,6 +33,10 @@ exports.findAllMarketing = (req, res) => {
         attributes: ['id', 'email', 'username', 'name', 'photo', 'published', 'lastLogin', 'fid_user_type', 'fid_user_status', 'createdAt'],
         include: [
             {
+                model: userProfile,
+                attributes: ['phone_number']
+            },
+            {
                 model: userType,
                 attributes: ['type_name']
             },
@@ -84,7 +88,7 @@ exports.findAllUsersAdmin = (req, res) => {
         include: [
             {
                 model: userProfile,
-                attributes: ['phone']
+                attributes: ['phone_number']
             },
             {
                 model: userType,
@@ -121,9 +125,9 @@ exports.createUserMarketing = (req, res) => {
     const fid_user_status = 2;
     const published = true;
     const createdBy = fid_user_admin;
-    const { username, name, phone, email, password } = req.body;
+    const { username, name, phone_number, email, password } = req.body;
 
-    if (!username || !name || !email || !phone || !password) {
+    if (!username || !name || !email || !phone_number || !password) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -145,7 +149,7 @@ exports.createUserMarketing = (req, res) => {
         }
 
         userProfile.findAll({
-            where: { phone: phone }
+            where: { phone_number: phone_number }
         }).then(data2 => {
             if (data2.length > 0) {
                 res.status(200).send({
@@ -159,9 +163,9 @@ exports.createUserMarketing = (req, res) => {
             user.create({ username, name, email, password, fid_user_type, fid_user_status, published, createdBy })
                 .then(data3 => {
                     const fid_user = data3.id;
-                    userProfile.create({ phone, fid_user })
+                    userProfile.create({ phone_number, fid_user })
                         .then(data4 => {
-                            functions.notificationWhatsApp(phone, 'Thank You to join Viseetor.\n\nYour account has been created. Now, you can login to your work platform at: ' + process.env.ADMIN_URL + '.\n\nHappy work,\nViseetor.com\n\nPlease join to Viseetor Partnerhip Telegram at ' + process.env.TELEGRAM_URL)
+                            functions.notificationWhatsApp(phone_number, 'Thank You to join Viseetor.\n\nYour account has been created. Now, you can login to your work platform at: ' + process.env.ADMIN_URL + '.\n\nHappy work,\nViseetor.com\n\nPlease join to Viseetor Partnerhip Telegram at ' + process.env.TELEGRAM_URL)
                             functions.auditLog('POST', 'Create new marketing with name ' + name, 'Any', 'users', data.id, fid_user_admin)
                             res.status(200).send({
                                 code: 200,
