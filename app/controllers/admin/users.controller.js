@@ -187,7 +187,64 @@ exports.createUserMarketing = (req, res) => {
 }
 
 exports.updateStatusUserMarketing = (req, res) => {
-    const { id, status } = req.body;
+    const { userid, status } = req.body;
 
+    if (userid == '1') {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "You do not permission to update this user."
+        });
+        return;
+    }
 
+    user.findAll({
+        where: { id: userid }
+    }).then(data => {
+        if (data[0].fid_user_type == '1') {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "You do not permission to update this user."
+            });
+            return;
+        }
+
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "User Not Found."
+            });
+            return;
+        }
+
+        user.update({
+            fid_user_status: status
+        }, { where: { id: userid } })
+            .then(data2 => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Status updated."
+                });
+                return;
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+            });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({
+            code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
 }
