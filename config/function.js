@@ -64,3 +64,42 @@ module.exports.auditLog = function auditLog(action, description, user_agent, mod
             next;
         })
 }
+
+module.exports.notificationWhatsApp = function auditLog(phone, message, next) {
+
+    var data = JSON.stringify({
+        "api_key": process.env.WAPI_API,
+        "device_key": process.env.WAPI_DEVICE,
+        "destination": phone,
+        "message": message,
+    });
+    var config = {
+        method: 'post',
+        url: process.env.WAPI_URL + 'send-message',
+        headers: { 'Content-Type': 'application/json' },
+        data: data
+    };
+    axios(config).then(function (response) {
+        console.log('notification for create user has been send');
+        console.log(response.data);
+        if (response.data.status !== "ok") {
+            res.status(200).send({
+                code: 1005,
+                success: false,
+                message: response.data.message
+            });
+            return;
+        }
+
+        next;
+
+    }).catch(function (error) {
+        console.log(error);
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: error,
+        });
+        return;
+    });
+}
