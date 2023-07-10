@@ -83,6 +83,10 @@ exports.findAllUsersAdmin = (req, res) => {
         attributes: ['id', 'email', 'name', 'photo', 'published', 'lastLogin', 'fid_user_type', 'fid_user_status', 'createdAt'],
         include: [
             {
+                model: userProfile,
+                attributes: ['phone']
+            },
+            {
                 model: userType,
                 attributes: ['type_name']
             },
