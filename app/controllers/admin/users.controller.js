@@ -99,24 +99,22 @@ exports.findAllUsersAdmin = (req, res) => {
                 attributes: ['title']
             }
         ]
-    })
-        .then(data => {
-            const response = functions.getPagingData(data, page, limit);
-            res.status(200).send({
-                code: 200,
-                success: true,
-                message: "Datas Found.",
-                data: response
-            });
-        })
-        .catch(err => {
-            res.status(500).send({
-                code: 500,
-                success: false,
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
+    }).then(data => {
+        const response = functions.getPagingData(data, page, limit);
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: response
         });
+    }).catch(err => {
+        res.status(500).send({
+            code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
 }
 
 exports.createUserMarketing = (req, res) => {
@@ -125,9 +123,10 @@ exports.createUserMarketing = (req, res) => {
     const fid_user_status = 2;
     const published = true;
     const createdBy = fid_user_admin;
-    const { username, name, phone_number, email, password } = req.body;
+    const { username, name, phone_number, email, password_str } = req.body;
 
-    if (!username || !name || !email || !phone_number || !password) {
+    console.log(username, name, phone_number, email, password_str)
+    if (!username || !name || !email || !phone_number || !password_str) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -159,7 +158,7 @@ exports.createUserMarketing = (req, res) => {
                 });
                 return;
             }
-
+            let password = md5(password_str);
             user.create({ username, name, email, password, fid_user_type, fid_user_status, published, createdBy })
                 .then(data3 => {
                     const fid_user = data3.id;
