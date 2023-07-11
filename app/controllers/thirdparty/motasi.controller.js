@@ -16,3 +16,14 @@ exports.webhook = (req, res) => {
     return;
 
 }
+
+exports.checkmutasi = (req, res) => {
+
+    functions.checkMotasiBankTransaction('CR', 'OVO');
+    res.status(200).send({
+        code: 200,
+        success: true,
+        message: 'Thanks',
+    })
+    return;
+}

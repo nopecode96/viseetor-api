@@ -450,6 +450,7 @@ exports.update = (req, res) => {
             });
         });
     } else {
+        const logo = req.file.filename;
         company.update(
             { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, logo },
             { where: { id: id, fid_user: fid_user } }
