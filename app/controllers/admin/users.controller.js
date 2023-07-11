@@ -1,6 +1,8 @@
 const db = require("../../models/index.model");
 const sequelize = require('sequelize');
 const md5 = require('md5');
+const async = require('async')
+const axios = require("axios")
 
 var functions = require("../../../config/function");
 const { user, userProfile, userType, masterUserStatus } = require("../../models/index.model");
@@ -118,14 +120,14 @@ exports.findAllUsersAdmin = (req, res) => {
 }
 
 exports.createUserMarketing = (req, res) => {
-    const { fid_user_admin } = req.userid;
+    const fid_user_admin = req.userid;
     const fid_user_type = 2;
     const fid_user_status = 2;
     const published = true;
     const createdBy = fid_user_admin;
     const { username, name, phone_number, email, password_str } = req.body;
 
-    // console.log(username, name, phone_number, email, password_str)
+    console.log(fid_user_admin)
     if (!username || !name || !email || !phone_number || !password_str) {
         res.status(200).send({
             code: 200,
