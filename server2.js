@@ -26,6 +26,7 @@ app.options('*', cors());
 
 const db = require("./app/models/index.model");
 db.sequelize.sync()
+
 // db.sequelize.sync({ force: true })
 // db.sequelize.sync({ logging: console.log })
 // db.sequelize.sync({ force: true }).then(() => {

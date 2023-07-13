@@ -67,9 +67,9 @@ exports.getData = (req, res) => {
 }
 
 exports.updateStatusAttending = (req, res) => {
-    const { barcode, guest_actual, invitation_status, reason } = req.body;
+    const { barcode, guest_actual, attend, reason } = req.body;
 
-    if (!barcode || !guest_actual || !invitation_status) {
+    if (!barcode || !attend) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -81,72 +81,69 @@ exports.updateStatusAttending = (req, res) => {
     // console.log(barcode);
     eventsGuest.findAll({
         where: { barcode: barcode }
-    })
-        .then(dataGuest => {
-            // console.log('disana')
-            const guestMax = dataGuest[0].guest_max;
-            // console.log();
-            if (parseInt(guest_actual) > guestMax) {
-                res.status(200).send({
-                    code: 200,
-                    success: false,
-                    message: "You are over guest limit.",
-                });
-                return;
-            } else {
-                eventsGuest.update({ guest_actual, invitation_status, reason }, {
+    }).then(dataGuest => {
+        // console.log(dataGuest);
+        if (dataGuest.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Data not found.",
+            });
+            return;
+        }
+        const guestMax = dataGuest[0].guest_max;
+        // console.log();
+        if (parseInt(guest_actual) > guestMax) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "You are over guest limit.",
+            });
+            return;
+        } else {
+            const invitation_status = attend == 'true' ? 'WILL ATTEND' : 'NOT ATTEND';
+            eventsGuest.update({ guest_actual, invitation_status, reason }, {
+                where: { barcode: barcode }
+            }).then(data => {
+                if (data[0] == 0) {
+                    res.status(200).send({
+                        code: 200,
+                        success: false,
+                        message: "error Update Data",
+                        // data: data2
+                    });
+                    return;
+                }
+                eventsGuest.findAll({
                     where: { barcode: barcode }
-                })
-                    .then(data => {
-                        if (data[0] == 0) {
+                }).then(data2 => {
+                    let stringdata = JSON.stringify(data2[0]);
+                    QRCode.toDataURL(stringdata, function (err, code) {
+                        if (err) return console.log("error occurred " + err);
+                        var imageBuffer = decodeBase64Image(code);
+
+                        fs.writeFile(process.env.MNT_PATH + 'event/qrcode/' + barcode + '.png', imageBuffer.data, function (err) {
+
+                            if (err == 'null') {
+                                console.log(err);
+                                res.status(200).send({
+                                    code: 200,
+                                    success: false,
+                                    message: err,
+                                    // data: data2
+                                });
+                                return;
+                            }
                             res.status(200).send({
                                 code: 200,
-                                success: false,
-                                message: "error Update Data",
-                                // data: data2
+                                success: true,
+                                message: "Attendance Updated and File QRCode has been created.",
                             });
                             return;
-                        }
-                        eventsGuest.findAll({
-                            where: { barcode: barcode }
-                        })
-                            .then(data2 => {
-                                let stringdata = JSON.stringify(data2[0]);
-                                QRCode.toDataURL(stringdata, function (err, code) {
-                                    if (err) return console.log("error occurred");
-                                    var imageBuffer = decodeBase64Image(code);
+                        });
 
-                                    fs.writeFile(process.env.MNT_PATH + 'event/qrcode/' + barcode + '.png', imageBuffer.data, function (err) {
-
-                                        if (err == 'null') {
-                                            console.log(err);
-                                            res.status(200).send({
-                                                code: 200,
-                                                success: false,
-                                                message: err,
-                                                // data: data2
-                                            });
-                                            return;
-                                        }
-                                        res.status(200).send({
-                                            code: 200,
-                                            success: true,
-                                            message: "Attendance Updated and File QRCode has been created.",
-                                        });
-                                        return;
-                                    });
-
-                                })
-                            })
-                            .catch(err => {
-                                res.status(400).send({
-                                    code: 400,
-                                    success: false,
-                                    message:
-                                        err.message || "Some error occurred while retrieving data."
-                                });
-                            });
                     })
+                })
                     .catch(err => {
                         res.status(400).send({
                             code: 400,
@@ -155,8 +152,17 @@ exports.updateStatusAttending = (req, res) => {
                                 err.message || "Some error occurred while retrieving data."
                         });
                     });
-            }
-        })
+            })
+                .catch(err => {
+                    res.status(400).send({
+                        code: 400,
+                        success: false,
+                        message:
+                            err.message || "Some error occurred while retrieving data."
+                    });
+                });
+        }
+    })
         .catch(err => {
             res.status(400).send({
                 code: 400,
