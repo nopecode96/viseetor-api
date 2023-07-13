@@ -346,12 +346,14 @@ exports.createTransaction = (req, res) => {
         const unit_commission = data[0].commission;
         const total_price = parseFloat(unit_price) * parseFloat(qty);
         const total_commission = parseFloat(unit_commission) * parseFloat(qty);
-        console.log(unit_commission);
+        // console.log(unit_commission);
 
         if (!fid_promotion) {
             const tax_nominal = parseFloat(total_price) * parseFloat(tax) / 100;
             const total_before_tax = parseFloat(total_price);
-            const total_payment = parseFloat(total_before_tax) + parseFloat(tax_nominal);
+            const unixcode = order_number.substring(order_number.length - 3);
+
+            const total_payment = parseFloat(total_before_tax) + parseFloat(tax_nominal) + parseFloat(unixcode);
 
             const discount_nominal = 0;
             const discount_percent = 0;
@@ -383,7 +385,9 @@ exports.createTransaction = (req, res) => {
                 const total_before_tax = parseFloat(total_price) - parseFloat(discount_nominal);
 
                 const tax_nominal = parseFloat(total_before_tax) * parseFloat(tax) / 100;
-                const total_payment = parseFloat(total_price) + parseFloat(tax_nominal);
+                const unixcode = order_number.substring(order_number.length - 3);
+
+                const total_payment = parseFloat(total_price) + parseFloat(tax_nominal) + parseFloat(unixcode);
 
                 transaction.create({ order_number, qty, unit_price, unit_commission, total_price, discount_percent, discount_nominal, total_before_tax, tax, tax_nominal, total_payment, total_commission, status, published, fid_promotion, fid_events, fid_user, fid_bank_payment, fid_price })
                     .then(data => {
