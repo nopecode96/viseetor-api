@@ -416,7 +416,6 @@ exports.putBanner = (req, res) => {
 
 }
 
-
 exports.pageCreate = (req, res) => {
     const fid_user = req.userid;
 
@@ -968,7 +967,6 @@ exports.uploadGallery = (req, res) => {
 }
 
 
-
 ////====guest====
 ////====guest====
 ////====guest====
@@ -1257,8 +1255,6 @@ exports.guestInvitationSent = async (req, res) => {
         const existInvitationStatus = data[0].invitation_status;
         const existInvitationSentCount = data[0].invitation_send_count;
 
-        console.log(phone);
-
         events.findAll({
             where: { id: fid_events },
             include: [
@@ -1273,14 +1269,20 @@ exports.guestInvitationSent = async (req, res) => {
                 { model: eventsMessage }
             ]
         }).then(data2 => {
+            if (data2.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: 'Event not found',
+                });
+                return;
+            }
+
             console.log('process sent invitation step 2');
             var eventMessage = data2[0].events_messages[0].content;
-            // const image = process.env.CDN_URL + 'event/thumbnail/' + data2[0].events_messages[0].image;
             const imageOri = process.env.MNT_PATH + 'event/thumbnail/' + data2[0].events_messages[0].image;
             var image = base64_encode(imageOri);
-            // console.log(image);
             const imageFilename = data2[0].events_messages[0].image;
-
 
             const eventCompanyName = data2[0].company.title;
             const eventCompanyContactPerson = data2[0].company.contact_person;
@@ -1318,17 +1320,6 @@ exports.guestInvitationSent = async (req, res) => {
             const eventWAMessage = em10 + woInfo;
             console.log('process sent invitation step 3');
 
-            // Body for WATZAP
-            // var data = JSON.stringify({
-            //     "api_key": process.env.WATZAP_KEY,
-            //     "number_key": process.env.WATZAP_NUMBER_KEY,
-            //     "phone_no": phone,
-            //     "url": image,
-            //     "message": eventWAMessage,
-            //     "separate_caption": 0 //(0 for No, 1 for Yes)
-            // });
-
-            // Body for WAPI
             var data = JSON.stringify({
                 "api_key": process.env.WAPI_API,
                 "device_key": process.env.WAPI_DEVICE,
@@ -1384,6 +1375,174 @@ exports.guestInvitationSent = async (req, res) => {
             });
         })
     })
+}
+
+exports.getBulkForInvitationSent = (req, res) => {
+    const { eventID } = req.query;
+    if (!eventID) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field (eventID)"
+        });
+        return;
+    }
+
+    eventsGuest.findAll({
+        where: {
+            fid_events: eventID, invitation_status: 'LISTED'
+        },
+        attributes: ['barcode', 'phone']
+    }).then(eventGuest => {
+        if (eventGuest.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Guest not found."
+            });
+            return;
+        }
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Guest found.",
+            data: eventGuest
+        });
+        return;
+
+
+    });
+}
+
+exports.invitationSentBulk = (req, res) => {
+    const { eventID } = req.query;
+    if (!eventID) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field (eventID)"
+        });
+        return;
+    }
+
+    eventsGuest.findAll({
+        where: { fid_events: eventID, invitation_status: 'LISTED' },
+    }).then(data2 => {
+        // console.log('data2')
+        // console.log(data2)
+        if (data2.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Guest list of this Event not found',
+            });
+            return;
+        }
+        events.findAll({
+            where: { id: eventID },
+            include: [
+                {
+                    model: regRegencies,
+                    include: {
+                        model: regProvincies
+                    }
+                },
+                { model: company },
+                { model: eventsWedding },
+                { model: eventsMessage }
+            ]
+        }).then(dataEvent => {
+            if (dataEvent.length == 0) {
+
+            }
+
+            for (let i = 0; i < data2.length; i++) {
+                if (i === data2.length) {
+                    break;
+                }
+
+                var eventMessage = dataEvent[0].events_messages[0].content;
+                const imageOri = process.env.MNT_PATH + 'event/thumbnail/' + dataEvent[0].events_messages[0].image;
+                var image = base64_encode(imageOri);
+                const imageFilename = dataEvent[0].events_messages[0].image;
+                const eventCompanyName = dataEvent[0].company.title;
+                const eventCompanyContactPerson = dataEvent[0].company.contact_person;
+                const eventCompanyContactNumber = dataEvent[0].company.contact_phone;
+                const venue_name = dataEvent[0].venue_name;
+                const location_address = dataEvent[0].location_address;
+                const city = dataEvent[0].reg_regencie.name;
+                const province = dataEvent[0].reg_regencie.reg_province.name;
+                const address = location_address + ', ' + city + ' - ' + province;
+                const eventWedding = dataEvent[0].events_wedding;
+
+                const d = new Date(dataEvent[0].event_date);
+                const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const optionsTime = { timeZoneName: "short", hour: "2-digit", minute: "2-digit" };
+                const weddingDate = d.toLocaleDateString("id", optionsDate);
+                const weddingTime = d.toLocaleTimeString("id", optionsTime).replace('.', ':');
+                const bride_name = eventWedding.bride_name;
+                const groom_name = eventWedding.groom_name;
+                const bride_parent = eventWedding.bride_parent;
+                const groom_parent = eventWedding.groom_parent;
+                const websiteURL = process.env.WEBSITE_WEDDING_URL + '?id=' + data2[i].barcode;
+                const em = eventMessage.replace('{{guestName}}', data2[i].guestName);
+                const em2 = em.replace('{{parentBrideName}}', bride_parent);
+                const em3 = em2.replace('{{parentGroomName}}', groom_parent);
+                const em4 = em3.replaceAll('{{brideName}}', bride_name);
+                const em5 = em4.replaceAll('{{groomName}}', groom_name);
+                const em6 = em5.replace('{{weddingDate}}', weddingDate);
+                const em7 = em6.replace('{{weddingTime}}', weddingTime);
+                const em8 = em7.replace('{{venueName}}', venue_name);
+                const em9 = em8.replace('{{venueAddress}}', address).trim();
+                const em10 = em9.replace('{{websiteURL}}', websiteURL);
+                const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\n\n```Mohon reply dengan mengetik "Hi" untuk mengaktifkan Link URL/Website, lalu tutup chat ini dan buka kembali.```\n\nSender by Viseetor.com'
+                const eventWAMessage = em10 + woInfo;
+                console.log('process sent invitation step 3');
+
+                var data = JSON.stringify({
+                    "api_key": process.env.WAPI_API,
+                    "device_key": process.env.WAPI_DEVICE,
+                    "destination": data2[i].phone,
+                    "image": image,
+                    "filename": imageFilename,
+                    "caption": eventWAMessage
+                });
+
+                var config = {
+                    method: 'post',
+                    url: process.env.WAPI_URL + 'send-image',
+                    headers: { 'Content-Type': 'application/json' },
+                    data: data
+                };
+
+                // res.write('progress' + i);
+                // return;
+            }
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Invitation sent completed.',
+                totalCount: data2.length,
+                deleverCount: data2.length,
+            });
+            return;
+        })
+
+
+        // console.log('process sent invitation step 2');
+
+
+
+
+
+
+
+
+    });
+
+
+
+
 }
 
 exports.guestBarcodeSent = (req, res) => {
@@ -1634,6 +1793,7 @@ exports.updateStatusAttending = (req, res) => {
         });
     })
 }
+
 
 ///theme
 ///theme
