@@ -1378,6 +1378,7 @@ exports.guestInvitationSent = async (req, res) => {
 }
 
 exports.getBulkForInvitationSent = (req, res) => {
+    const fid_user = req.userid;
     const { eventID } = req.query;
     if (!eventID) {
         res.status(200).send({
@@ -1390,7 +1391,7 @@ exports.getBulkForInvitationSent = (req, res) => {
 
     eventsGuest.findAll({
         where: {
-            fid_events: eventID, invitation_status: 'LISTED'
+            fid_events: eventID, invitation_status: 'LISTED', fid_user: fid_user
         },
         attributes: ['barcode', 'phone']
     }).then(eventGuest => {
