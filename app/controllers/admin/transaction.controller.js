@@ -120,7 +120,6 @@ exports.getDetail = (req, res) => {
                     }
                 ]
             },
-
             {
                 model: masterPrice,
                 attributes: ['id', 'title', 'limit_min', 'limit_max', 'unit_price', 'commission']
