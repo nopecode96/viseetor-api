@@ -11,10 +11,11 @@ exports.getTransactions = (req, res) => {
     const fid_user = req.userid;
     const { page, size, order_number, status } = req.query;
     const { limit, offset } = functions.getPagination(page - 1, size);
-
+    console.log(order_number);
     if (order_number && status) {
         var condition = {
-            order_number: sequelize.where(sequelize.fn('LOWER', sequelize.col('order_number')), 'LIKE', '%' + order_number + '%'),
+            order_number: order_number,
+            // order_number: sequelize.where(sequelize.fn('LOWER', sequelize.col('order_number')), 'LIKE', '%' + order_number + '%'),
             status: status,
             fid_user: fid_user
         }
@@ -25,7 +26,8 @@ exports.getTransactions = (req, res) => {
         }
     } else if (order_number) {
         var condition = {
-            order_number: sequelize.where(sequelize.fn('LOWER', sequelize.col('order_number')), 'LIKE', '%' + order_number + '%'),
+            order_number: order_number,
+            // order_number: sequelize.where(sequelize.fn('LOWER', sequelize.col('order_number')), 'LIKE', '%' + order_number + '%'),
             fid_user: fid_user
         }
     } else {
