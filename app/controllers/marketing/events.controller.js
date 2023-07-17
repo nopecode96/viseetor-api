@@ -1410,8 +1410,42 @@ exports.getBulkForInvitationSent = (req, res) => {
             data: eventGuest
         });
         return;
+    });
+}
 
+exports.getBulkForBarcodeSent = (req, res) => {
+    const fid_user = req.userid;
+    const { eventID, status } = req.query;
+    if (!eventID) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field (eventID)"
+        });
+        return;
+    }
 
+    eventsGuest.findAll({
+        where: {
+            fid_events: eventID, invitation_status: status, fid_user: fid_user
+        },
+        attributes: ['barcode', 'phone']
+    }).then(eventGuest => {
+        if (eventGuest.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Guest not found."
+            });
+            return;
+        }
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Guest found.",
+            data: eventGuest
+        });
+        return;
     });
 }
 
