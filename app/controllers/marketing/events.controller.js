@@ -1380,6 +1380,7 @@ exports.guestInvitationSent = async (req, res) => {
 exports.getBulkForInvitationSent = (req, res) => {
     const fid_user = req.userid;
     const { eventID, status } = req.query;
+    const invitation_status = (status == 1) ? 'LISTED' : 'WILL ATTEND';
     if (!eventID) {
         res.status(200).send({
             code: 200,
@@ -1391,7 +1392,7 @@ exports.getBulkForInvitationSent = (req, res) => {
 
     eventsGuest.findAll({
         where: {
-            fid_events: eventID, invitation_status: status, fid_user: fid_user
+            fid_events: eventID, invitation_status: invitation_status, fid_user: fid_user
         },
         attributes: ['barcode', 'phone']
     }).then(eventGuest => {
