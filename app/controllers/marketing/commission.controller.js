@@ -145,9 +145,9 @@ exports.getWidrawalCreatePage = (req, res) => {
             })
             return;
         }
-        // console.log(results.userBankAccount)
+        console.log(results.userBankAccount[0].bank_account_number)
         // const balance = 0;
-        if (results.userBankAccount.length === 0) {
+        if (results.userBankAccount[0].bank_account_number === null) {
             res.status(200).send({
                 code: 200,
                 success: false,
