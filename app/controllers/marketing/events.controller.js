@@ -1748,6 +1748,18 @@ exports.updateMessageTemplate = (req, res) => {
     })
 }
 
+///Scanner===========
+///Scanner===========
+///Scanner===========
+
+exports.listScannerAccess = (req, res) => {
+
+}
+
+exports.postScannerAccess = (req, res) => {
+    // const { name, passcode } = 
+}
+
 ///function===========
 ///function===========
 ///function===========
