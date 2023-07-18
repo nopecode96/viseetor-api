@@ -82,6 +82,10 @@ module.exports = app => {
     router.put("/bank-status-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGiftBankStatus);
     router.put("/themes-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.themesSelected);
     router.post("/gallery-upload", authValidation.apiKeyValidation, authValidation.tokenValidation, upload2.array('image'), controller.uploadGallery);
+    router.delete("/gallery-delete", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteGallery);
+
+    router.get("/scanner-app", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.listScannerAccess);
+    router.post("/scanner-app", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.postScannerAccess);
 
     // router.get("/guest/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
     // router.put("/guest/attend", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateAttendStatusGuest);

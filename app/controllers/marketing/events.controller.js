@@ -7,7 +7,7 @@ const async = require('async')
 const axios = require("axios")
 
 var functions = require("../../../config/function");
-const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsTicketing, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate, eventsMessage } = require("../../models/index.model");
+const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsAppScan, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate, eventsMessage } = require("../../models/index.model");
 
 exports.findEvents = (req, res) => {
     const today = new Date();
@@ -912,6 +912,7 @@ exports.getGalleryList = (req, res) => {
                 message: "Datas Found.",
                 data: data
             });
+            return;
         })
         .catch(err => {
             res.status(400).send({
@@ -924,36 +925,85 @@ exports.getGalleryList = (req, res) => {
 }
 
 exports.uploadGallery = (req, res) => {
+    const fid_user = req.userid;
     const { fid_events } = req.body;
     const images = req.files;
 
     // console.log(images)
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(dataEvent => {
+        if (dataEvent.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event not found."
+            });
+            return;
+        }
+        if (!images) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Error Insert: Field."
+            });
+            return;
+        }
 
-    if (!images) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Error Insert: Field."
-        });
-        return;
-    }
+        const datas = [];
+        for (let item of images) {
+            datas.push({ image: item.filename, fid_events: fid_events, published: true });
+        }
+        // console.log(datas)
 
-    const datas = [];
-    for (let item of images) {
-        datas.push({ image: item.filename, fid_events: fid_events, published: true });
-    }
-    // console.log(datas)
+        eventsGallery.bulkCreate(datas)
+            .then(data => {
+                res.status(202).send({
+                    code: 202,
+                    success: true,
+                    message: "Upload Image success."
+                });
+                return;
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(400).send({
+                    code: 400,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+                return;
+            });
+    })
+}
 
-    eventsGallery.bulkCreate(datas)
-        .then(data => {
+exports.deleteGallery = (req, res) => {
+    const fid_user = req.userid;
+    const { imageID, fid_events } = req.query;
+
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(dataEvent => {
+        if (dataEvent.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event not found."
+            });
+            return;
+        }
+
+        eventsGallery.destroy({
+            where: { id: imageID }
+        }).then(data => {
             res.status(202).send({
                 code: 202,
                 success: true,
-                message: "Upload Image success."
+                message: "Photo Gallery has been deleted."
             });
             return;
-        })
-        .catch(err => {
+        }).catch(err => {
             console.log(err);
             res.status(400).send({
                 code: 400,
@@ -963,7 +1013,16 @@ exports.uploadGallery = (req, res) => {
             });
             return;
         });
-
+    }).catch(err => {
+        console.log(err);
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+        return;
+    });
 }
 
 
@@ -1682,8 +1741,7 @@ exports.themesSelected = (req, res) => {
                 // data: data
             });
             return;
-        })
-        .catch(err => {
+        }).catch(err => {
             res.status(400).send({
                 code: 400,
                 success: false,
@@ -1701,6 +1759,15 @@ exports.updateMessageTemplate = (req, res) => {
     const fid_user = req.userid;
     const { id } = req.query;
     const { content, content_barcode } = req.body;
+
+    if (!content || !content_barcode) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
     // console.log(req.params)
 
     eventsMessage.findAll({
@@ -1745,7 +1812,14 @@ exports.updateMessageTemplate = (req, res) => {
                 return;
             });
         }
-    })
+    }).catch(err => {
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
 }
 
 ///Scanner===========
@@ -1753,11 +1827,85 @@ exports.updateMessageTemplate = (req, res) => {
 ///Scanner===========
 
 exports.listScannerAccess = (req, res) => {
+    const { fid_events } = req.query;
 
+    eventsAppScan.findAll({
+        where: { fid_events: fid_events },
+        order: [['updatedAt', 'ASC']],
+        attributes: ['id', 'event_code', 'passcode', 'phone', 'name']
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Datas not Found."
+            });
+            return;
+        }
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: data
+        });
+        return;
+    }).catch(err => {
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
 }
 
 exports.postScannerAccess = (req, res) => {
-    // const { name, passcode } = 
+    const fid_user = req.userid;
+    const { name, phone, passcode, fid_events } = req.body;
+    const published = true;
+
+    if (!name || !phone || !passcode || !fid_events) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
+    const event_code = randomstring.generate({
+        length: 6,
+        charset: 'alphabetic',
+        capitalization: 'uppercase'
+    });
+
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event Not Found."
+            });
+            return;
+        }
+        eventsAppScan.create({ event_code, passcode, phone, name, published, fid_events })
+            .then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Event Scanner Access has been created."
+                });
+            }).catch(err => {
+                res.status(400).send({
+                    code: 400,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+            });
+    })
 }
 
 ///function===========
