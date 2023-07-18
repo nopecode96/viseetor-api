@@ -154,7 +154,15 @@ exports.getWidrawalCreatePage = (req, res) => {
                 message: 'Please update your profile detail!',
                 data: {
                     balance: 0,
-                    userBankAccount: '',
+                    userBankAccount: {
+                        fid_user: 0,
+                        bank_account_number: 0,
+                        bank_account_name: '',
+                        master_bank: {
+                            id: 0,
+                            title: ''
+                        }
+                    }
                 }
             })
             return;
