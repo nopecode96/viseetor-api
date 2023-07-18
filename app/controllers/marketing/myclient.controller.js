@@ -51,7 +51,11 @@ exports.findMyClient = (req, res) => {
                             attributes: ['id', 'name'],
                         }
                     },
-                    { model: masterIndustry, attributes: ['id', 'title'] },
+                    {
+                        model: masterIndustry,
+                        where: { published: true },
+                        attributes: ['id', 'title']
+                    },
                     { model: masterCompanyStatus, attributes: ['id', 'title'] }
                 ]
             }).then(data => {
