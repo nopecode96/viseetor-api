@@ -1829,33 +1829,41 @@ exports.updateMessageTemplate = (req, res) => {
 exports.listScannerAccess = (req, res) => {
     const { fid_events } = req.query;
 
-    eventsAppScan.findAll({
-        where: { fid_events: fid_events },
-        order: [['updatedAt', 'ASC']],
-        attributes: ['id', 'event_code', 'passcode', 'phone', 'name']
-    }).then(data => {
-        if (data.length == 0) {
-            res.status(200).send({
-                code: 200,
+    async.parallel({
+        dataEvent: function (callback) {
+            events.findAll({
+                where: { id: fid_events },
+                where: { published: true },
+                attributes: ['id', 'title', 'event_date', 'invitation_limit']
+            }).then(data => callback(null, data))
+        },
+        dataAppScan: function (callback) {
+            eventsAppScan.findAll({
+                where: { fid_events: fid_events },
+                order: [['updatedAt', 'ASC']],
+                attributes: ['id', 'event_code', 'passcode', 'phone', 'name']
+            }).then(data => callback(null, data))
+        },
+    }, function (err, results) {
+        if (err) {
+            res.status(400).send({
+                code: 400,
                 success: false,
-                message: "Datas not Found."
-            });
+                message: err.message,
+            })
             return;
         }
+
         res.status(200).send({
             code: 200,
             success: true,
             message: "Datas Found.",
-            data: data
+            data: {
+                dataEvent: results.dataEvent[0],
+                dataAppScan: results.dataAppScan
+            }
         });
         return;
-    }).catch(err => {
-        res.status(400).send({
-            code: 400,
-            success: false,
-            message:
-                err.message || "Some error occurred while retrieving data."
-        });
     });
 }
 
@@ -1908,6 +1916,50 @@ exports.postScannerAccess = (req, res) => {
     })
 }
 
+exports.deleteScannerAccess = (req, res) => {
+    const fid_user = req.userid;
+    const { appscanID, passcode, fid_events } = req.query;
+    const published = true;
+
+    if (!appscanID || !passcode || !fid_events) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event Not Found."
+            });
+            return;
+        }
+        eventsAppScan.destroy({
+            where: { id: appscanID }
+        })
+            .then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Event Scanner Access has been deleted."
+                });
+            }).catch(err => {
+                res.status(400).send({
+                    code: 400,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+            });
+    })
+}
 ///function===========
 ///function===========
 ///function===========
