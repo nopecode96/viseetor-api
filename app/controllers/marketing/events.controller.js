@@ -1827,13 +1827,13 @@ exports.updateMessageTemplate = (req, res) => {
 ///Scanner===========
 
 exports.listScannerAccess = (req, res) => {
+    const fid_user = req.userid;
     const { fid_events } = req.query;
 
     async.parallel({
         dataEvent: function (callback) {
             events.findAll({
-                where: { id: fid_events },
-                where: { published: true },
+                where: { id: fid_events, fid_user: fid_user },
                 attributes: ['id', 'title', 'event_date', 'invitation_limit']
             }).then(data => callback(null, data))
         },
