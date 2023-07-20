@@ -12,6 +12,9 @@ module.exports = (sequelize, Sequelize) => {
     name: {
       type: Sequelize.STRING
     },
+    token: {
+      type: Sequelize.TEXT
+    },
     limit: {
       type: Sequelize.INTEGER
     },

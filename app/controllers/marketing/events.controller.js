@@ -234,8 +234,13 @@ exports.getDetail = (req, res) => {
     const { id, typeid } = req.query;
     var condition = { id: id, fid_user: fid_user, fid_type: typeid }
 
-    if (!id || typeid) {
-
+    if (!id || !typeid) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: 'Please check your Event Id & Event Type',
+        })
+        return;
     }
 
     async.parallel({
@@ -2000,6 +2005,47 @@ exports.deleteScannerAccess = (req, res) => {
             });
     })
 }
+
+exports.appScanGuestList = (req, res) => {
+    const fid_user = req.userid;
+    const { fid_events } = req.query;
+
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Data not found',
+            })
+            return;
+        }
+
+        eventsGuest.findAll({
+            where: { fid_events: fid_events },
+            attributes: ['phone', 'email', 'name', 'guest_max', 'guest_actual', 'reason', 'invitation_status', 'scan_by']
+        }).then(dataGuest => {
+            if (dataGuest.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: 'Data not found',
+                })
+                return;
+            }
+
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: 'Data found',
+                data: dataGuest
+            })
+            return;
+        })
+    })
+}
+
 ///function===========
 ///function===========
 ///function===========
