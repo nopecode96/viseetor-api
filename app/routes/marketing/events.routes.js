@@ -84,6 +84,7 @@ module.exports = app => {
     router.post("/gallery-upload", authValidation.apiKeyValidation, authValidation.tokenValidation, upload2.array('image'), controller.uploadGallery);
     router.delete("/gallery-delete", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteGallery);
 
+    router.get("/download", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestDownload);
     router.get("/scanner-app", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.listScannerAccess);
     router.post("/scanner-app", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.postScannerAccess);
 
