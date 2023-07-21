@@ -1879,7 +1879,11 @@ exports.listScannerAccess = (req, res) => {
         dataEvent: function (callback) {
             events.findAll({
                 where: { id: fid_events, fid_user: fid_user },
-                attributes: ['id', 'title', 'event_date', 'invitation_limit']
+                attributes: ['id', 'title', 'event_date', 'invitation_limit', 'fid_type'],
+                include: {
+                    model: masterEvent,
+                    attributes: ['id', 'title']
+                }
             }).then(data => callback(null, data))
         },
         dataAppScan: function (callback) {
