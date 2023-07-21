@@ -216,7 +216,16 @@ exports.scanBarcode = (req, res) => {
         }
 
         eventsGuest.findAll({
-            // where: 
+            where: { barcode: barcode, fid_events: fid_events }
+        }).then(data => {
+            if (data.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: 'Guest not found',
+                })
+                return;
+            }
         })
     })
 }
