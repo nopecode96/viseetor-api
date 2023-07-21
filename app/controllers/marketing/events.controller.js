@@ -1963,10 +1963,10 @@ exports.postScannerAccess = (req, res) => {
 
 exports.deleteScannerAccess = (req, res) => {
     const fid_user = req.userid;
-    const { appscanID, passcode, fid_events } = req.query;
-    const published = true;
+    const { appscanID, fid_events } = req.query;
+    // const published = true;
 
-    if (!appscanID || !passcode || !fid_events) {
+    if (!appscanID || !fid_events) {
         res.status(200).send({
             code: 200,
             success: false,
