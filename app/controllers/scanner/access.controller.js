@@ -200,8 +200,10 @@ exports.getGuestList = (req, res) => {
 }
 
 exports.scanBarcode = (req, res) => {
+    const appUserID = req.appUserID;
     const fid_events = req.fid_events;
-    const { barcode } = req.params;
+    const { barcode } = req.query;
+    console.log(barcode)
 
     events.findAll({
         where: { id: fid_events }
@@ -216,7 +218,11 @@ exports.scanBarcode = (req, res) => {
         }
 
         eventsGuest.findAll({
-            where: { barcode: barcode, fid_events: fid_events }
+            where: {
+                barcode: barcode,
+                fid_events: fid_events,
+                // invitation_status: 'BARCODE SENT'
+            }
         }).then(data => {
             if (data.length == 0) {
                 res.status(200).send({
@@ -226,6 +232,17 @@ exports.scanBarcode = (req, res) => {
                 })
                 return;
             }
+
+            eventsGuest.update({ invitation_status: 'DONE', scan_by: appUserID }, {
+                where: { barcode: barcode }
+            }).then(data2 => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: 'Guest has come',
+                })
+                return;
+            })
         })
     })
 }

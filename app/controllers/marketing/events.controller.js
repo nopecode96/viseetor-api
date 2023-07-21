@@ -1076,7 +1076,7 @@ exports.allEventGuest = (req, res) => {
         },
         guestConfirmed: function (callback) {
             eventsGuest.findAll({
-                where: { fid_events: fid_events, invitation_status: 'CONFIRMED' }
+                where: { fid_events: fid_events, invitation_status: 'WILL ATTEND' }
             }).then(data => {
                 const confirmed = data.length;
                 callback(null, confirmed)
@@ -1638,7 +1638,7 @@ exports.guestBarcodeSent = (req, res) => {
 
                     const updateCount = parseFloat(existBarcodeSentCount) + parseFloat('1');
                     eventsGuest.update({
-                        invitation_status: 'CONFIRMED', barcode_send_count: updateCount
+                        invitation_status: 'BARCODE SENT', barcode_send_count: updateCount
                     }, {
                         where: { barcode: barcode }
                     }).then(datafinal => {
