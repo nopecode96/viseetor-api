@@ -53,13 +53,13 @@ exports.getDashboardData = (req, res) => {
                     fid_user: fid_user,
                     event_date: { [sequelize.Op.gte]: today },
                 },
-                attributes: ['id', 'banner', 'title', 'venue_name', 'invitation_limit', 'event_date'],
+                attributes: ['id', 'banner', 'title', 'venue_name', 'invitation_limit', 'event_date', 'fid_type'],
                 limit: 5,
                 order: [['event_date', 'ASC']],
                 include: [
                     {
                         model: masterEvent,
-                        attributes: ['title']
+                        attributes: ['id', 'title']
                     },
                     {
                         model: regRegencies,

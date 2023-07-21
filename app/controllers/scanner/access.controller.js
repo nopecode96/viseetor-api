@@ -126,7 +126,15 @@ exports.getHomeData = (req, res) => {
             })
         },
     }, function (err, results) {
-        console.log(results.guestHasCame)
+        if (err) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: err.message,
+            })
+            return;
+        }
+
         res.status(200).send({
             code: 200,
             success: true,
@@ -187,6 +195,28 @@ exports.getGuestList = (req, res) => {
             code: 400,
             success: false,
             message: err || "Error response 2"
+        })
+    })
+}
+
+exports.scanBarcode = (req, res) => {
+    const fid_events = req.fid_events;
+    const { barcode } = req.params;
+
+    events.findAll({
+        where: { id: fid_events }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Event not found',
+            })
+            return;
+        }
+
+        eventsGuest.findAll({
+            // where: 
         })
     })
 }
