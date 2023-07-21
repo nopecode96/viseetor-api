@@ -10,5 +10,6 @@ module.exports = app => {
     router.get("/home-data", authValidation.apiKeyValidation, authValidation.tokenMobileScannerAppValidation, controller.getHomeData);
     router.get("/guestlist", authValidation.apiKeyValidation, authValidation.tokenMobileScannerAppValidation, controller.getGuestList);
     router.put("/scan", authValidation.apiKeyValidation, authValidation.tokenMobileScannerAppValidation, controller.scanBarcode);
+    router.put("/update-status", authValidation.apiKeyValidation, authValidation.tokenMobileScannerAppValidation, controller.updateStatus);
     app.use('/' + process.env.ENVIRONMENT + '/scanner', router);
 };

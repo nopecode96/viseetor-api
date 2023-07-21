@@ -152,6 +152,24 @@ exports.getHomeData = (req, res) => {
 exports.getGuestList = (req, res) => {
     // const appUserID = req.appUserID;
     const fid_events = req.fid_events;
+    const { name, phone } = req.query;
+    // console.log(fid_events)
+
+    if (name) {
+        var condition = {
+            fid_events: fid_events,
+            name: sequelize.where(sequelize.fn('LOWER', sequelize.col('events_guest.name')), 'LIKE', '%' + name + '%'),
+        }
+    } else if (phone) {
+        var condition = {
+            fid_events: fid_events,
+            phone: sequelize.where(sequelize.fn('LOWER', sequelize.col('events_guest.phone')), 'LIKE', '%' + phone + '%'),
+        }
+    } else {
+        var condition = {
+            fid_events: fid_events
+        }
+    }
 
     events.findAll({
         where: { id: fid_events }
@@ -166,7 +184,7 @@ exports.getGuestList = (req, res) => {
         }
 
         eventsGuest.findAll({
-            where: { fid_events: fid_events },
+            where: condition,
             attributes: ['phone', 'email', 'name', 'guest_max', 'guest_actual', 'reason', 'invitation_status', 'scan_by'],
             include: {
                 model: eventsAppScan,
@@ -233,7 +251,55 @@ exports.scanBarcode = (req, res) => {
                 return;
             }
 
-            eventsGuest.update({ invitation_status: 'DONE', scan_by: appUserID }, {
+            eventsGuest.update({ invitation_status: 'ATTEND', scan_by: appUserID }, {
+                where: { barcode: barcode }
+            }).then(data2 => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: 'Guest has come',
+                })
+                return;
+            })
+        })
+    })
+}
+
+exports.updateStatus = (req, res) => {
+    const appUserID = req.appUserID;
+    const fid_events = req.fid_events;
+    const { barcode } = req.query;
+    console.log(barcode)
+
+    events.findAll({
+        where: { id: fid_events }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Event not found',
+            })
+            return;
+        }
+
+        eventsGuest.findAll({
+            where: {
+                barcode: barcode,
+                fid_events: fid_events,
+                // invitation_status: 'BARCODE SENT'
+            }
+        }).then(data => {
+            if (data.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: 'Guest not found',
+                })
+                return;
+            }
+
+            eventsGuest.update({ invitation_status: 'ATTEND', scan_by: appUserID }, {
                 where: { barcode: barcode }
             }).then(data2 => {
                 res.status(200).send({
