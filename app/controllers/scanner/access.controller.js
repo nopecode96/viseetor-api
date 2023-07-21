@@ -140,7 +140,7 @@ exports.getHomeData = (req, res) => {
             success: true,
             message: 'Data found',
             data: {
-                dataEvent: results.dataEvent,
+                dataEvent: results.dataEvent[0],
                 totalGuest: results.guestList,
                 guestHasCome: results.guestHasCame,
             }
