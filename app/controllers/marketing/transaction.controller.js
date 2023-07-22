@@ -328,6 +328,11 @@ exports.createTransaction = (req, res) => {
         length: 10,
         capitalization: 'uppercase'
     });
+    const unixcode = randomstring.generate({
+        length: 3,
+        charset: '123456789'
+    });
+
 
     if (!order_number || !qty || !fid_events || !fid_price || !fid_bank_payment) {
         res.status(200).send({
@@ -353,7 +358,6 @@ exports.createTransaction = (req, res) => {
         if (!fid_promotion) {
             const tax_nominal = parseFloat(total_price) * parseFloat(tax) / 100;
             const total_before_tax = parseFloat(total_price);
-            const unixcode = order_number.substring(order_number.length - 3);
 
             const total_payment = parseFloat(total_before_tax) + parseFloat(tax_nominal) + parseFloat(unixcode);
 
@@ -387,10 +391,12 @@ exports.createTransaction = (req, res) => {
                 const total_before_tax = parseFloat(total_price) - parseFloat(discount_nominal);
 
                 const tax_nominal = parseFloat(total_before_tax) * parseFloat(tax) / 100;
+
                 const unixcode = order_number.substring(order_number.length - 3);
+                console.log(unixcode);
 
                 const total_payment = parseFloat(total_price) + parseFloat(tax_nominal) + parseFloat(unixcode);
-
+                console.log(total_payment);
                 transaction.create({ order_number, qty, unit_price, unit_commission, total_price, discount_percent, discount_nominal, total_before_tax, tax, tax_nominal, total_payment, total_commission, status, published, fid_promotion, fid_events, fid_user, fid_bank_payment, fid_price })
                     .then(data => {
                         res.status(201).send({
