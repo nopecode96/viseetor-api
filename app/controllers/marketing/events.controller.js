@@ -1055,10 +1055,16 @@ exports.allEventGuest = (req, res) => {
         dataEvents: function (callback) {
             events.findAll({
                 where: { id: fid_events },
-                attributes: ['id', 'title'],
-                include: {
-                    model: eventsMessage
-                }
+                attributes: ['id', 'title', 'fid_type'],
+                include: [
+                    {
+                        model: masterEvent,
+                        attributes: ['id', 'title']
+                    },
+                    {
+                        model: eventsMessage
+                    }
+                ]
             }).then(data => callback(null, data))
         },
         eventLimit: function (callback) {
