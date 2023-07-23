@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cors = require("cors");
 var moment = require('moment');
+dotenv.config();
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
 moment.locale('id');
 const app = express();
@@ -81,8 +83,6 @@ require("./app/routes/website/marketing.routes")(app);
 require("./app/routes/thirdparty/motasi.routes")(app);
 
 require("./app/routes/scanner/scanner.routes")(app);
-
-dotenv.config();
 
 app.get("/" + process.env.ENVIRONMENT + "/", (req, res) => {
   res.json({ message: "Welcome to Viseetor " + process.env.ENVIRONMENT });
