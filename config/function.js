@@ -1,45 +1,7 @@
 "use strict";
-
-// var FCM = require('fcm-node');
-// var serverKey = 'AAAALq8q4DE:APA91bEpnY4l1Kvt_g3dwyOl-0pRexXHWJihwscYv-yLY6w1j4NOS3A62SfskkchfJtRlifK0q_EVEOGSbUazqUCUJ7dGaynrF10zc07Yk0MIuAVWJUP8LTCxWZsV2JANRSebdeniBNi'; //put your server key here
-// var firebase = new FCM(serverKey);
-
-// const fetch = require('node-fetch');
-// const { send } = require("express/lib/response");
-
-// const taptalk_api_url = "https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp";
-// const taptalk_token = "6fb4b670ee084e5a76df5a42deb515b6b03dd6f7da2b8085f3e267a394cc419b";
-
-
-// module.exports.fcm = function fcm(to, title, body) {
-//     var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
-//         to: to, 
-//         collapse_key: 'your_collapse_key',
-
-//         notification: {
-//             title: title, 
-//             body: body 
-//         },
-
-//         data: {  //you can send only notification or only data(or include both)
-//             my_key: 'my value',
-//             my_another_key: 'my another value'
-//         }
-//     };
-
-//     firebase.send(message, function(err, response, next){
-//         if (err) {
-//             console.log("Something has gone wrong! ");
-//             console.log(err);
-//             return false;
-//             next;
-//         } else {
-//             console.log("Successfully sent with response: ", response);
-//             return true;
-//             next;
-//         }
-//     });
-// }
+const axios = require("axios")
+const dotenv = require('dotenv');
+dotenv.config();
 
 module.exports.getPagination = function getPagination(page, size) {
     const limit = size ? +size : 10;
@@ -57,10 +19,49 @@ module.exports.getPagingData = function getPagingData(data, page, limit) {
 }
 
 module.exports.auditLog = function auditLog(action, description, user_agent, module, table_id, fid_user, next) {
-    const { auditLogAdmin } = require("../app/models/index.model");
+    const { auditLogAdmin, transaction } = require("../app/models/index.model");
 
     auditLogAdmin.create({ action, description, user_agent, module, table_id, fid_user })
         .then(data => {
             next;
         })
+}
+
+module.exports.notificationWhatsApp = function auditLog(phone, message, next) {
+
+    var data = JSON.stringify({
+        "api_key": process.env.WAPI_API,
+        "device_key": process.env.WAPI_DEVICE,
+        "destination": phone,
+        "message": message,
+    });
+    var config = {
+        method: 'post',
+        url: process.env.WAPI_URL + 'send-message',
+        headers: { 'Content-Type': 'application/json' },
+        data: data
+    };
+    axios(config).then(function (response) {
+        console.log('notification for create user has been send');
+        console.log(response.data);
+        if (response.data.status !== "ok") {
+            res.status(200).send({
+                code: 1005,
+                success: false,
+                message: response.data.message
+            });
+            return;
+        }
+
+        next;
+
+    }).catch(function (error) {
+        console.log(error);
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: error,
+        });
+        return;
+    });
 }

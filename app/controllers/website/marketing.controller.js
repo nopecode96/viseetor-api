@@ -3,7 +3,7 @@ const fs = require("fs");
 const { events, eventsWedding, eventsGuest, eventsGallery, regRegencies, regProvincies, company, eventsGiftBank, masterPrice, user, userProfile } = require("../../models/index.model");
 
 
-exports.getDataWeddingWeb = (req, res) => {
+exports.getProductWedding = (req, res) => {
     const { ref } = req.query;
     if (!ref) {
         res.status(200).send({

@@ -7,7 +7,7 @@ const async = require('async')
 const axios = require("axios")
 
 var functions = require("../../../config/function");
-const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsTicketing, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate, eventsMessage } = require("../../models/index.model");
+const { events, eventsGallery, eventsGiftBank, eventsGuest, eventsAppScan, eventsWedding, company, regRegencies, regProvincies, masterEvent, webTemplate, eventsMessage } = require("../../models/index.model");
 
 exports.findEvents = (req, res) => {
     const today = new Date();
@@ -234,8 +234,13 @@ exports.getDetail = (req, res) => {
     const { id, typeid } = req.query;
     var condition = { id: id, fid_user: fid_user, fid_type: typeid }
 
-    if (!id || typeid) {
-
+    if (!id || !typeid) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: 'Please check your Event Id & Event Type',
+        })
+        return;
     }
 
     async.parallel({
@@ -416,7 +421,6 @@ exports.putBanner = (req, res) => {
 
 }
 
-
 exports.pageCreate = (req, res) => {
     const fid_user = req.userid;
 
@@ -523,10 +527,49 @@ exports.create = (req, res) => {
 
             const id = data.id;
 
+            if (fid_type == '1') {
+                eventsWedding.create({ fid_events: id })
+                    .then(dat2 => {
+                        masterEvent.findAll({
+                            where: { id: fid_type }
+                        }).then(data2 => {
+                            if (data2.length == 0) {
+                                res.status(200).send({
+                                    code: 200,
+                                    success: false,
+                                    message: "Fid Type Not Found.",
+                                    // insertID: data.id
+                                });
+                                return;
+                            }
+
+                            const sample_message = data2[0].sample_message;
+                            const sample_message_barcode = data2[0].sample_message_barcode;
+
+                            eventsMessage.create({
+                                title: 'default',
+                                image: 'default.jpg',
+                                content: sample_message,
+                                content_barcode: sample_message_barcode,
+                                published: true,
+                                fid_events: id
+                            }).then(data2a => {
+                                res.status(201).send({
+                                    code: 201,
+                                    success: true,
+                                    message: "Create data event success.",
+                                    fid_events: id
+                                });
+                                return;
+                            });
+                        })
+                    })
+            }
+
             masterEvent.findAll({
                 where: { id: fid_type }
-            }).then(data2 => {
-                if (data2.length == 0) {
+            }).then(data3 => {
+                if (data3.length == 0) {
                     res.status(200).send({
                         code: 200,
                         success: false,
@@ -536,8 +579,8 @@ exports.create = (req, res) => {
                     return;
                 }
 
-                const sample_message = data2[0].sample_message;
-                const sample_message_barcode = data2[0].sample_message_barcode;
+                const sample_message = data3[0].sample_message;
+                const sample_message_barcode = data3[0].sample_message_barcode;
 
                 eventsMessage.create({
                     title: 'default',
@@ -546,7 +589,7 @@ exports.create = (req, res) => {
                     content_barcode: sample_message_barcode,
                     published: true,
                     fid_events: id
-                }).then(data3 => {
+                }).then(data3a => {
                     res.status(201).send({
                         code: 201,
                         success: true,
@@ -874,6 +917,7 @@ exports.getGalleryList = (req, res) => {
                 message: "Datas Found.",
                 data: data
             });
+            return;
         })
         .catch(err => {
             res.status(400).send({
@@ -886,36 +930,85 @@ exports.getGalleryList = (req, res) => {
 }
 
 exports.uploadGallery = (req, res) => {
+    const fid_user = req.userid;
     const { fid_events } = req.body;
     const images = req.files;
 
     // console.log(images)
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(dataEvent => {
+        if (dataEvent.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event not found."
+            });
+            return;
+        }
+        if (!images) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Error Insert: Field."
+            });
+            return;
+        }
 
-    if (!images) {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "Error Insert: Field."
-        });
-        return;
-    }
+        const datas = [];
+        for (let item of images) {
+            datas.push({ image: item.filename, fid_events: fid_events, published: true });
+        }
+        // console.log(datas)
 
-    const datas = [];
-    for (let item of images) {
-        datas.push({ image: item.filename, fid_events: fid_events, published: true });
-    }
-    // console.log(datas)
+        eventsGallery.bulkCreate(datas)
+            .then(data => {
+                res.status(202).send({
+                    code: 202,
+                    success: true,
+                    message: "Upload Image success."
+                });
+                return;
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(400).send({
+                    code: 400,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+                return;
+            });
+    })
+}
 
-    eventsGallery.bulkCreate(datas)
-        .then(data => {
+exports.deleteGallery = (req, res) => {
+    const fid_user = req.userid;
+    const { imageID, fid_events } = req.query;
+
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(dataEvent => {
+        if (dataEvent.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event not found."
+            });
+            return;
+        }
+
+        eventsGallery.destroy({
+            where: { id: imageID }
+        }).then(data => {
             res.status(202).send({
                 code: 202,
                 success: true,
-                message: "Upload Image success."
+                message: "Photo Gallery has been deleted."
             });
             return;
-        })
-        .catch(err => {
+        }).catch(err => {
             console.log(err);
             res.status(400).send({
                 code: 400,
@@ -925,9 +1018,17 @@ exports.uploadGallery = (req, res) => {
             });
             return;
         });
-
+    }).catch(err => {
+        console.log(err);
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+        return;
+    });
 }
-
 
 
 ////====guest====
@@ -975,7 +1076,7 @@ exports.allEventGuest = (req, res) => {
         },
         guestConfirmed: function (callback) {
             eventsGuest.findAll({
-                where: { fid_events: fid_events, invitation_status: 'CONFIRMED' }
+                where: { fid_events: fid_events, invitation_status: 'WILL ATTEND' }
             }).then(data => {
                 const confirmed = data.length;
                 callback(null, confirmed)
@@ -1038,7 +1139,47 @@ exports.allEventGuest = (req, res) => {
             }
         })
         return;
+    })
+}
 
+exports.guestDownload = (req, res) => {
+    const fid_user = req.userid;
+
+    const { fid_events } = req.query;
+
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Data not found',
+            })
+            return;
+        }
+
+        eventsGuest.findAll({
+            where: { fid_events: fid_events },
+            attributes: ['phone', 'email', 'name', 'guest_max', 'guest_actual', 'reason', 'invitation_status', 'scan_by']
+        }).then(dataGuest => {
+            if (dataGuest.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: 'Data not found',
+                })
+                return;
+            }
+
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: 'Data found',
+                data: dataGuest
+            })
+            return;
+        })
     })
 }
 
@@ -1218,8 +1359,6 @@ exports.guestInvitationSent = async (req, res) => {
         const existInvitationStatus = data[0].invitation_status;
         const existInvitationSentCount = data[0].invitation_send_count;
 
-        console.log(phone);
-
         events.findAll({
             where: { id: fid_events },
             include: [
@@ -1234,14 +1373,20 @@ exports.guestInvitationSent = async (req, res) => {
                 { model: eventsMessage }
             ]
         }).then(data2 => {
+            if (data2.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: 'Event not found',
+                });
+                return;
+            }
+
             console.log('process sent invitation step 2');
             var eventMessage = data2[0].events_messages[0].content;
-            // const image = process.env.CDN_URL + 'event/thumbnail/' + data2[0].events_messages[0].image;
             const imageOri = process.env.MNT_PATH + 'event/thumbnail/' + data2[0].events_messages[0].image;
             var image = base64_encode(imageOri);
-            // console.log(image);
             const imageFilename = data2[0].events_messages[0].image;
-
 
             const eventCompanyName = data2[0].company.title;
             const eventCompanyContactPerson = data2[0].company.contact_person;
@@ -1279,17 +1424,6 @@ exports.guestInvitationSent = async (req, res) => {
             const eventWAMessage = em10 + woInfo;
             console.log('process sent invitation step 3');
 
-            // Body for WATZAP
-            // var data = JSON.stringify({
-            //     "api_key": process.env.WATZAP_KEY,
-            //     "number_key": process.env.WATZAP_NUMBER_KEY,
-            //     "phone_no": phone,
-            //     "url": image,
-            //     "message": eventWAMessage,
-            //     "separate_caption": 0 //(0 for No, 1 for Yes)
-            // });
-
-            // Body for WAPI
             var data = JSON.stringify({
                 "api_key": process.env.WAPI_API,
                 "device_key": process.env.WAPI_DEVICE,
@@ -1347,6 +1481,43 @@ exports.guestInvitationSent = async (req, res) => {
     })
 }
 
+exports.getBulkForInvitationSent = (req, res) => {
+    const fid_user = req.userid;
+    const { eventID, status } = req.query;
+    const invitation_status = (status == 1) ? 'LISTED' : 'WILL ATTEND';
+    if (!eventID) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field (eventID)"
+        });
+        return;
+    }
+
+    eventsGuest.findAll({
+        where: {
+            fid_events: eventID, invitation_status: invitation_status, fid_user: fid_user
+        },
+        attributes: ['barcode', 'phone']
+    }).then(eventGuest => {
+        if (eventGuest.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Guest not found."
+            });
+            return;
+        }
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Guest found.",
+            data: eventGuest
+        });
+        return;
+    });
+}
+
 exports.guestBarcodeSent = (req, res) => {
     const { barcode } = req.query;
 
@@ -1384,6 +1555,7 @@ exports.guestBarcodeSent = (req, res) => {
             var eventMessage = data2[0].events_messages[0].content_barcode;
             // const image = process.env.CDN_URL + 'event/qrcode/' + barcode + '.png';
             const imageOri = process.env.MNT_PATH + 'event/qrcode/' + barcode + '.png';
+            console.log(imageOri);
             fs.access(imageOri, fs.F_OK, (err) => {
                 if (err) {
                     res.status(200).send({
@@ -1454,31 +1626,31 @@ exports.guestBarcodeSent = (req, res) => {
                 };
                 axios(config).then(function (response) {
                     console.log(JSON.stringify(response.data));
-                    if (response.data.status == 1005) {
+                    if (response.data.status !== "ok") {
                         res.status(200).send({
                             code: 1005,
                             success: false,
                             message: response.data.message
+
                         });
                         return;
                     }
 
-                    if (response.data.message == 'Successfully') {
-                        const updateCount = parseFloat(existBarcodeSentCount) + parseFloat('1');
-                        eventsGuest.update({
-                            invitation_status: 'CONFIRMED', barcode_send_count: updateCount
-                        }, {
-                            where: { barcode: barcode }
-                        }).then(datafinal => {
-                            res.status(200).send({
-                                code: 200,
-                                success: true,
-                                message: 'Barcode Invitation has sent.',
-                                wapi_response: response.data
-                            });
-                            return;
-                        })
-                    }
+                    const updateCount = parseFloat(existBarcodeSentCount) + parseFloat('1');
+                    eventsGuest.update({
+                        invitation_status: 'BARCODE SENT', barcode_send_count: updateCount
+                    }, {
+                        where: { barcode: barcode }
+                    }).then(datafinal => {
+                        res.status(200).send({
+                            code: 200,
+                            success: true,
+                            message: 'Barcode Invitation has sent.',
+                            wapi_response: response.data
+                        });
+                        return;
+                    })
+
                 }).catch(function (error) {
                     console.log(error);
                     res.status(200).send({
@@ -1595,6 +1767,7 @@ exports.updateStatusAttending = (req, res) => {
     })
 }
 
+
 ///theme
 ///theme
 ///theme
@@ -1613,8 +1786,7 @@ exports.themesSelected = (req, res) => {
                 // data: data
             });
             return;
-        })
-        .catch(err => {
+        }).catch(err => {
             res.status(400).send({
                 code: 400,
                 success: false,
@@ -1632,6 +1804,15 @@ exports.updateMessageTemplate = (req, res) => {
     const fid_user = req.userid;
     const { id } = req.query;
     const { content, content_barcode } = req.body;
+
+    if (!content || !content_barcode) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
     // console.log(req.params)
 
     eventsMessage.findAll({
@@ -1676,6 +1857,196 @@ exports.updateMessageTemplate = (req, res) => {
                 return;
             });
         }
+    }).catch(err => {
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+///Scanner===========
+///Scanner===========
+///Scanner===========
+
+exports.listScannerAccess = (req, res) => {
+    const fid_user = req.userid;
+    const { fid_events } = req.query;
+
+    async.parallel({
+        dataEvent: function (callback) {
+            events.findAll({
+                where: { id: fid_events, fid_user: fid_user },
+                attributes: ['id', 'title', 'event_date', 'invitation_limit', 'fid_type'],
+                include: {
+                    model: masterEvent,
+                    attributes: ['id', 'title']
+                }
+            }).then(data => callback(null, data))
+        },
+        dataAppScan: function (callback) {
+            eventsAppScan.findAll({
+                where: { fid_events: fid_events },
+                order: [['updatedAt', 'ASC']],
+                attributes: ['id', 'event_code', 'passcode', 'phone', 'name']
+            }).then(data => callback(null, data))
+        },
+    }, function (err, results) {
+        if (err) {
+            res.status(400).send({
+                code: 400,
+                success: false,
+                message: err.message,
+            })
+            return;
+        }
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: {
+                dataEvent: results.dataEvent[0],
+                dataAppScan: results.dataAppScan
+            }
+        });
+        return;
+    });
+}
+
+exports.postScannerAccess = (req, res) => {
+    const fid_user = req.userid;
+    const { name, phone, passcode, fid_events } = req.body;
+    const published = true;
+
+    if (!name || !phone || !passcode || !fid_events) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
+    const event_code = randomstring.generate({
+        length: 6,
+        charset: 'alphabetic',
+        capitalization: 'uppercase'
+    });
+
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event Not Found."
+            });
+            return;
+        }
+        eventsAppScan.create({ event_code, passcode, phone, name, published, fid_events })
+            .then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Event Scanner Access has been created."
+                });
+            }).catch(err => {
+                res.status(400).send({
+                    code: 400,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+            });
+    })
+}
+
+exports.deleteScannerAccess = (req, res) => {
+    const fid_user = req.userid;
+    const { appscanID, fid_events } = req.query;
+    // const published = true;
+
+    if (!appscanID || !fid_events) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event Not Found."
+            });
+            return;
+        }
+        eventsAppScan.destroy({
+            where: { id: appscanID }
+        })
+            .then(data => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Event Scanner Access has been deleted."
+                });
+            }).catch(err => {
+                res.status(400).send({
+                    code: 400,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+            });
+    })
+}
+
+exports.appScanGuestList = (req, res) => {
+    const fid_user = req.userid;
+    const { fid_events } = req.query;
+
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Data not found',
+            })
+            return;
+        }
+
+        eventsGuest.findAll({
+            where: { fid_events: fid_events },
+            attributes: ['phone', 'email', 'name', 'guest_max', 'guest_actual', 'reason', 'invitation_status', 'scan_by']
+        }).then(dataGuest => {
+            if (dataGuest.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: 'Data not found',
+                })
+                return;
+            }
+
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: 'Data found',
+                data: dataGuest
+            })
+            return;
+        })
     })
 }
 
@@ -1698,5 +2069,6 @@ function decodeBase64Image(dataString) {
 }
 
 function base64_encode(file) {
-    return "data:image/gif;base64," + fs.readFileSync(file, 'base64');
+    var bitmap = fs.readFileSync(file);
+    return new Buffer(bitmap).toString('base64');
 }

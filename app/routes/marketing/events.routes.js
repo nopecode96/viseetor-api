@@ -72,6 +72,7 @@ module.exports = app => {
     router.put("/guest-send-invitation", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestInvitationSent);
     router.put("/guest-send-barcode", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestBarcodeSent);
     router.put("/guest/attendingupdate", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatusAttending);
+    router.get("/guest-for-bulk", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getBulkForInvitationSent);
 
     router.put("/wedding-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateWeddingDetail);
     router.put("/wedding-groomphoto", authValidation.apiKeyValidation, authValidation.tokenValidation, upload3.single('groom_photo'), controller.putGroomPhoto);
@@ -81,6 +82,12 @@ module.exports = app => {
     router.put("/bank-status-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateGiftBankStatus);
     router.put("/themes-update", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.themesSelected);
     router.post("/gallery-upload", authValidation.apiKeyValidation, authValidation.tokenValidation, upload2.array('image'), controller.uploadGallery);
+    router.delete("/gallery-delete", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteGallery);
+
+    router.get("/download", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.guestDownload);
+    router.get("/scanner-app", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.listScannerAccess);
+    router.post("/scanner-app", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.postScannerAccess);
+    router.delete("/scanner-app", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteScannerAccess);
 
     // router.get("/guest/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
     // router.put("/guest/attend", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateAttendStatusGuest);

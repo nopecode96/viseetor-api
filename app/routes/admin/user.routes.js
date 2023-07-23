@@ -6,11 +6,9 @@ module.exports = app => {
     const controller = require("../../controllers/admin/users.controller");
     var router = require("express").Router();
 
-    router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAll);
-    router.get("/type", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllUserType);
-    router.get("/status", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllUserStatus);
-    // router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
-    router.post("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createOne);
-    // router.put("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.update);
+    router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllUsersAdmin);
+    router.get("/marketing", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllMarketing);
+    router.post("/marketing", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createUserMarketing);
+    router.put("/update-status", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatusUserMarketing);
     app.use('/' + process.env.ENVIRONMENT + '/admin/users', router);
 };

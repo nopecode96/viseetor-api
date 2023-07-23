@@ -145,17 +145,25 @@ exports.getWidrawalCreatePage = (req, res) => {
             })
             return;
         }
-        // console.log(results.userBankAccount)
+        console.log(results.userBankAccount[0].bank_account_number)
         // const balance = 0;
-        if (results.userBankAccount.length === 0) {
+        if (results.userBankAccount[0].bank_account_number === null) {
             res.status(200).send({
                 code: 200,
                 success: false,
                 message: 'Please update your profile detail!',
-                // data: {
-                //     balance: balance,
-                //     userBankAccount: results.userBankAccount[0],
-                // }
+                data: {
+                    balance: 0,
+                    userBankAccount: {
+                        fid_user: 0,
+                        bank_account_number: 0,
+                        bank_account_name: '',
+                        master_bank: {
+                            id: 0,
+                            title: ''
+                        }
+                    }
+                }
             })
             return;
         } else {

@@ -51,7 +51,11 @@ exports.findMyClient = (req, res) => {
                             attributes: ['id', 'name'],
                         }
                     },
-                    { model: masterIndustry, attributes: ['id', 'title'] },
+                    {
+                        model: masterIndustry,
+                        where: { published: true },
+                        attributes: ['id', 'title']
+                    },
                     { model: masterCompanyStatus, attributes: ['id', 'title'] }
                 ]
             }).then(data => {
@@ -399,8 +403,8 @@ exports.updateStatus = (req, res) => {
         { fid_company_status },
         { where: { id: id, fid_user: fid_user } }
     ).then(data => {
-        res.status(202).send({
-            code: 202,
+        res.status(200).send({
+            code: 200,
             success: true,
             message: "Status has been change."
         });
@@ -421,8 +425,8 @@ exports.update = (req, res) => {
     const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry } = req.body;
 
     if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry) {
-        res.status(202).send({
-            code: 202,
+        res.status(200).send({
+            code: 200,
             success: false,
             message: "Error Insert: Field."
         });
@@ -434,8 +438,8 @@ exports.update = (req, res) => {
             { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user },
             { where: { id: id, fid_user: fid_user } }
         ).then(data => {
-            res.status(202).send({
-                code: 202,
+            res.status(200).send({
+                code: 200,
                 success: true,
                 message: "Edit data success."
             });
@@ -450,12 +454,13 @@ exports.update = (req, res) => {
             });
         });
     } else {
+        const logo = req.file.filename;
         company.update(
             { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, logo },
             { where: { id: id, fid_user: fid_user } }
         ).then(data => {
-            res.status(202).send({
-                code: 202,
+            res.status(200).send({
+                code: 200,
                 success: true,
                 message: "Edit data success."
             });

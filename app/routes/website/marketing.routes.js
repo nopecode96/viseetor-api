@@ -3,9 +3,9 @@ module.exports = app => {
     const controller = require("../../controllers/website/marketing.controller");
     var router = require("express").Router();
 
-    router.get("/wedding", authValidation.apiKeyValidation, controller.getDataWeddingWeb);
+    router.get("/wedding", authValidation.apiKeyValidation, controller.getProductWedding);
     // router.put("/attendingupdate", authValidation.apiKeyValidation, controller.updateStatusAttending);
     // router.get("/list", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getCommissionList);
 
-    app.use('/website/product', router);
+    app.use('/' + process.env.ENVIRONMENT + '/website/product', router);
 }
