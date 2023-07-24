@@ -92,7 +92,7 @@ exports.getHomeData = (req, res) => {
         dataEvent: function (callback) {
             events.findAll({
                 where: { id: fid_events },
-                attributes: ['id', 'title', 'description', 'banner', 'venue_name', 'event_date', 'location_address'],
+                attributes: ['id', 'barcode', 'title', 'description', 'banner', 'venue_name', 'event_date', 'location_address'],
                 include: [
                     {
                         model: regRegencies,
