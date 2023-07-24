@@ -92,7 +92,7 @@ exports.getHomeData = (req, res) => {
         dataEvent: function (callback) {
             events.findAll({
                 where: { id: fid_events },
-                attributes: ['id', 'barcode', 'title', 'description', 'banner', 'venue_name', 'event_date', 'location_address'],
+                attributes: ['id', 'title', 'description', 'banner', 'venue_name', 'event_date', 'location_address'],
                 include: [
                     {
                         model: regRegencies,
@@ -185,7 +185,7 @@ exports.getGuestList = (req, res) => {
 
         eventsGuest.findAll({
             where: condition,
-            attributes: ['phone', 'email', 'name', 'guest_max', 'guest_actual', 'reason', 'invitation_status', 'scan_by'],
+            attributes: ['id', 'barcode', 'phone', 'email', 'name', 'guest_max', 'guest_actual', 'reason', 'invitation_status', 'scan_by'],
             include: {
                 model: eventsAppScan,
                 attributes: ['id', 'name']
