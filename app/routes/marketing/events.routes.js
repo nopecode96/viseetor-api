@@ -88,6 +88,7 @@ module.exports = app => {
     router.get("/scanner-app", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.listScannerAccess);
     router.post("/scanner-app", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.postScannerAccess);
     router.delete("/scanner-app", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.deleteScannerAccess);
+    router.get("/scanner-app-send", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.sendApkToUser);
 
     // router.get("/guest/all", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.allEventGuest);
     // router.put("/guest/attend", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateAttendStatusGuest);
