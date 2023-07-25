@@ -2060,6 +2060,17 @@ exports.sendApkToUser = (req, res) => {
     const fid_user = req.userid;
     const { appscanID, fid_events } = req.query;
 
+    if (!fid_events || !appscanID) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: 'Field error: fid_events & appscanID',
+            fid_events: fid_events,
+            appscanID: appscanID
+        })
+        return;
+    }
+
     events.findAll({
         where: { id: fid_events, fid_user: fid_user }
     }).then(data => {
@@ -2097,7 +2108,7 @@ exports.sendApkToUser = (req, res) => {
             const message5 = 'Code Event : ' + eventCode;
             const message6 = 'Code Event : ' + passcode;
             const msg = message1 + message2 + message3 + message4 + message5 + message6;
-            functions.notificationWhatsApp(phone, msg, next);
+            functions.notificationWhatsApp(phone, msg);
 
             res.status(200).send({
                 code: 200,
