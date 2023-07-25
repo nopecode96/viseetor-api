@@ -152,18 +152,23 @@ exports.getHomeData = (req, res) => {
 exports.getGuestList = (req, res) => {
     // const appUserID = req.appUserID;
     const fid_events = req.fid_events;
-    const { name, phone } = req.query;
+    const { name, status } = req.query;
     // console.log(fid_events)
 
-    if (name) {
+    if (name && status) {
         var condition = {
             fid_events: fid_events,
             name: sequelize.where(sequelize.fn('LOWER', sequelize.col('events_guest.name')), 'LIKE', '%' + name + '%'),
         }
-    } else if (phone) {
+    } else if (name) {
         var condition = {
             fid_events: fid_events,
-            phone: sequelize.where(sequelize.fn('LOWER', sequelize.col('events_guest.phone')), 'LIKE', '%' + phone + '%'),
+            name: sequelize.where(sequelize.fn('LOWER', sequelize.col('events_guest.name')), 'LIKE', '%' + name + '%'),
+        }
+    } else if (status) {
+        var condition = {
+            fid_events: fid_events,
+            invitation_status: status,
         }
     } else {
         var condition = {
@@ -172,7 +177,8 @@ exports.getGuestList = (req, res) => {
     }
 
     events.findAll({
-        where: { id: fid_events }
+        where: { id: fid_events },
+        order: [['name', 'ASC']],
     }).then(data => {
         if (data.length == 0) {
             res.status(200).send({
