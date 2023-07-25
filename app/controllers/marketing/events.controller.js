@@ -2103,7 +2103,7 @@ exports.sendApkToUser = (req, res) => {
             const passcode = dataUser[0].passcode;
             const message1 = 'Hallo ' + name + ',\n\nNomor kamu didaftarkan sebagai petugas penerima tamu pada acara ' + eventName + '.\n\n';
             const message2 = 'Anda dapat mengunduh aplikasi Viseetor Scanner QRCode pada link berikut:\n';
-            const message3 = process.env.CDN_URL + 'viseetor.apk\n\n';
+            const message3 = 'https://bit.ly/viseetor-scanner-app\n\n';
             const message4 = 'Gunakan kode dibawah untuk login pada aplikasi:\n\n';
             const message5 = 'Code Event : ' + eventCode;
             const message6 = '\nPasscode : ' + passcode;
