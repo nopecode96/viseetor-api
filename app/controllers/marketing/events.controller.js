@@ -2104,9 +2104,9 @@ exports.sendApkToUser = (req, res) => {
             const message1 = 'Hallo ' + name + ',\n\nNomor kamu didaftarkan sebagai petugas penerima tamu pada acara ' + eventName + '.\n\n';
             const message2 = 'Anda dapat mengunduh aplikasi Viseetor Scanner QRCode pada link berikut:\n';
             const message3 = process.env.CDN_URL + 'viseetor.apk\n\n';
-            const message4 = 'Gunakan kode dibawah untuk login pada aplikasi\n\n';
+            const message4 = 'Gunakan kode dibawah untuk login pada aplikasi:\n\n';
             const message5 = 'Code Event : ' + eventCode;
-            const message6 = 'Code Event : ' + passcode;
+            const message6 = '\nPasscode : ' + passcode;
             const msg = message1 + message2 + message3 + message4 + message5 + message6;
             functions.notificationWhatsApp(phone, msg);
 
