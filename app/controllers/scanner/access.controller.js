@@ -178,7 +178,7 @@ exports.getGuestList = (req, res) => {
 
     events.findAll({
         where: { id: fid_events },
-        order: [['name', 'ASC']],
+        // order: [['events_guest.name', 'ASC']],
     }).then(data => {
         if (data.length == 0) {
             res.status(200).send({
@@ -191,6 +191,7 @@ exports.getGuestList = (req, res) => {
 
         eventsGuest.findAll({
             where: condition,
+            order: [['name', 'ASC']],
             attributes: ['id', 'barcode', 'phone', 'email', 'name', 'guest_max', 'guest_actual', 'reason', 'invitation_status', 'scan_by'],
             include: {
                 model: eventsAppScan,
