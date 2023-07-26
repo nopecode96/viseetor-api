@@ -2056,6 +2056,71 @@ exports.appScanGuestList = (req, res) => {
     })
 }
 
+exports.sendApkToUser = (req, res) => {
+    const fid_user = req.userid;
+    const { appscanID, fid_events } = req.query;
+
+    if (!fid_events || !appscanID) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: 'Field error: fid_events & appscanID',
+            fid_events: fid_events,
+            appscanID: appscanID
+        })
+        return;
+    }
+
+    events.findAll({
+        where: { id: fid_events, fid_user: fid_user }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Data not found',
+            })
+            return;
+        }
+
+        eventsAppScan.findAll({
+            where: { fid_events: fid_events, id: appscanID },
+        }).then(dataUser => {
+            if (dataUser.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: 'User not found',
+                })
+                return;
+            }
+
+            const eventName = data[0].title;
+
+            const name = dataUser[0].name;
+            const phone = dataUser[0].phone;
+            const eventCode = dataUser[0].event_code;
+            const passcode = dataUser[0].passcode;
+            const message1 = 'Hallo ' + name + ',\n\nNomor kamu didaftarkan sebagai petugas penerima tamu pada acara ' + eventName + '.\n\n';
+            const message2 = 'Anda dapat mengunduh aplikasi Viseetor Scanner QRCode pada link berikut:\n';
+            const message3 = 'https://bit.ly/viseetor-scanner-app\n\n';
+            const message4 = 'Gunakan kode dibawah untuk login pada aplikasi:\n\n';
+            const message5 = 'Code Event : ' + eventCode;
+            const message6 = '\nPasscode : ' + passcode;
+            const msg = message1 + message2 + message3 + message4 + message5 + message6;
+            functions.notificationWhatsApp(phone, msg);
+
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: 'Application Access has sent.',
+                // data: dataUser
+            })
+            return;
+        })
+    })
+}
+
 ///function===========
 ///function===========
 ///function===========

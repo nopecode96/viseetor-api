@@ -92,7 +92,7 @@ exports.getHomeData = (req, res) => {
         dataEvent: function (callback) {
             events.findAll({
                 where: { id: fid_events },
-                attributes: ['id', 'title', 'description', 'event_date', 'location_address'],
+                attributes: ['id', 'title', 'description', 'banner', 'venue_name', 'event_date', 'location_address'],
                 include: [
                     {
                         model: regRegencies,
@@ -152,18 +152,23 @@ exports.getHomeData = (req, res) => {
 exports.getGuestList = (req, res) => {
     // const appUserID = req.appUserID;
     const fid_events = req.fid_events;
-    const { name, phone } = req.query;
+    const { name, status } = req.query;
     // console.log(fid_events)
 
-    if (name) {
+    if (name && status) {
         var condition = {
             fid_events: fid_events,
             name: sequelize.where(sequelize.fn('LOWER', sequelize.col('events_guest.name')), 'LIKE', '%' + name + '%'),
         }
-    } else if (phone) {
+    } else if (name) {
         var condition = {
             fid_events: fid_events,
-            phone: sequelize.where(sequelize.fn('LOWER', sequelize.col('events_guest.phone')), 'LIKE', '%' + phone + '%'),
+            name: sequelize.where(sequelize.fn('LOWER', sequelize.col('events_guest.name')), 'LIKE', '%' + name + '%'),
+        }
+    } else if (status) {
+        var condition = {
+            fid_events: fid_events,
+            invitation_status: status,
         }
     } else {
         var condition = {
@@ -172,7 +177,8 @@ exports.getGuestList = (req, res) => {
     }
 
     events.findAll({
-        where: { id: fid_events }
+        where: { id: fid_events },
+        // order: [['events_guest.name', 'ASC']],
     }).then(data => {
         if (data.length == 0) {
             res.status(200).send({
@@ -185,7 +191,8 @@ exports.getGuestList = (req, res) => {
 
         eventsGuest.findAll({
             where: condition,
-            attributes: ['phone', 'email', 'name', 'guest_max', 'guest_actual', 'reason', 'invitation_status', 'scan_by'],
+            order: [['name', 'ASC']],
+            attributes: ['id', 'barcode', 'phone', 'email', 'name', 'guest_max', 'guest_actual', 'reason', 'invitation_status', 'scan_by'],
             include: {
                 model: eventsAppScan,
                 attributes: ['id', 'name']
@@ -221,7 +228,7 @@ exports.scanBarcode = (req, res) => {
     const appUserID = req.appUserID;
     const fid_events = req.fid_events;
     const { barcode } = req.query;
-    console.log(barcode)
+    // console.log(barcode)
 
     events.findAll({
         where: { id: fid_events }
@@ -251,13 +258,14 @@ exports.scanBarcode = (req, res) => {
                 return;
             }
 
-            eventsGuest.update({ invitation_status: 'ATTEND', scan_by: appUserID }, {
+            eventsGuest.findAll({
                 where: { barcode: barcode }
             }).then(data2 => {
                 res.status(200).send({
                     code: 200,
                     success: true,
-                    message: 'Guest has come',
+                    message: 'Guest Found',
+                    data: data2[0]
                 })
                 return;
             })
