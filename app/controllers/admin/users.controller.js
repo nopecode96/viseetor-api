@@ -166,7 +166,19 @@ exports.createUserMarketing = (req, res) => {
                     const fid_user = data3.id;
                     userProfile.create({ phone_number, fid_user })
                         .then(data4 => {
-                            functions.notificationWhatsApp(phone_number, 'Thank You to join Viseetor.\n\nYour account has been created. Now, you can login to your work platform at: ' + process.env.ADMIN_URL + '.\n\nHappy work,\nViseetor.com\n\nPlease join to Viseetor Partnerhip Telegram at ' + process.env.TELEGRAM_URL)
+                            const msg1 = 'Selamat, Kamu sudah bergabung dalam program kemitraan Viseetor.\n\n';
+                            const msg2 = 'Kamu sudah dapat mulai bekerja menggunakan platform Viseetor Pathnership App.\n';
+                            const msg3 = 'Berikut adalah detil akun kamu:\n';
+                            const msg4 = 'Platform : ' + process.env.ADMIN_URL + '\n';
+                            const msg5 = 'Email : ' + email + '\n';
+                            const msg6 = 'Password : ' + password + '\n\n';
+                            const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
+                            const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
+                            const msg9 = process.env.TELEGRAM_URL + '\m\n';
+                            const msg10 = 'Salam Sukses Selalu,\n';
+                            const msg11 = '*Viseetor Team*';
+
+                            functions.notificationWhatsApp(phone_number, msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11);
                             functions.auditLog('POST', 'Create new marketing with name ' + name, 'Any', 'users', data.id, fid_user_admin)
                             res.status(200).send({
                                 code: 200,
