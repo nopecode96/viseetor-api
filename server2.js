@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cors = require("cors");
 var moment = require('moment');
+const morganBody = require('morgan-body');
+
 dotenv.config();
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
@@ -25,6 +27,13 @@ app.use(function (req, res, next) {
   next();
 });
 app.options('*', cors());
+
+// middlewares
+const morganMiddleware = require("./app/middlewares/morgan.middleware");
+const logger = require("./app/utils/logger");
+app.locals.logger = logger;
+
+app.use(morganMiddleware);
 
 const db = require("./app/models/index.model");
 db.sequelize.sync()
@@ -62,6 +71,18 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+const loggerStream = {
+  write: message => {
+    logger.info(message);
+  },
+};
+
+morganBody(app, {
+  stream: loggerStream,
+  prettify: false,
+  filterParameters: ['password']
+});
+
 require("./app/routes/auth.routes")(app);
 require("./app/routes/admin/master_event.routes")(app);
 require("./app/routes/admin/master_industry.routes")(app);
@@ -91,6 +112,6 @@ app.get("/" + process.env.ENVIRONMENT + "/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log("Server " + process.env.ENVIRONMENT + " is running on port " + PORT);
-  console.log(new Date().toString());
+  logger.info("Server " + process.env.ENVIRONMENT + " is running on port " + PORT);
+  logger.info(new Date().toString());
 });
