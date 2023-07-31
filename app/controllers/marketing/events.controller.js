@@ -1416,6 +1416,15 @@ exports.guestInvitationSent = async (req, res) => {
             const groom_parent = eventWedding.groom_parent;
             const websiteURL = process.env.WEBSITE_WEDDING_URL + '?id=' + barcode;
 
+            if (bride_name == null || groom_name == null || bride_parent == null || groom_parent == null) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: "Data Wedding belumm lengkap, silahkan lengkapi dulu data detil wedding."
+                });
+                return;
+            }
+
             const em = eventMessage.replace('{{guestName}}', guestName);
             const em2 = em.replace('{{parentBrideName}}', bride_parent);
             const em3 = em2.replace('{{parentGroomName}}', groom_parent);
@@ -1450,7 +1459,7 @@ exports.guestInvitationSent = async (req, res) => {
                 console.log(response.data);
                 if (response.data.status !== "ok") {
                     res.status(200).send({
-                        code: 1005,
+                        code: 200,
                         success: false,
                         message: response.data.message
                     });
