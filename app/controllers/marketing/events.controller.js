@@ -1389,6 +1389,15 @@ exports.guestInvitationSent = async (req, res) => {
             }
 
             console.log('process sent invitation step 2');
+            // console.log(data2[0].events_messages);
+            if (data2[0].events_messages.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: "Kamu belum membuat template pesan whatsapp. Silahkan buat terlebih dahulu."
+                });
+                return;
+            }
             var eventMessage = data2[0].events_messages[0].content;
             const imageOri = process.env.MNT_PATH + 'event/thumbnail/' + data2[0].events_messages[0].image;
             var image = base64_encode(imageOri);
@@ -1416,7 +1425,7 @@ exports.guestInvitationSent = async (req, res) => {
             const groom_parent = eventWedding.groom_parent;
             const websiteURL = process.env.WEBSITE_WEDDING_URL + '?id=' + barcode;
 
-            if (bride_name == null || groom_name == null || bride_parent == null || groom_parent == null) {
+            if (bride_name === null || groom_name === null || bride_parent === null || groom_parent === null) {
                 res.status(200).send({
                     code: 200,
                     success: false,
