@@ -1,7 +1,7 @@
 // const db = require("../models/index.model");
 const QRCode = require('qrcode');
 const fs = require("fs");
-const { events, eventsWedding, eventsGuest, eventsGallery, regRegencies, regProvincies, company, eventsGiftBank } = require("../../models/index.model");
+const { events, eventsWedding, eventsGuest, eventsGallery, regRegencies, regProvincies, company, eventsGiftBank, webTemplate } = require("../../models/index.model");
 
 exports.getData = (req, res) => {
     const { id } = req.query;
@@ -34,6 +34,10 @@ exports.getData = (req, res) => {
                     {
                         model: company,
                         attributes: ['title']
+                    },
+                    {
+                        model: webTemplate,
+                        attributes: ['id', 'title', 'template']
                     }
                 ]
             }
