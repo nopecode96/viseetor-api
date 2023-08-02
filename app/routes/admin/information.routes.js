@@ -6,6 +6,6 @@ module.exports = app => {
     const controller = require("../../controllers/admin/information.controller");
     var router = require("express").Router();
 
-    router.get("/promo", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, controller.getPrommo);
+    router.get("/promo", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, controller.getPromo);
     app.use('/' + process.env.ENVIRONMENT + '/admin/information', router);
 };
