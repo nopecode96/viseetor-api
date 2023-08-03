@@ -171,7 +171,7 @@ exports.createUserMarketing = (req, res) => {
                             const msg3 = 'Berikut adalah detil akun kamu:\n';
                             const msg4 = 'Platform : ' + process.env.ADMIN_URL + '\n';
                             const msg5 = 'Email : ' + email + '\n';
-                            const msg6 = 'Password : ' + password + '\n\n';
+                            const msg6 = 'Password : ' + password_str + '\n\n';
                             const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
                             const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
                             const msg9 = process.env.TELEGRAM_URL + '\m\n';

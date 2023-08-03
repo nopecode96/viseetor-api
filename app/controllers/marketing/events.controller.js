@@ -1389,6 +1389,15 @@ exports.guestInvitationSent = async (req, res) => {
             }
 
             console.log('process sent invitation step 2');
+            // console.log(data2[0].events_messages);
+            if (data2[0].events_messages.length == 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: "Kamu belum membuat template pesan whatsapp. Silahkan buat terlebih dahulu."
+                });
+                return;
+            }
             var eventMessage = data2[0].events_messages[0].content;
             const imageOri = process.env.MNT_PATH + 'event/thumbnail/' + data2[0].events_messages[0].image;
             var image = base64_encode(imageOri);
@@ -1415,6 +1424,15 @@ exports.guestInvitationSent = async (req, res) => {
             const bride_parent = eventWedding.bride_parent;
             const groom_parent = eventWedding.groom_parent;
             const websiteURL = process.env.WEBSITE_WEDDING_URL + '?id=' + barcode;
+
+            if (bride_name === null || groom_name === null || bride_parent === null || groom_parent === null) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: "Data Wedding belumm lengkap, silahkan lengkapi dulu data detil wedding."
+                });
+                return;
+            }
 
             const em = eventMessage.replace('{{guestName}}', guestName);
             const em2 = em.replace('{{parentBrideName}}', bride_parent);
@@ -1450,7 +1468,7 @@ exports.guestInvitationSent = async (req, res) => {
                 console.log(response.data);
                 if (response.data.status !== "ok") {
                     res.status(200).send({
-                        code: 1005,
+                        code: 200,
                         success: false,
                         message: response.data.message
                     });
@@ -2103,7 +2121,7 @@ exports.sendApkToUser = (req, res) => {
             const passcode = dataUser[0].passcode;
             const message1 = 'Hallo ' + name + ',\n\nNomor kamu didaftarkan sebagai petugas penerima tamu pada acara ' + eventName + '.\n\n';
             const message2 = 'Anda dapat mengunduh aplikasi Viseetor Scanner QRCode pada link berikut:\n';
-            const message3 = 'https://bit.ly/viseetor-scanner-app\n\n';
+            const message3 = process.env.CDN_URL + 'download/viseetor.apk\n\n';
             const message4 = 'Gunakan kode dibawah untuk login pada aplikasi:\n\n';
             const message5 = 'Code Event : ' + eventCode;
             const message6 = '\nPasscode : ' + passcode;
