@@ -2066,3 +2066,106 @@
 2023-08-04 14:34:53:3453 [32minfo[39m: [32m[96mResponse: [32m200 [37m94.710 ms  [39m
 2023-08-06 22:30:40:3040 [32minfo[39m: [32mServer v2 is running on port 9091[39m
 2023-08-06 22:30:40:3040 [32minfo[39m: [32mSun Aug 06 2023 22:30:40 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 01:33:21:3321 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-07 01:33:21:3321 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/website/wedding/data [90mat [37mSen Agt 07 2023 01:33:21 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: axios/1.4.0[0m [39m
+2023-08-07 01:33:21:3321 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":500,"success":false,"message":"WHERE[0m [97mparameter[0m [97m\"barcode\"[0m [97mhas[0m [97minvalid[0m [97m\"undefined\"[0m [97mvalue"}[0m [39m
+2023-08-07 01:33:21:3321 [32minfo[39m: [32m[96mResponse: [31m500 [37m81.619 ms  [39m
+2023-08-07 11:22:58:2258 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:22:58:2258 [32minfo[39m: [32mMon Aug 07 2023 11:22:58 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:23:22:2322 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:23:22:2322 [32minfo[39m: [32mMon Aug 07 2023 11:23:22 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:23:48:2348 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:23:48:2348 [32minfo[39m: [32mMon Aug 07 2023 11:23:48 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:26:25:2625 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:26:25:2625 [32minfo[39m: [32mMon Aug 07 2023 11:26:25 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:26:41:2641 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:26:41:2641 [32minfo[39m: [32mMon Aug 07 2023 11:26:41 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:27:45:2745 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:27:45:2745 [32minfo[39m: [32mMon Aug 07 2023 11:27:45 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:28:01:281 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:28:01:281 [32minfo[39m: [32mMon Aug 07 2023 11:28:01 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:28:44:2844 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:28:44:2844 [32minfo[39m: [32mMon Aug 07 2023 11:28:44 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:30:13:3013 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:30:13:3013 [32minfo[39m: [32mMon Aug 07 2023 11:30:13 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:30:27:3027 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:30:27:3027 [32minfo[39m: [32mMon Aug 07 2023 11:30:27 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:31:56:3156 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-07 11:31:56:3156 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/admin/information/promo [90mat [37mSen Agt 07 2023 11:31:56 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-07 11:31:56:3156 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"image":"","title":"","description":"","code":"","discount":"","start_date":"","end_date":""}[0m [39m
+2023-08-07 11:31:56:3156 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":false,"message":"Please[0m [97minsert[0m [97mImage."}[0m [39m
+2023-08-07 11:31:56:3156 [32minfo[39m: [32m[96mResponse: [32m200 [37m52.326 ms  [39m
+2023-08-07 11:32:42:3242 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-07 11:32:42:3242 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/admin/information/promo [90mat [37mSen Agt 07 2023 11:32:42 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-07 11:32:42:3242 [32minfo[39m: [32m[96mResponse: [31m500 [37m37.819 ms  [39m
+2023-08-07 11:33:38:3338 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:33:38:3338 [32minfo[39m: [32mMon Aug 07 2023 11:33:38 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:33:41:3341 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-07 11:33:41:3341 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/admin/information/promo [90mat [37mSen Agt 07 2023 11:33:41 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-07 11:33:41:3341 [32minfo[39m: [32m[96mResponse: [31m500 [37m162.007 ms  [39m
+2023-08-07 11:35:42:3542 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:35:42:3542 [32minfo[39m: [32mMon Aug 07 2023 11:35:42 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:37:21:3721 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:37:21:3721 [32minfo[39m: [32mMon Aug 07 2023 11:37:21 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:37:53:3753 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:37:53:3753 [32minfo[39m: [32mMon Aug 07 2023 11:37:53 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:40:39:4039 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:40:39:4039 [32minfo[39m: [32mMon Aug 07 2023 11:40:39 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:41:10:4110 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:41:10:4110 [32minfo[39m: [32mMon Aug 07 2023 11:41:10 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:41:14:4114 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:41:14:4114 [32minfo[39m: [32mMon Aug 07 2023 11:41:14 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:41:39:4139 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:41:39:4139 [32minfo[39m: [32mMon Aug 07 2023 11:41:39 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:42:54:4254 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:42:54:4254 [32minfo[39m: [32mMon Aug 07 2023 11:42:54 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:43:04:434 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:43:04:434 [32minfo[39m: [32mMon Aug 07 2023 11:43:04 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 11:46:22:4622 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 11:46:22:4622 [32minfo[39m: [32mMon Aug 07 2023 11:46:22 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 12:15:24:1524 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-07 12:15:24:1524 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/information/promo?pomoID=1 [90mat [37mSen Agt 07 2023 12:15:24 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-07 12:15:24:1524 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Data[0m [97mfound","data":{"totalItems":2,"datas":[{"id":2,"image":"promotion2.jpg","title":"Mitra[0m [97mPromo","description":"It[0m [97mis[0m [97ma[0m [97mlong[0m [97mestablished[0m [97mfact[0m [97mthat[0m [97ma[0m [97mreader[0m [97mwill[0m [97mbe[0m [97mdistracted[0m [97mby[0m [97mthe[0m [97mreadable[0m [97mcontent[0m [97mof[0m [97ma[0m [97mpage[0m [97mwhen[0m [97mlooking[0m [97mat[0m [97mits[0m [97mlayout.[0m [97mThe[0m [97mpoint[0m [97mof[0m [97musing[0m [97mLorem[0m [97mIpsum[0m [97mis[0m [97mthat[0m [97mit[0m [97mhas[0m [97ma[0m [97mmore-or-less[0m [97mnormal[0m [97mdistribution[0m [97mof[0m [97mletters,[0m [97mas[0m [97mopposed[0m [97mto[0m [97musing[0m [97m'Content[0m [97mhere,[0m [97mcontent[0m [97mhere',[0m [97mmaking[0m [97mit[0m [97mlook[0m [97mlike[0m [97mreadable[0m [97mEnglish.","code":"MITRA","discount":15,"start_date":"2023-06-19T04:43:04.000Z","end_date":"2023-06-30T04:43:07.000Z","usage":0,"published":true,"createdAt":"2023-06-19T04:43:16.000Z","updatedAt":"2023-06-19T04:43:20.000Z","fid_user":1,"user":{"id":1,"name":"Admin"}},{"id":1,"image":"promotion.jpg","title":"Promo[0m [97mMid[0m [97mYear","description":"It[0m [97mis[0m [97ma[0m [97mlong[0m [97mestablished[0m [97mfact[0m [97mthat[0m [97ma[0m [97mreader[0m [97mwill[0m [97mbe[0m [97mdistracted[0m [97mby[0m [97mthe[0m [97mreadable[0m [97mcontent[0m [97mof[0m [97ma[0m [97mpage[0m [97mwhen[0m [97mlooking[0m [97mat[0m [97mits[0m [97mlayout.[0m [97mThe[0m [97mpoint[0m [97mof[0m [97musing[0m [97mLorem[0m [97mIpsum[0m [97mis[0m [97mthat[0m [97mit[0m [97mhas[0m [97ma[0m [97mmore-or-less[0m [97mnormal[0m [97mdistribution[0m [97mof[0m [97mlet[0m [97m...[0m [39m
+2023-08-07 12:15:24:1524 [32minfo[39m: [32m[96mResponse: [32m200 [37m61.903 ms  [39m
+2023-08-07 12:15:41:1541 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-07 12:15:41:1541 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/information/promo-detail?pomoID=1 [90mat [37mSen Agt 07 2023 12:15:41 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-07 12:15:41:1541 [32minfo[39m: [32m[96mResponse: [31m500 [37m26.728 ms  [39m
+2023-08-07 12:17:02:172 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 12:17:02:172 [32minfo[39m: [32mMon Aug 07 2023 12:17:02 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 12:17:09:179 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-07 12:17:09:179 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/information/promo-detail?promoID=1 [90mat [37mSen Agt 07 2023 12:17:09 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-07 12:17:09:179 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Data[0m [97mFound.","data":{"id":1,"image":"promotion.jpg","title":"Promo[0m [97mMid[0m [97mYear","description":"It[0m [97mis[0m [97ma[0m [97mlong[0m [97mestablished[0m [97mfact[0m [97mthat[0m [97ma[0m [97mreader[0m [97mwill[0m [97mbe[0m [97mdistracted[0m [97mby[0m [97mthe[0m [97mreadable[0m [97mcontent[0m [97mof[0m [97ma[0m [97mpage[0m [97mwhen[0m [97mlooking[0m [97mat[0m [97mits[0m [97mlayout.[0m [97mThe[0m [97mpoint[0m [97mof[0m [97musing[0m [97mLorem[0m [97mIpsum[0m [97mis[0m [97mthat[0m [97mit[0m [97mhas[0m [97ma[0m [97mmore-or-less[0m [97mnormal[0m [97mdistribution[0m [97mof[0m [97mletters,[0m [97mas[0m [97mopposed[0m [97mto[0m [97musing[0m [97m'Content[0m [97mhere,[0m [97mcontent[0m [97mhere',[0m [97mmaking[0m [97mit[0m [97mlook[0m [97mlike[0m [97mreadable[0m [97mEnglish.","code":"MIDYEAR","discount":10,"start_date":"2023-06-19T04:41:51.000Z","end_date":"2023-08-31T04:41:56.000Z","usage":0,"published":true,"createdAt":"2023-06-19T04:42:10.000Z","updatedAt":"2023-06-19T04:42:13.000Z","fid_user":1}}[0m [39m
+2023-08-07 12:17:09:179 [32minfo[39m: [32m[96mResponse: [32m200 [37m36.411 ms  [39m
+2023-08-07 12:18:51:1851 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-07 12:18:51:1851 [32minfo[39m: [32m [96mRequest: [93mPUT [97m/v2/admin/information/promo-published?promoID=1&published=false [90mat [37mSen Agt 07 2023 12:18:51 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-07 12:18:51:1851 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Data[0m [97mPublish[0m [97mStatus[0m [97mUpdated."}[0m [39m
+2023-08-07 12:18:51:1851 [32minfo[39m: [32m[96mResponse: [32m200 [37m52.983 ms  [39m
+2023-08-07 12:19:13:1913 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-07 12:19:13:1913 [32minfo[39m: [32m [96mRequest: [93mPUT [97m/v2/admin/information/promo-published?promoID=1&published=true [90mat [37mSen Agt 07 2023 12:19:13 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-07 12:19:13:1913 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Data[0m [97mPublish[0m [97mStatus[0m [97mUpdated."}[0m [39m
+2023-08-07 12:19:13:1913 [32minfo[39m: [32m[96mResponse: [32m200 [37m51.123 ms  [39m
+2023-08-07 12:20:26:2026 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 12:20:26:2026 [32minfo[39m: [32mMon Aug 07 2023 12:20:26 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 12:22:25:2225 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 12:22:25:2225 [32minfo[39m: [32mMon Aug 07 2023 12:22:25 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 12:22:29:2229 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 12:22:29:2229 [32minfo[39m: [32mMon Aug 07 2023 12:22:29 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 12:24:21:2421 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 12:24:21:2421 [32minfo[39m: [32mMon Aug 07 2023 12:24:21 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 12:28:43:2843 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 12:28:43:2843 [32minfo[39m: [32mMon Aug 07 2023 12:28:43 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 12:29:14:2914 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 12:29:14:2914 [32minfo[39m: [32mMon Aug 07 2023 12:29:14 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 12:30:28:3028 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 12:30:28:3028 [32minfo[39m: [32mMon Aug 07 2023 12:30:28 GMT+0700 (Western Indonesia Time)[39m
+2023-08-07 12:30:34:3034 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-07 12:30:34:3034 [32minfo[39m: [32mMon Aug 07 2023 12:30:34 GMT+0700 (Western Indonesia Time)[39m
