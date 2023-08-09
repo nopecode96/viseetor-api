@@ -108,7 +108,7 @@ exports.postPromo = (req, res) => {
     }
 
     const image = req.file.filename;
-    userProfile.create({ image, title, description, code, discount, start_date, end_date, usage, published, fid_user })
+    promotion.create({ image, title, description, code, discount, start_date, end_date, usage, published, fid_user })
         .then(data => {
             res.status(201).send({
                 code: 201,
