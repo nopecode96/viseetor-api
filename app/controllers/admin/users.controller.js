@@ -267,6 +267,15 @@ exports.getAccountDetail = (req, res) => {
     const fid_user = req.userid;
     const { userid } = req.query;
 
+    if (userid == '1') {
+        res.status(401).send({
+            code: 401,
+            success: false,
+            message: 'You not have permission to show this user.',
+        })
+        return;
+    }
+
     user.findAll({
         where: { id: userid },
         attributes: ['id', 'username', 'email', 'name', 'photo', 'published', 'lastLogin', 'createdAt'],
@@ -294,6 +303,61 @@ exports.getAccountDetail = (req, res) => {
             success: true,
             message: "Datas Found.",
             data: data[0]
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.changePassword = (req, res) => {
+    const fid_user = req.userid;
+    const { userid } = req.query;
+    const { password, repassword } = req.body;
+
+    if (!userid) {
+        res.status(401).send({
+            code: 401,
+            success: false,
+            message: 'User id not found.',
+        })
+        return;
+    }
+
+    if (userid == '1') {
+        res.status(401).send({
+            code: 401,
+            success: false,
+            message: 'You dont have permission to change this account.',
+        })
+        return;
+    }
+
+    if (password !== repassword) {
+        res.status(401).send({
+            code: 401,
+            success: false,
+            message: 'Password & Re-Password not match.',
+        })
+        return;
+    }
+
+    const md5password = md5(password);
+
+    user.update(
+        { password: md5password },
+        { where: { id: userid } }
+    ).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Password has been changed.",
+            // data: data[0]
         });
     }).catch(err => {
         console.log(err);

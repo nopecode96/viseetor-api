@@ -2423,3 +2423,19 @@
 2023-08-12 14:27:55:2755 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/users/detail?userid=2 [90mat [37mSab Agt 12 2023 14:27:55 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
 2023-08-12 14:27:55:2755 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Datas[0m [97mFound.","data":{"id":2,"username":"johndoe","email":"demo@viseetor.id","name":"John[0m [97mDoe","photo":"1687070948381.jpg","published":true,"lastLogin":"2023-08-01T04:45:59.000Z","createdAt":"2023-04-05T08:40:44.000Z","user_type":{"id":2,"type_name":"Marketing"},"master_status_user":{"id":1,"title":"Activated"},"user_profile":{"id":2,"phone_number":"+1[0m [97m(338)[0m [97m621-3293","gender":"Pria","birth_place":"Irure[0m [97maute[0m [97mminima[0m [97mvo","birthday":"2021-04-05","address":"Odit[0m [97manim[0m [97mreprehende","hobbies":"Qui[0m [97mlaboris[0m [97miusto[0m [97mqu","instagram":"Praesentium[0m [97mlabore[0m [97ms","facebook":"Sint[0m [97mblanditiis[0m [97mdol","bank_account_number":"412","bank_account_name":"Colby[0m [97mHardy","createdAt":"2023-06-17T11:57:24.486Z","updatedAt":"2023-06-18T16:20:28.121Z","fid_user":2,"fid_bank":1,"fid_occupation":4,"fid_regency":3311,"reg_regencie":{"id":3311,"name":"KABUPATEN[0m [97mSUKOHARJO","createdAt":"2023-02-06T07:33:21.000Z","updatedAt":"2023-02-06T07:33:21.000Z","province_id":33,"reg_province":{"id":33,"n[0m [97m...[0m [39m
 2023-08-12 14:27:55:2755 [32minfo[39m: [32m[96mResponse: [32m200 [37m39.385 ms  [39m
+2023-08-12 14:52:05:525 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:52:05:525 [32minfo[39m: [32mSat Aug 12 2023 14:52:05 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:52:21:5221 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:52:21:5221 [32minfo[39m: [32mSat Aug 12 2023 14:52:21 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:53:23:5323 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:53:23:5323 [32minfo[39m: [32mSat Aug 12 2023 14:53:23 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:54:19:5419 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:54:19:5419 [32minfo[39m: [32mSat Aug 12 2023 14:54:19 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:55:37:5537 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:55:37:5537 [32minfo[39m: [32mSat Aug 12 2023 14:55:37 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:56:26:5626 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:56:26:5626 [32minfo[39m: [32mSat Aug 12 2023 14:56:26 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:57:49:5749 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:57:49:5749 [32minfo[39m: [32mSat Aug 12 2023 14:57:49 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:58:42:5842 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:58:42:5842 [32minfo[39m: [32mSat Aug 12 2023 14:58:42 GMT+0700 (Western Indonesia Time)[39m
