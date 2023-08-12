@@ -2367,3 +2367,59 @@
 2023-08-10 14:42:12:4212 [32minfo[39m: [32m[96mResponse: [32m200 [37m504.104 ms  [39m
 2023-08-10 14:42:19:4219 [32minfo[39m: [32mServer v2 is running on port 9091[39m
 2023-08-10 14:42:19:4219 [32minfo[39m: [32mThu Aug 10 2023 14:42:19 GMT+0700 (Western Indonesia Time)[39m
+2023-08-11 09:29:22:2922 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-11 09:29:22:2922 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/website/wedding/data?id=4YGEGEMUWKLGMWH8 [90mat [37mJum Agt 11 2023 09:29:22 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: axios/1.4.0[0m [39m
+2023-08-11 09:29:22:2922 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":500,"success":false,"message":"Operation[0m [97mtimeout"}[0m [39m
+2023-08-11 09:29:22:2922 [32minfo[39m: [32m[96mResponse: [31m500 [37m199.778 ms  [39m
+2023-08-11 09:29:41:2941 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-11 09:29:41:2941 [32minfo[39m: [32mFri Aug 11 2023 09:29:41 GMT+0700 (Western Indonesia Time)[39m
+2023-08-11 10:22:39:2239 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-11 10:22:39:2239 [32minfo[39m: [32mFri Aug 11 2023 10:22:39 GMT+0700 (Western Indonesia Time)[39m
+2023-08-11 10:22:46:2246 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-11 10:22:46:2246 [32minfo[39m: [32m [96mRequest: [93mPUT [97m/v2/admin/information/promo?promoID=1 [90mat [37mJum Agt 11 2023 10:22:46 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-11 10:22:46:2246 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"title":"taedf","description":"dsafdafds","code":"dasfd","discount":"20","start_date":"2023-07-01","end_date":"2023-11-22","image":""}[0m [39m
+2023-08-11 10:22:46:2246 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Data[0m [97mUpdated."}[0m [39m
+2023-08-11 10:22:46:2246 [32minfo[39m: [32m[96mResponse: [32m200 [37m60.458 ms  [39m
+2023-08-11 10:44:34:4434 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-11 10:44:34:4434 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/website/wedding/data?id=4YGEGEMUWKLGMWH8 [90mat [37mJum Agt 11 2023 10:44:34 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: axios/1.4.0[0m [39m
+2023-08-11 10:44:34:4434 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Data[0m [97mFound!","data":{"id":3,"barcode":"4YGEGEMUWKLGMWH8","phone":"+6281919729696","email":"nope@viseetor.id","name":"Bpk[0m [97mJohn[0m [97mArahap","guest_max":4,"guest_actual":2,"attend":false,"reason":"","photo":null,"invitation_status":"WILL[0m [97mATTEND","invitation_send_count":10,"barcode_send_count":4,"last_sent_date":null,"createdAt":"2023-06-26T19:47:09.946Z","updatedAt":"2023-08-04T04:40:25.750Z","fid_events":6,"fid_user":2,"scan_by":null,"event":{"id":6,"banner":"1683002731811.jpg","title":"Pernikahan[0m [97mRuri[0m [97m&[0m [97mLesti","description":"Dhdifohf[0m [97mdsfhds[0m [97mofhuoisd[0m [97mfdssdfhisd","event_video_url":"","venue_name":"Gedung[0m [97mMall[0m [97mGalaxy","location_address":"Jl[0m [97mmelati[0m [97mno.3","location_coordinate_latitude":"-6.9354894","location_coordinate_longitude":"107.7639643","ticketing":false,"gift_bank":true,"guest":true,"invitation_limit":0,"event_date":"2023-06-30T04:19:45.000Z","published":true,"createdAt":"2023-05-02T04:52:22.006Z","updatedAt":"2023-05-02T04:56:05.235Z","fid_company":[0m [97m...[0m [39m
+2023-08-11 10:44:34:4434 [32minfo[39m: [32m[96mResponse: [32m200 [37m48.165 ms  [39m
+2023-08-11 17:50:48:5048 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-11 17:50:48:5048 [32minfo[39m: [32mFri Aug 11 2023 17:50:48 GMT+0700 (Western Indonesia Time)[39m
+2023-08-11 18:05:26:526 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-11 18:05:26:526 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/website/wedding/data?id=4YGEGEMUWKLGMWH8 [90mat [37mJum Agt 11 2023 18:05:26 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: axios/1.4.0[0m [39m
+2023-08-11 18:05:26:526 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Data[0m [97mFound!","data":{"id":3,"barcode":"4YGEGEMUWKLGMWH8","phone":"+6281919729696","email":"nope@viseetor.id","name":"Bpk[0m [97mJohn[0m [97mArahap","guest_max":4,"guest_actual":2,"attend":false,"reason":"","photo":null,"invitation_status":"WILL[0m [97mATTEND","invitation_send_count":10,"barcode_send_count":4,"last_sent_date":null,"createdAt":"2023-06-26T19:47:09.946Z","updatedAt":"2023-08-04T04:40:25.750Z","fid_events":6,"fid_user":2,"scan_by":null,"event":{"id":6,"banner":"1683002731811.jpg","title":"Pernikahan[0m [97mRuri[0m [97m&[0m [97mLesti","description":"Dhdifohf[0m [97mdsfhds[0m [97mofhuoisd[0m [97mfdssdfhisd","event_video_url":"","venue_name":"Gedung[0m [97mMall[0m [97mGalaxy","location_address":"Jl[0m [97mmelati[0m [97mno.3","location_coordinate_latitude":"-6.9354894","location_coordinate_longitude":"107.7639643","ticketing":false,"gift_bank":true,"guest":true,"invitation_limit":0,"event_date":"2023-06-30T04:19:45.000Z","published":true,"createdAt":"2023-05-02T04:52:22.006Z","updatedAt":"2023-05-02T04:56:05.235Z","fid_company":[0m [97m...[0m [39m
+2023-08-11 18:05:26:526 [32minfo[39m: [32m[96mResponse: [32m200 [37m203.395 ms  [39m
+2023-08-12 14:24:40:2440 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:24:40:2440 [32minfo[39m: [32mSat Aug 12 2023 14:24:40 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:25:48:2548 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:25:48:2548 [32minfo[39m: [32mSat Aug 12 2023 14:25:48 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:25:58:2558 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:25:58:2558 [32minfo[39m: [32mSat Aug 12 2023 14:25:58 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:27:16:2716 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-12 14:27:16:2716 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/users/detail?userid=2 [90mat [37mSab Agt 12 2023 14:27:16 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-12 14:27:16:2716 [32minfo[39m: [32m[96mResponse: [31m500 [37m30.803 ms  [39m
+2023-08-12 14:27:38:2738 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:27:38:2738 [32minfo[39m: [32mSat Aug 12 2023 14:27:38 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:27:38:2738 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-12 14:27:38:2738 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/users/detail?userid=2 [90mat [37mSab Agt 12 2023 14:27:38 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-12 14:27:38:2738 [32minfo[39m: [32m[96mResponse: [31m500 [37m11.280 ms  [39m
+2023-08-12 14:27:45:2745 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:27:45:2745 [32minfo[39m: [32mSat Aug 12 2023 14:27:45 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:27:46:2746 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-12 14:27:46:2746 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/users/detail?userid=2 [90mat [37mSab Agt 12 2023 14:27:46 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-12 14:27:46:2746 [32minfo[39m: [32m[96mResponse: [31m500 [37m11.313 ms  [39m
+2023-08-12 14:27:53:2753 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 14:27:53:2753 [32minfo[39m: [32mSat Aug 12 2023 14:27:53 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 14:27:55:2755 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-12 14:27:55:2755 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/users/detail?userid=2 [90mat [37mSab Agt 12 2023 14:27:55 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-12 14:27:55:2755 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Datas[0m [97mFound.","data":{"id":2,"username":"johndoe","email":"demo@viseetor.id","name":"John[0m [97mDoe","photo":"1687070948381.jpg","published":true,"lastLogin":"2023-08-01T04:45:59.000Z","createdAt":"2023-04-05T08:40:44.000Z","user_type":{"id":2,"type_name":"Marketing"},"master_status_user":{"id":1,"title":"Activated"},"user_profile":{"id":2,"phone_number":"+1[0m [97m(338)[0m [97m621-3293","gender":"Pria","birth_place":"Irure[0m [97maute[0m [97mminima[0m [97mvo","birthday":"2021-04-05","address":"Odit[0m [97manim[0m [97mreprehende","hobbies":"Qui[0m [97mlaboris[0m [97miusto[0m [97mqu","instagram":"Praesentium[0m [97mlabore[0m [97ms","facebook":"Sint[0m [97mblanditiis[0m [97mdol","bank_account_number":"412","bank_account_name":"Colby[0m [97mHardy","createdAt":"2023-06-17T11:57:24.486Z","updatedAt":"2023-06-18T16:20:28.121Z","fid_user":2,"fid_bank":1,"fid_occupation":4,"fid_regency":3311,"reg_regencie":{"id":3311,"name":"KABUPATEN[0m [97mSUKOHARJO","createdAt":"2023-02-06T07:33:21.000Z","updatedAt":"2023-02-06T07:33:21.000Z","province_id":33,"reg_province":{"id":33,"n[0m [97m...[0m [39m
+2023-08-12 14:27:55:2755 [32minfo[39m: [32m[96mResponse: [32m200 [37m39.385 ms  [39m

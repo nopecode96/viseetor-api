@@ -5,7 +5,7 @@ const async = require('async')
 const axios = require("axios")
 
 var functions = require("../../../config/function");
-const { user, userProfile, userType, masterUserStatus } = require("../../models/index.model");
+const { user, userProfile, userType, masterUserStatus, regRegencies, regProvincies, masterBank, masterOccupation } = require("../../models/index.model");
 
 exports.findAllMarketing = (req, res) => {
     const { page, size, name, username, user_status } = req.query;
@@ -256,6 +256,49 @@ exports.updateStatusUserMarketing = (req, res) => {
         console.log(err);
         res.status(500).send({
             code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.getAccountDetail = (req, res) => {
+    const fid_user = req.userid;
+    const { userid } = req.query;
+
+    user.findAll({
+        where: { id: userid },
+        attributes: ['id', 'username', 'email', 'name', 'photo', 'published', 'lastLogin', 'createdAt'],
+        include: [
+            { model: userType, attributes: ['id', 'type_name'] },
+            { model: masterUserStatus, attributes: ['id', 'title'] },
+            {
+                model: userProfile,
+                include: [
+                    {
+                        model: regRegencies,
+                        include: {
+                            model: regProvincies
+                        }
+                    },
+                    { model: masterBank },
+                    { model: masterOccupation },
+                ]
+            }
+        ]
+
+    }).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: data[0]
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(400).send({
+            code: 400,
             success: false,
             message:
                 err.message || "Some error occurred while retrieving data."
