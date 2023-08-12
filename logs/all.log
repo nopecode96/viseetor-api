@@ -2439,3 +2439,31 @@
 2023-08-12 14:57:49:5749 [32minfo[39m: [32mSat Aug 12 2023 14:57:49 GMT+0700 (Western Indonesia Time)[39m
 2023-08-12 14:58:42:5842 [32minfo[39m: [32mServer v2 is running on port 9091[39m
 2023-08-12 14:58:42:5842 [32minfo[39m: [32mSat Aug 12 2023 14:58:42 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 20:51:21:5121 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 20:51:21:5121 [32minfo[39m: [32mSat Aug 12 2023 20:51:21 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 20:51:25:5125 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-12 20:51:25:5125 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/users/spv [90mat [37mSab Agt 12 2023 20:51:25 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-12 20:51:25:5125 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Datas[0m [97mFound.","data":{"totalItems":0,"datas":[],"totalPages":0,"currentPage":1}}[0m [39m
+2023-08-12 20:51:25:5125 [32minfo[39m: [32m[96mResponse: [32m200 [37m62.809 ms  [39m
+2023-08-12 20:53:45:5345 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 20:53:45:5345 [32minfo[39m: [32mSat Aug 12 2023 20:53:45 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 20:58:50:5850 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 20:58:51:5851 [32minfo[39m: [32mSat Aug 12 2023 20:58:51 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 21:00:21:021 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 21:00:21:021 [32minfo[39m: [32mSat Aug 12 2023 21:00:21 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 21:00:53:053 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 21:00:53:053 [32minfo[39m: [32mSat Aug 12 2023 21:00:53 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 21:02:06:26 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 21:02:06:26 [32minfo[39m: [32mSat Aug 12 2023 21:02:06 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 21:39:24:3924 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 21:39:24:3924 [32minfo[39m: [32mSat Aug 12 2023 21:39:24 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 22:36:30:3630 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-12 22:36:30:3630 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/wapi/restart-device [90mat [37mSab Agt 12 2023 22:36:30 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-12 22:36:30:3630 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Device[0m [97mhas[0m [97mbeen[0m [97mreset","response":{"status":"ok","message":"Memulai[0m [97mulang[0m [97mperangkat"}}[0m [39m
+2023-08-12 22:36:30:3630 [32minfo[39m: [32m[96mResponse: [32m200 [37m584.999 ms  [39m
+2023-08-12 22:50:13:5013 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 22:50:13:5013 [32minfo[39m: [32mSat Aug 12 2023 22:50:13 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 22:50:23:5023 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 22:50:23:5023 [32minfo[39m: [32mSat Aug 12 2023 22:50:23 GMT+0700 (Western Indonesia Time)[39m

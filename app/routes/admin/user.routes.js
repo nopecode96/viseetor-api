@@ -9,6 +9,8 @@ module.exports = app => {
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllUsersAdmin);
     router.get("/marketing", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllMarketing);
     router.post("/marketing", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createUserMarketing);
+    router.get("/spv", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllSpv);
+    router.post("/spv", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createUserSpv);
     router.put("/update-status", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatusUserMarketing);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getAccountDetail);
     router.post("/change-password", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.changePassword);
