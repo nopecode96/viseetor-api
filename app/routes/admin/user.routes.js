@@ -11,5 +11,6 @@ module.exports = app => {
     router.post("/marketing", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createUserMarketing);
     router.put("/update-status", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatusUserMarketing);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getAccountDetail);
+    router.post("/change-password", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.changePassword);
     app.use('/' + process.env.ENVIRONMENT + '/admin/users', router);
 };
