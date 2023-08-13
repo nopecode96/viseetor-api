@@ -81,6 +81,7 @@ exports.getPromotionAll = (req, res) => {
     const condition = {
         start_date: { [Op.lte]: datenow },
         end_date: { [Op.gte]: datenow },
+        published: true
     }
 
     promotion.findAll({
