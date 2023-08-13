@@ -513,7 +513,7 @@ exports.updateStatusUser = (req, res) => {
 
         user.update({
             fid_user_status: status,
-            mmmm
+            // password: 
         }, { where: { id: userid } })
             .then(data2 => {
 
