@@ -2505,3 +2505,63 @@
 2023-08-13 11:45:43:4543 [32minfo[39m: [32mSun Aug 13 2023 11:45:43 GMT+0700 (Western Indonesia Time)[39m
 2023-08-13 11:47:29:4729 [32minfo[39m: [32mServer v2 is running on port 9091[39m
 2023-08-13 11:47:30:4730 [32minfo[39m: [32mSun Aug 13 2023 11:47:30 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:37:01:371 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:37:01:371 [32minfo[39m: [32mSun Aug 13 2023 15:37:01 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:39:56:3956 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:39:56:3956 [32minfo[39m: [32mSun Aug 13 2023 15:39:56 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:42:10:4210 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-13 15:42:10:4210 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/register [90mat [37mMin Agt 13 2023 15:42:10 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-13 15:42:10:4210 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"username":"demo@viseetor.id","email":"demo@viseetor.id","phone_number":"demo@viseetor.id","name":"demo@viseetor.id","gender":"demo@viseetor.id","birth_place":"demo@viseetor.id","birthday":"demo@viseetor.id","instagram":"demo@viseetor.id","address":"demo@viseetor.id","fid_regency":"demo@viseetor.id","fid_occupation":"demo@viseetor.id","reference_id":""}[0m [39m
+2023-08-13 15:42:10:4210 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":false,"message":"Email[0m [97mini[0m [97msudah[0m [97mterdaftar,[0m [97msilahkan[0m [97mgunakan[0m [97memail[0m [97mlain."}[0m [39m
+2023-08-13 15:42:10:4210 [32minfo[39m: [32m[96mResponse: [32m200 [37m32.912 ms  [39m
+2023-08-13 15:43:42:4342 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:43:42:4342 [32minfo[39m: [32mSun Aug 13 2023 15:43:42 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:45:10:4510 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:45:10:4510 [32minfo[39m: [32mSun Aug 13 2023 15:45:10 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:45:18:4518 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:45:18:4518 [32minfo[39m: [32mSun Aug 13 2023 15:45:18 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:45:27:4527 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-13 15:45:27:4527 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/register [90mat [37mMin Agt 13 2023 15:45:27 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-13 15:45:27:4527 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"username":"demoakun","email":"demo@viseetor.id","phone_number":"demo@viseetor.id","name":"demo@viseetor.id","gender":"demo@viseetor.id","birth_place":"demo@viseetor.id","birthday":"demo@viseetor.id","instagram":"demo@viseetor.id","address":"demo@viseetor.id","fid_regency":"demo@viseetor.id","fid_occupation":"demo@viseetor.id","reference_id":""}[0m [39m
+2023-08-13 15:45:27:4527 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":false,"message":"Email[0m [97mini[0m [97msudah[0m [97mterdaftar,[0m [97msilahkan[0m [97mgunakan[0m [97memail[0m [97mlain."}[0m [39m
+2023-08-13 15:45:27:4527 [32minfo[39m: [32m[96mResponse: [32m200 [37m19.140 ms  [39m
+2023-08-13 15:45:35:4535 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-13 15:45:35:4535 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/register [90mat [37mMin Agt 13 2023 15:45:35 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-13 15:45:35:4535 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"username":"demo","email":"demo@viseetor.id","phone_number":"demo@viseetor.id","name":"demo@viseetor.id","gender":"demo@viseetor.id","birth_place":"demo@viseetor.id","birthday":"demo@viseetor.id","instagram":"demo@viseetor.id","address":"demo@viseetor.id","fid_regency":"demo@viseetor.id","fid_occupation":"demo@viseetor.id","reference_id":""}[0m [39m
+2023-08-13 15:45:35:4535 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":false,"message":"Email[0m [97mini[0m [97msudah[0m [97mterdaftar,[0m [97msilahkan[0m [97mgunakan[0m [97memail[0m [97mlain."}[0m [39m
+2023-08-13 15:45:35:4535 [32minfo[39m: [32m[96mResponse: [32m200 [37m3.405 ms  [39m
+2023-08-13 15:45:39:4539 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-13 15:45:39:4539 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/register [90mat [37mMin Agt 13 2023 15:45:39 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-13 15:45:39:4539 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"username":"demo","email":"demos@viseetor.id","phone_number":"demo@viseetor.id","name":"demo@viseetor.id","gender":"demo@viseetor.id","birth_place":"demo@viseetor.id","birthday":"demo@viseetor.id","instagram":"demo@viseetor.id","address":"demo@viseetor.id","fid_regency":"demo@viseetor.id","fid_occupation":"demo@viseetor.id","reference_id":""}[0m [39m
+2023-08-13 15:45:39:4539 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":500,"success":false,"message":"userProfile[0m [97mis[0m [97mnot[0m [97mdefined"}[0m [39m
+2023-08-13 15:45:39:4539 [32minfo[39m: [32m[96mResponse: [31m500 [37m17.072 ms  [39m
+2023-08-13 15:45:54:4554 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:45:54:4554 [32minfo[39m: [32mSun Aug 13 2023 15:45:54 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:46:35:4635 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-13 15:46:35:4635 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/register [90mat [37mMin Agt 13 2023 15:46:35 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-13 15:46:35:4635 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"username":"marketing","email":"demos@viseetor.id","phone_number":"demo@viseetor.id","name":"demo@viseetor.id","gender":"demo@viseetor.id","birth_place":"demo@viseetor.id","birthday":"demo@viseetor.id","instagram":"demo@viseetor.id","address":"demo@viseetor.id","fid_regency":"demo@viseetor.id","fid_occupation":"demo@viseetor.id","reference_id":""}[0m [39m
+2023-08-13 15:46:35:4635 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":false,"message":"Username[0m [97msudah[0m [97mdigunakan,[0m [97msilahkan[0m [97mgunakan[0m [97musername[0m [97mlain."}[0m [39m
+2023-08-13 15:46:35:4635 [32minfo[39m: [32m[96mResponse: [32m200 [37m41.337 ms  [39m
+2023-08-13 15:48:01:481 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:48:01:481 [32minfo[39m: [32mSun Aug 13 2023 15:48:01 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:48:25:4825 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:48:25:4825 [32minfo[39m: [32mSun Aug 13 2023 15:48:25 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:50:50:5050 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:50:50:5050 [32minfo[39m: [32mSun Aug 13 2023 15:50:50 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:50:57:5057 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:50:57:5057 [32minfo[39m: [32mSun Aug 13 2023 15:50:57 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:51:05:515 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-13 15:51:05:515 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/register [90mat [37mMin Agt 13 2023 15:51:05 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-13 15:51:05:515 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"username":"marketing[0m [97msss","email":"demos@viseetor.id","phone_number":"demo@viseetor.id","name":"demo@viseetor.id","gender":"demo@viseetor.id","birth_place":"demo@viseetor.id","birthday":"demo@viseetor.id","instagram":"demo@viseetor.id","address":"demo@viseetor.id","fid_regency":"demo@viseetor.id","fid_occupation":"demo@viseetor.id","reference_id":""}[0m [39m
+2023-08-13 15:51:05:515 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":false,"message":"Username[0m [97mtidak[0m [97mboleh[0m [97mada[0m [97mspasi."}[0m [39m
+2023-08-13 15:51:05:515 [32minfo[39m: [32m[96mResponse: [32m200 [37m6.137 ms  [39m
+2023-08-13 15:51:56:5156 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:51:56:5156 [32minfo[39m: [32mSun Aug 13 2023 15:51:56 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 15:54:15:5415 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 15:54:15:5415 [32minfo[39m: [32mSun Aug 13 2023 15:54:15 GMT+0700 (Western Indonesia Time)[39m
