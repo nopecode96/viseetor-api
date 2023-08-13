@@ -2125,7 +2125,8 @@ exports.sendApkToUser = (req, res) => {
             const message4 = 'Gunakan kode dibawah untuk login pada aplikasi:\n\n';
             const message5 = 'Code Event : ' + eventCode;
             const message6 = '\nPasscode : ' + passcode;
-            const msg = message1 + message2 + message3 + message4 + message5 + message6;
+            const message7 = '\n\n```Mohon reply dengan mengetik "Hi" untuk mengaktifkan Link URL/Website, lalu tutup chat ini dan buka kembali.```\n\nSender by Viseetor.com';
+            const msg = message1 + message2 + message3 + message4 + message5 + message6 + message7;
             functions.notificationWhatsApp(phone, msg);
 
             res.status(200).send({

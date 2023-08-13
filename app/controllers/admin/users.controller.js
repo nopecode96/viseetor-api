@@ -127,7 +127,7 @@ exports.createUserMarketing = (req, res) => {
     const createdBy = fid_user_admin;
     const { username, name, phone_number, email, password_str } = req.body;
 
-    console.log(fid_user_admin)
+    // console.log(fid_user_admin)
     if (!username || !name || !email || !phone_number || !password_str) {
         res.status(200).send({
             code: 200,
@@ -175,12 +175,13 @@ exports.createUserMarketing = (req, res) => {
                             const msg6 = 'Password : ' + password_str + '\n\n';
                             const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
                             const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
-                            const msg9 = process.env.TELEGRAM_URL + '\m\n';
+                            const msg9 = process.env.TELEGRAM_URL + '\n\n';
                             const msg10 = 'Salam Sukses Selalu,\n';
                             const msg11 = '*Viseetor Team*\n';
-                            const msg12 = 'https://viseetor.com';
+                            const msg12 = 'https://viseetor.com\n';
+                            const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.';
 
-                            functions.notificationWhatsApp(phone_number, msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12);
+                            functions.notificationWhatsApp(phone_number, msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13);
                             functions.auditLog('POST', 'Create new marketing with name ' + name, 'Any', 'users', data.id, fid_user_admin)
                             res.status(200).send({
                                 code: 200,
@@ -197,63 +198,18 @@ exports.createUserMarketing = (req, res) => {
                         message:
                             err.message || "Some error occurred while retrieving data."
                     });
+                    return;
                 });
-        })
-    })
-}
-
-exports.updateStatusUserMarketing = (req, res) => {
-    const { userid, status } = req.body;
-
-    if (userid == '1') {
-        res.status(200).send({
-            code: 200,
-            success: false,
-            message: "You do not permission to update this user."
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send({
+                code: 500,
+                success: false,
+                message:
+                    err.message || "Some error occurred while retrieving data."
+            });
+            return;
         });
-        return;
-    }
-
-    user.findAll({
-        where: { id: userid }
-    }).then(data => {
-        if (data[0].fid_user_type == '1') {
-            res.status(200).send({
-                code: 200,
-                success: false,
-                message: "You do not permission to update this user."
-            });
-            return;
-        }
-
-        if (data.length == 0) {
-            res.status(200).send({
-                code: 200,
-                success: false,
-                message: "User Not Found."
-            });
-            return;
-        }
-
-        user.update({
-            fid_user_status: status
-        }, { where: { id: userid } })
-            .then(data2 => {
-                res.status(200).send({
-                    code: 200,
-                    success: true,
-                    message: "Status updated."
-                });
-                return;
-            }).catch(err => {
-                console.log(err);
-                res.status(500).send({
-                    code: 500,
-                    success: false,
-                    message:
-                        err.message || "Some error occurred while retrieving data."
-                });
-            });
     }).catch(err => {
         console.log(err);
         res.status(500).send({
@@ -262,6 +218,7 @@ exports.updateStatusUserMarketing = (req, res) => {
             message:
                 err.message || "Some error occurred while retrieving data."
         });
+        return;
     });
 }
 
@@ -383,8 +340,9 @@ exports.createUserSpv = (req, res) => {
                             const msg10 = 'Salam Sukses Selalu,\n';
                             const msg11 = '*Viseetor Team*\m';
                             const msg12 = 'https://viseetor.com';
+                            const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.';
 
-                            functions.notificationWhatsApp(phone_number, msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12);
+                            functions.notificationWhatsApp(phone_number, msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13);
                             functions.auditLog('POST', 'Create new supervisor with name ' + name, 'Any', 'users', data.id, fid_user_admin)
                             res.status(200).send({
                                 code: 200,
@@ -451,6 +409,69 @@ exports.getAccountDetail = (req, res) => {
         console.log(err);
         res.status(400).send({
             code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.updateStatusUser = (req, res) => {
+    const { userid, status } = req.body;
+
+    if (userid == '1') {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "You do not permission to update this user."
+        });
+        return;
+    }
+
+    user.findAll({
+        where: { id: userid }
+    }).then(data => {
+        if (data[0].fid_user_type == '1') {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "You do not permission to update this user."
+            });
+            return;
+        }
+
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "User Not Found."
+            });
+            return;
+        }
+
+        user.update({
+            fid_user_status: status
+        }, { where: { id: userid } })
+            .then(data2 => {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Status updated."
+                });
+                return;
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+            });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({
+            code: 500,
             success: false,
             message:
                 err.message || "Some error occurred while retrieving data."

@@ -11,8 +11,8 @@ module.exports = app => {
     router.post("/marketing", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createUserMarketing);
     router.get("/spv", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.findAllSpv);
     router.post("/spv", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createUserSpv);
-    router.put("/update-status", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatusUserMarketing);
+    router.put("/update-status", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateStatusUser);
     router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getAccountDetail);
-    router.post("/change-password", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.changePassword);
+    router.put("/change-password", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.changePassword);
     app.use('/' + process.env.ENVIRONMENT + '/admin/users', router);
 };

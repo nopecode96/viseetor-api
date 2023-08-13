@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     /**
      * Add altering commands here.
      *
@@ -10,12 +10,12 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
 
-    return queryInterface.addColumn('user_types', 'parent_id', {
+    return queryInterface.addColumn('users', 'parent_id', {
       type: Sequelize.DataTypes.INTEGER
     });
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     /**
      * Add reverting commands here.
      *
@@ -23,6 +23,6 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
 
-    return queryInterface.removeColumn('user_types', 'parent_id');
+    return queryInterface.removeColumn('users', 'parent_id');
   }
 };
