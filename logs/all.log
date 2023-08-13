@@ -2467,3 +2467,41 @@
 2023-08-12 22:50:13:5013 [32minfo[39m: [32mSat Aug 12 2023 22:50:13 GMT+0700 (Western Indonesia Time)[39m
 2023-08-12 22:50:23:5023 [32minfo[39m: [32mServer v2 is running on port 9091[39m
 2023-08-12 22:50:23:5023 [32minfo[39m: [32mSat Aug 12 2023 22:50:23 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 23:04:26:426 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 23:04:26:426 [32minfo[39m: [32mSat Aug 12 2023 23:04:26 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 23:04:31:431 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-12 23:04:31:431 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/admin/users/spv [90mat [37mSab Agt 12 2023 23:04:31 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-12 23:04:31:431 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"username":"okokok","name":"Usee[0m [97mName","phone_number":"+62822222222","email":"aaa@@mm.dom","password_str":"1223"}[0m [39m
+2023-08-12 23:04:31:431 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":false,"message":"Email[0m [97mhas[0m [97malready[0m [97mjoined,[0m [97mplease[0m [97muse[0m [97mother[0m [97mone."}[0m [39m
+2023-08-12 23:04:31:431 [32minfo[39m: [32m[96mResponse: [32m200 [37m73.545 ms  [39m
+2023-08-12 23:05:02:52 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 23:05:02:52 [32minfo[39m: [32mSat Aug 12 2023 23:05:02 GMT+0700 (Western Indonesia Time)[39m
+2023-08-12 23:05:07:57 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-12 23:05:07:57 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/admin/users/spv [90mat [37mSab Agt 12 2023 23:05:07 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-12 23:05:07:57 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"username":"okokok","name":"Usee[0m [97mName","phone_number":"+62822223333","email":"aaa@@ssssmm.dom","password_str":"1223"}[0m [39m
+2023-08-12 23:05:07:57 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Create[0m [97mdata[0m [97msuccess."}[0m [39m
+2023-08-12 23:05:07:57 [32minfo[39m: [32m[96mResponse: [32m200 [37m241.204 ms  [39m
+2023-08-12 23:06:17:617 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-12 23:06:17:617 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/admin/users/spv [90mat [37mSab Agt 12 2023 23:06:17 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-12 23:06:17:617 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"username":"supervisor","name":"Usee[0m [97mName","phone_number":"+628244443333","email":"aa@ss.dom","password_str":"1223"}[0m [39m
+2023-08-12 23:06:17:617 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Create[0m [97mdata[0m [97msuccess."}[0m [39m
+2023-08-12 23:06:17:617 [32minfo[39m: [32m[96mResponse: [32m200 [37m134.527 ms  [39m
+2023-08-12 23:08:09:89 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-12 23:08:09:89 [32minfo[39m: [32mSat Aug 12 2023 23:08:09 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 11:19:19:1919 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 11:19:19:1919 [32minfo[39m: [32mSun Aug 13 2023 11:19:19 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 11:34:47:3447 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 11:34:47:3447 [32minfo[39m: [32mSun Aug 13 2023 11:34:47 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 11:37:54:3754 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 11:37:54:3754 [32minfo[39m: [32mSun Aug 13 2023 11:37:54 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 11:43:31:4331 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 11:43:31:4331 [32minfo[39m: [32mSun Aug 13 2023 11:43:31 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 11:44:31:4431 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 11:44:31:4431 [32minfo[39m: [32mSun Aug 13 2023 11:44:31 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 11:45:43:4543 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 11:45:43:4543 [32minfo[39m: [32mSun Aug 13 2023 11:45:43 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 11:47:29:4729 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 11:47:30:4730 [32minfo[39m: [32mSun Aug 13 2023 11:47:30 GMT+0700 (Western Indonesia Time)[39m
