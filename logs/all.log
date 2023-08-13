@@ -2709,3 +2709,39 @@
 2023-08-13 19:15:53:1553 [32minfo[39m: [32mSun Aug 13 2023 19:15:53 GMT+0700 (Western Indonesia Time)[39m
 2023-08-13 19:19:51:1951 [32minfo[39m: [32mServer v2 is running on port 9091[39m
 2023-08-13 19:19:51:1951 [32minfo[39m: [32mSun Aug 13 2023 19:19:51 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:40:37:4037 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:40:37:4037 [32minfo[39m: [32mSun Aug 13 2023 19:40:37 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:41:16:4116 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:41:16:4116 [32minfo[39m: [32mSun Aug 13 2023 19:41:16 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:42:21:4221 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:42:21:4221 [32minfo[39m: [32mSun Aug 13 2023 19:42:21 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:42:49:4249 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:42:49:4249 [32minfo[39m: [32mSun Aug 13 2023 19:42:49 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:45:05:455 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-13 19:45:05:455 [32minfo[39m: [32m [96mRequest: [93mPUT [97m/v2/admin/users/update-status [90mat [37mMin Agt 13 2023 19:45:05 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-13 19:45:05:455 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"userid":"22","status":"1"}[0m [39m
+2023-08-13 19:45:05:455 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":203,"status":false,"message":"Your[0m [97maccount[0m [97mis[0m [97mExpired,[0m [97mPlease[0m [97mlogin[0m [97magain."}[0m [39m
+2023-08-13 19:45:05:455 [32minfo[39m: [32m[96mResponse: [32m203 [37m26.502 ms  [39m
+2023-08-13 19:45:18:4518 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-13 19:45:18:4518 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mMin Agt 13 2023 19:45:18 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-13 19:45:18:4518 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-13 19:45:18:4518 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Login[0m [97mSuccess.","data":{"id":1,"email":"admin@viseetor.id","name":"Admin","photo":"ikbar.jpeg","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInBhc3N3b3JkIjoiNWY0ZGNjM2I1YWE3NjVkNjFkODMyN2RlYjg4MmNmOTkiLCJpYXQiOjE2OTE5MzA3MTh9.HqQ-y63e1JmBHp3vrB9P_nH_4LcNCvFWwmwneWG5er4","lastLogin":"2023-08-13T12:45:18.000Z","fid_user_type":1,"fid_user_status":1,"user_type":{"id":1,"type_name":"Admin"},"master_status_user":{"id":1,"title":"Activated"}}}[0m [39m
+2023-08-13 19:45:18:4518 [32minfo[39m: [32m[96mResponse: [32m200 [37m36.728 ms  [39m
+2023-08-13 19:46:25:4625 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:46:25:4625 [32minfo[39m: [32mSun Aug 13 2023 19:46:25 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:46:55:4655 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:46:55:4655 [32minfo[39m: [32mSun Aug 13 2023 19:46:55 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:50:26:5026 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:50:26:5026 [32minfo[39m: [32mSun Aug 13 2023 19:50:26 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:50:33:5033 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:50:33:5033 [32minfo[39m: [32mSun Aug 13 2023 19:50:33 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:54:44:5444 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:54:44:5444 [32minfo[39m: [32mSun Aug 13 2023 19:54:44 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:55:04:554 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:55:04:554 [32minfo[39m: [32mSun Aug 13 2023 19:55:04 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:58:10:5810 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:58:10:5810 [32minfo[39m: [32mSun Aug 13 2023 19:58:10 GMT+0700 (Western Indonesia Time)[39m
+2023-08-13 19:58:41:5841 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-13 19:58:41:5841 [32minfo[39m: [32mSun Aug 13 2023 19:58:41 GMT+0700 (Western Indonesia Time)[39m
