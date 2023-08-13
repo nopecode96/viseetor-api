@@ -4,6 +4,7 @@ const UserType = db.userType;
 const UserStatus = db.masterUserStatus;
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
+var functions = require("../../config/function");
 const { user, userProfile } = require("../models/index.model");
 
 exports.logincheck = (req, res) => {
@@ -136,7 +137,7 @@ exports.registerMarketing = (req, res) => {
     const published = true;
     const createdBy = 1;
     const { username, email, phone_number, name, gender, birth_place, birthday, instagram, address, fid_regency, fid_occupation, reference_id } = req.body;
-    const parent_id = (reference_id.length == 0) ? '1' : reference_id;
+    const parent_id = (reference_id === '') ? '1' : reference_id;
 
     if (!username || !name || !email || !phone_number || !gender || !birth_place || !birthday || !instagram || !address || !fid_regency || !fid_occupation) {
         res.status(200).send({
@@ -200,9 +201,26 @@ exports.registerMarketing = (req, res) => {
                         const fid_user = data3.id;
                         userProfile.create({ phone_number, gender, birth_place, birthday, instagram, address, fid_regency, fid_occupation, fid_user })
                             .then(data4 => {
+                                const msg0 = 'Hallo ' + name + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
+                                const msg1 = 'Terima kasih Kamu sudah mendaftar dalam Program Kemitraan Viseetor. Kamu akan segera menjadi bagian dari Komunitas Mitra Viseetor.\n\n';
+                                const msg2 = 'Harap besabar ya, kami akan segera memproses aktivasi akun Kamu.\n\n';
+                                const msg3 = 'Sambil menunggu proses aktivasi akun, kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
+                                const msg4 = process.env.TELEGRAM_URL + '\n\n';
+                                const msg5 = 'Salam Sukses Selalu,\n';
+                                const msg6 = '*Viseetor Team*\n';
+                                const msg7 = 'https://viseetor.com\n';
+
+                                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7;
+                                functions.notificationWhatsAppWithLogo(phone_number, msg);
+                                res.status(200).send({
+                                    code: 200,
+                                    success: true,
+                                    message: "Pendaftaran Kamu berhasil terkirim."
+                                });
+                                return;
 
                             }).catch(err => {
-                                console.log(err);
+                                console.log('1');
                                 res.status(500).send({
                                     code: 500,
                                     success: false,
@@ -212,7 +230,7 @@ exports.registerMarketing = (req, res) => {
                                 return;
                             });
                     }).catch(err => {
-                        console.log(err);
+                        console.log('2');
                         res.status(500).send({
                             code: 500,
                             success: false,
@@ -221,11 +239,18 @@ exports.registerMarketing = (req, res) => {
                         });
                         return;
                     });
-            })
-
-
+            }).catch(err => {
+                console.log('3');
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+                return;
+            });
         }).catch(err => {
-            console.log(err);
+            console.log('4');
             res.status(500).send({
                 code: 500,
                 success: false,
@@ -235,7 +260,7 @@ exports.registerMarketing = (req, res) => {
             return;
         });
     }).catch(err => {
-        console.log(err);
+        console.log('5');
         res.status(500).send({
             code: 500,
             success: false,

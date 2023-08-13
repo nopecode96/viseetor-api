@@ -3,6 +3,7 @@ const sequelize = require('sequelize');
 const md5 = require('md5');
 const async = require('async')
 const axios = require("axios")
+var randomstring = require("randomstring");
 
 var functions = require("../../../config/function");
 const { user, userProfile, userType, masterUserStatus, regRegencies, regProvincies, masterBank, masterOccupation } = require("../../models/index.model");
@@ -188,26 +189,20 @@ exports.createUserMarketing = (req, res) => {
                         userProfile.create({ phone_number, fid_user })
                             .then(data4 => {
                                 const msg0 = 'Hallo ' + name + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
-                                const msg1 = 'Terima kasih Kamu sudah mendaftar dalam Program Kemitraan Viseetor.\n\n';
-                                const msg2 = 'Kamu sudah berhasil memuat Akun kami melalui Platform kami dan kamu sudah dapat memulai bekerja menggunakan Platform Viseetor Partnership.\n';
-                                const msg3 = 'Berikut adalah detail akun kamu:\n';
-                                const msg4 = 'Platform : ' + process.env.ADMIN_URL + '\n';
-                                const msg5 = 'Email : ' + email + '\n';
-                                const msg6 = 'Password : ' + password_str + '\n\n';
-                                const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
-                                const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
-                                const msg9 = process.env.TELEGRAM_URL + '\n\n';
-                                const msg10 = 'Salam Sukses Selalu,\n';
-                                const msg11 = '*Viseetor Team*\n';
-                                const msg12 = 'https://viseetor.com\n';
-                                const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.';
+                                const msg1 = 'Terima kasih Kamu sudah mendaftar dalam Program Kemitraan Viseetor. Kamu akan segera menjadi bagian dari Komunitas Mitra Viseetor.\n\n';
+                                const msg2 = 'Harap besabar ya, kami akan segera memproses aktivasi akun Kamu.\n\n';
+                                const msg3 = 'Sambil menunggu proses aktivasi akun, kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
+                                const msg4 = process.env.TELEGRAM_URL + '\n\n';
+                                const msg5 = 'Salam Sukses Selalu,\n';
+                                const msg6 = '*Viseetor Team*\n';
+                                const msg7 = 'https://viseetor.com\n';
 
-                                functions.notificationWhatsApp(phone_number, msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13);
-                                functions.auditLog('POST', 'Create new marketing with name ' + name, 'Any', 'users', data.id, fid_user_admin)
+                                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7;
+                                functions.notificationWhatsAppWithLogo(phone_number, msg);
                                 res.status(200).send({
                                     code: 200,
                                     success: true,
-                                    message: "Create data success."
+                                    message: "Pendaftaran Kamu berhasil terkirim."
                                 });
                                 return;
                             })
@@ -517,9 +512,35 @@ exports.updateStatusUser = (req, res) => {
         }
 
         user.update({
-            fid_user_status: status
+            fid_user_status: status,
+            mmmm
         }, { where: { id: userid } })
             .then(data2 => {
+
+                const msg0 = 'Hallo ' + name + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
+                const msg1 = 'Terima kasih Kamu sudah mendaftar dalam Program Kemitraan Viseetor.\n\n';
+                const msg2 = 'Kamu sudah berhasil memuat Akun kami melalui Platform kami dan kamu sudah dapat memulai bekerja menggunakan Platform Viseetor Partnership.\n';
+                const msg3 = 'Berikut adalah detail akun kamu:\n';
+                const msg4 = 'Platform : ' + process.env.ADMIN_URL + '\n';
+                const msg5 = 'Email : ' + email + '\n';
+                const msg6 = 'Password : ' + password_str + '\n\n';
+                const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
+                const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
+                const msg9 = process.env.TELEGRAM_URL + '\n\n';
+                const msg10 = 'Salam Sukses Selalu,\n';
+                const msg11 = '*Viseetor Team*\n';
+                const msg12 = 'https://viseetor.com\n';
+                const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.';
+
+                functions.notificationWhatsApp(phone_number, msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13);
+                functions.auditLog('POST', 'Create new marketing with name ' + name, 'Any', 'users', data.id, fid_user_admin)
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Create data success."
+                });
+                return;
+
                 res.status(200).send({
                     code: 200,
                     success: true,
