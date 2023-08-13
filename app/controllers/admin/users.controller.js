@@ -137,69 +137,100 @@ exports.createUserMarketing = (req, res) => {
         return;
     }
 
+    if (username.indexOf(' ') > 0) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Username cant acceptable white space."
+        });
+        return;
+    }
+
     user.findAll({
-        where: { email: email }
-    }).then(data => {
-        if (data.length > 0) {
+        where: { username: username }
+    }).then(dat => {
+        if (dat.length > 0) {
             res.status(200).send({
                 code: 200,
                 success: false,
-                message: "Email has already joined, please use other one."
+                message: "Username has already used, please use other one."
             });
             return;
         }
 
-        userProfile.findAll({
-            where: { phone_number: phone_number }
-        }).then(data2 => {
-            if (data2.length > 0) {
+        user.findAll({
+            where: { email: email }
+        }).then(data => {
+            if (data.length > 0) {
                 res.status(200).send({
                     code: 200,
                     success: false,
-                    message: "Phone has already joined, please use other one."
+                    message: "Email has already joined, please use other one."
                 });
                 return;
             }
-            let password = md5(password_str);
-            user.create({ username, name, email, password, fid_user_type, fid_user_status, published, createdBy })
-                .then(data3 => {
-                    const fid_user = data3.id;
-                    userProfile.create({ phone_number, fid_user })
-                        .then(data4 => {
-                            const msg0 = 'Hallo ' + name + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
-                            const msg1 = 'Terima kasih Kamu sudah mendaftar dalam Program Kemitraan Viseetor.\n\n';
-                            const msg2 = 'Kamu sudah berhasil memuat Akun kami melalui Platform kami dan kamu sudah dapat memulai bekerja menggunakan Platform Viseetor Partnership.\n';
-                            const msg3 = 'Berikut adalah detail akun kamu:\n';
-                            const msg4 = 'Platform : ' + process.env.ADMIN_URL + '\n';
-                            const msg5 = 'Email : ' + email + '\n';
-                            const msg6 = 'Password : ' + password_str + '\n\n';
-                            const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
-                            const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
-                            const msg9 = process.env.TELEGRAM_URL + '\n\n';
-                            const msg10 = 'Salam Sukses Selalu,\n';
-                            const msg11 = '*Viseetor Team*\n';
-                            const msg12 = 'https://viseetor.com\n';
-                            const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.';
 
-                            functions.notificationWhatsApp(phone_number, msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13);
-                            functions.auditLog('POST', 'Create new marketing with name ' + name, 'Any', 'users', data.id, fid_user_admin)
-                            res.status(200).send({
-                                code: 200,
-                                success: true,
-                                message: "Create data success."
-                            });
-                            return;
-                        })
-                }).catch(err => {
-                    console.log(err);
-                    res.status(500).send({
-                        code: 500,
+            userProfile.findAll({
+                where: { phone_number: phone_number }
+            }).then(data2 => {
+                if (data2.length > 0) {
+                    res.status(200).send({
+                        code: 200,
                         success: false,
-                        message:
-                            err.message || "Some error occurred while retrieving data."
+                        message: "Phone has already joined, please use other one."
                     });
                     return;
+                }
+                let password = md5(password_str);
+                user.create({ username, name, email, password, fid_user_type, fid_user_status, published, createdBy })
+                    .then(data3 => {
+                        const fid_user = data3.id;
+                        userProfile.create({ phone_number, fid_user })
+                            .then(data4 => {
+                                const msg0 = 'Hallo ' + name + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
+                                const msg1 = 'Terima kasih Kamu sudah mendaftar dalam Program Kemitraan Viseetor.\n\n';
+                                const msg2 = 'Kamu sudah berhasil memuat Akun kami melalui Platform kami dan kamu sudah dapat memulai bekerja menggunakan Platform Viseetor Partnership.\n';
+                                const msg3 = 'Berikut adalah detail akun kamu:\n';
+                                const msg4 = 'Platform : ' + process.env.ADMIN_URL + '\n';
+                                const msg5 = 'Email : ' + email + '\n';
+                                const msg6 = 'Password : ' + password_str + '\n\n';
+                                const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
+                                const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
+                                const msg9 = process.env.TELEGRAM_URL + '\n\n';
+                                const msg10 = 'Salam Sukses Selalu,\n';
+                                const msg11 = '*Viseetor Team*\n';
+                                const msg12 = 'https://viseetor.com\n';
+                                const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.';
+
+                                functions.notificationWhatsApp(phone_number, msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13);
+                                functions.auditLog('POST', 'Create new marketing with name ' + name, 'Any', 'users', data.id, fid_user_admin)
+                                res.status(200).send({
+                                    code: 200,
+                                    success: true,
+                                    message: "Create data success."
+                                });
+                                return;
+                            })
+                    }).catch(err => {
+                        console.log(err);
+                        res.status(500).send({
+                            code: 500,
+                            success: false,
+                            message:
+                                err.message || "Some error occurred while retrieving data."
+                        });
+                        return;
+                    });
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
                 });
+                return;
+            });
         }).catch(err => {
             console.log(err);
             res.status(500).send({
@@ -218,7 +249,6 @@ exports.createUserMarketing = (req, res) => {
             message:
                 err.message || "Some error occurred while retrieving data."
         });
-        return;
     });
 }
 
@@ -298,70 +328,107 @@ exports.createUserSpv = (req, res) => {
         return;
     }
 
-    user.findAll({
-        where: { email: email }
-    }).then(data => {
-        if (data.length > 0) {
-            res.status(200).send({
-                code: 200,
-                success: false,
-                message: "Email has already joined, please use other one."
-            });
-            return;
-        }
+    if (username.indexOf(' ') > 0) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Username cant acceptable white space."
+        });
+        return;
+    }
 
-        userProfile.findAll({
-            where: { phone_number: phone_number }
-        }).then(data2 => {
-            if (data2.length > 0) {
+    user.findAll({
+        where: { username: username }
+    }).then(dat => {
+        user.findAll({
+            where: { email: email }
+        }).then(data => {
+            if (data.length > 0) {
                 res.status(200).send({
                     code: 200,
                     success: false,
-                    message: "Phone has already joined, please use other one."
+                    message: "Email has already joined, please use other one."
                 });
                 return;
             }
-            let password = md5(password_str);
-            user.create({ username, name, email, password, fid_user_type, fid_user_status, published, createdBy })
-                .then(data3 => {
-                    const fid_user = data3.id;
-                    userProfile.create({ phone_number, fid_user })
-                        .then(data4 => {
-                            const msg0 = 'Hallo ' + name + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
-                            const msg1 = 'Terima kasih sudah mendaftar menjadi Supervisor Marketing Viseetor.\n\n';
-                            const msg2 = 'Kami sudah memuat Akun Anda pada platform kami dan Anda sudah dapat mulai bekerja untuk melakukan pengawasan terhadap Mitra Marketing Anda dengan menggunakan platform Viseetor Partnership.\n';
-                            const msg3 = 'Berikut adalah detail akun Anda:\n';
-                            const msg4 = 'Platform : ' + process.env.ADMIN_URL + '\n';
-                            const msg5 = 'Email : ' + email + '\n';
-                            const msg6 = 'Password : ' + password_str + '\n\n';
-                            const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
-                            const msg8 = 'Anda juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
-                            const msg9 = process.env.TELEGRAM_URL + '\m\n';
-                            const msg10 = 'Salam Sukses Selalu,\n';
-                            const msg11 = '*Viseetor Team*\m';
-                            const msg12 = 'https://viseetor.com';
-                            const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.';
 
-                            functions.notificationWhatsApp(phone_number, msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13);
-                            functions.auditLog('POST', 'Create new supervisor with name ' + name, 'Any', 'users', data.id, fid_user_admin)
-                            res.status(200).send({
-                                code: 200,
-                                success: true,
-                                message: "Create data success."
-                            });
-                            return;
-                        })
-                }).catch(err => {
-                    console.log(err);
-                    res.status(500).send({
-                        code: 500,
+            userProfile.findAll({
+                where: { phone_number: phone_number }
+            }).then(data2 => {
+                if (data2.length > 0) {
+                    res.status(200).send({
+                        code: 200,
                         success: false,
-                        message:
-                            err.message || "Some error occurred while retrieving data."
+                        message: "Phone has already joined, please use other one."
                     });
+                    return;
+                }
+                let password = md5(password_str);
+                user.create({ username, name, email, password, fid_user_type, fid_user_status, published, createdBy })
+                    .then(data3 => {
+                        const fid_user = data3.id;
+                        userProfile.create({ phone_number, fid_user })
+                            .then(data4 => {
+                                const msg0 = 'Hallo ' + name + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
+                                const msg1 = 'Terima kasih sudah mendaftar menjadi Supervisor Marketing Viseetor.\n\n';
+                                const msg2 = 'Kami sudah memuat Akun Anda pada platform kami dan Anda sudah dapat mulai bekerja untuk melakukan pengawasan terhadap Mitra Marketing Anda dengan menggunakan platform Viseetor Partnership.\n';
+                                const msg3 = 'Berikut adalah detail akun Anda:\n';
+                                const msg4 = 'Platform : ' + process.env.ADMIN_URL + '\n';
+                                const msg5 = 'Email : ' + email + '\n';
+                                const msg6 = 'Password : ' + password_str + '\n\n';
+                                const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
+                                const msg8 = 'Anda juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
+                                const msg9 = process.env.TELEGRAM_URL + '\m\n';
+                                const msg10 = 'Salam Sukses Selalu,\n';
+                                const msg11 = '*Viseetor Team*\m';
+                                const msg12 = 'https://viseetor.com';
+                                const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.';
+
+                                functions.notificationWhatsApp(phone_number, msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13);
+                                functions.auditLog('POST', 'Create new supervisor with name ' + name, 'Any', 'users', data.id, fid_user_admin)
+                                res.status(200).send({
+                                    code: 200,
+                                    success: true,
+                                    message: "Create data success."
+                                });
+                                return;
+                            })
+                    }).catch(err => {
+                        console.log(err);
+                        res.status(500).send({
+                            code: 500,
+                            success: false,
+                            message:
+                                err.message || "Some error occurred while retrieving data."
+                        });
+                    });
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
                 });
-        })
-    })
+            });
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send({
+                code: 500,
+                success: false,
+                message:
+                    err.message || "Some error occurred while retrieving data."
+            });
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({
+            code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
 }
 
 exports.getAccountDetail = (req, res) => {

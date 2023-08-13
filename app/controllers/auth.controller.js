@@ -4,7 +4,7 @@ const UserType = db.userType;
 const UserStatus = db.masterUserStatus;
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
-const { user } = require("../models/index.model");
+const { user, userProfile } = require("../models/index.model");
 
 exports.logincheck = (req, res) => {
     const { userid, token } = req.body;
@@ -130,7 +130,7 @@ exports.login = (req, res) => {
 }
 
 exports.registerMarketing = (req, res) => {
-    const fid_type = 2;
+    const fid_user_type = 2;
     const fid_user = 1;
     const fid_user_status = 2;
     const published = true;
@@ -150,6 +150,15 @@ exports.registerMarketing = (req, res) => {
         return;
     }
 
+    if (username.indexOf(' ') > 0) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Username tidak boleh ada spasi."
+        });
+        return;
+    }
+
     user.findAll({
         where: { email: email }
     }).then(data => {
@@ -164,8 +173,8 @@ exports.registerMarketing = (req, res) => {
 
         userProfile.findAll({
             where: { phone_number: phone_number }
-        }).then(data2 => {
-            if (data2.length > 0) {
+        }).then(data4 => {
+            if (data4.length > 0) {
                 res.status(200).send({
                     code: 200,
                     success: false,
@@ -173,32 +182,48 @@ exports.registerMarketing = (req, res) => {
                 });
                 return;
             }
-            user.create({ username, name, email, fid_user_type, fid_user_status, published, createdBy, parent_id })
-                .then(data3 => {
-                    const fid_user = data3.id;
-                    userProfile.create({ phone_number, gender, birth_place, birthday, instagram, address, fid_regency, fid_occupation, fid_user })
-                        .then(data4 => {
 
-                        }).catch(err => {
-                            console.log(err);
-                            res.status(500).send({
-                                code: 500,
-                                success: false,
-                                message:
-                                    err.message || "Some error occurred while retrieving data."
-                            });
-                            return;
-                        });
-                }).catch(err => {
-                    console.log(err);
-                    res.status(500).send({
-                        code: 500,
+            user.findAll({
+                where: { username: username }
+            }).then(data2 => {
+                if (data2.length > 0) {
+                    res.status(200).send({
+                        code: 200,
                         success: false,
-                        message:
-                            err.message || "Some error occurred while retrieving data."
+                        message: "Username sudah digunakan, silahkan gunakan username lain."
                     });
                     return;
-                });
+                }
+
+                user.create({ username, name, email, fid_user_type, fid_user_status, published, createdBy, parent_id, fid_user })
+                    .then(data3 => {
+                        const fid_user = data3.id;
+                        userProfile.create({ phone_number, gender, birth_place, birthday, instagram, address, fid_regency, fid_occupation, fid_user })
+                            .then(data4 => {
+
+                            }).catch(err => {
+                                console.log(err);
+                                res.status(500).send({
+                                    code: 500,
+                                    success: false,
+                                    message:
+                                        err.message || "Some error occurred while retrieving data."
+                                });
+                                return;
+                            });
+                    }).catch(err => {
+                        console.log(err);
+                        res.status(500).send({
+                            code: 500,
+                            success: false,
+                            message:
+                                err.message || "Some error occurred while retrieving data."
+                        });
+                        return;
+                    });
+            })
+
+
         }).catch(err => {
             console.log(err);
             res.status(500).send({
