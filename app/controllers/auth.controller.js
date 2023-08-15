@@ -1,11 +1,10 @@
 const db = require("../models/index.model");
-const User = db.user;
-const UserType = db.userType;
-const UserStatus = db.masterUserStatus;
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
 var functions = require("../../config/function");
-const { user, userProfile } = require("../models/index.model");
+const async = require('async')
+const sequelize = require('sequelize');
+const { user, userProfile, regRegencies, regProvincies, masterOccupation } = require("../models/index.model");
 
 exports.logincheck = (req, res) => {
     const { userid, token } = req.body;
@@ -130,7 +129,76 @@ exports.login = (req, res) => {
     })
 }
 
-exports.registerMarketing = (req, res) => {
+exports.getRegisterMarketing = (req, res) => {
+    async.parallel({
+        mstOccupation: function (callback) {
+            masterOccupation.findAll({
+                where: { published: true },
+                attributes: ['id', 'title']
+            }).then(data => callback(null, data))
+        },
+        mstRegency: function (callback) {
+            regRegencies.findAll({
+                attributes: [['id', 'value'], [sequelize.fn('CONCAT', sequelize.col('reg_regencie.name'), ', ', sequelize.col('reg_province.name')), 'text']],
+                include: {
+                    model: regProvincies,
+                    attributes: [],
+                }
+            }).then(data => callback(null, data))
+        },
+    }, function (err, results) {
+        if (err) {
+            res.status(400).send({
+                code: 400,
+                success: false,
+                message: err.message,
+            })
+            return;
+        }
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+            data: {
+                dataOccupation: results.mstOccupation,
+                dataRegency: results.mstRegency,
+            }
+        })
+        return;
+        // results now equals to: { task1: 1, task2: 2 }
+    });
+}
+
+exports.findSpvByUserName = (req, res) => {
+    const { username } = req.query;
+
+    user.findAll({
+        where: { username: username, fid_user_type: 2 }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: 'Data Not Found',
+            })
+            return;
+        }
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: 'Data Found',
+            data: {
+                fid_user: data[0].id,
+                name: data[0].name
+            }
+
+        })
+        return;
+    })
+}
+
+exports.postRegisterMarketing = (req, res) => {
     const fid_user_type = 2;
     const fid_user = 1;
     const fid_user_status = 2;
