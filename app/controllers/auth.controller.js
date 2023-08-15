@@ -173,7 +173,7 @@ exports.findSpvByUserName = (req, res) => {
     const { username } = req.query;
 
     user.findAll({
-        where: { username: username, fid_user_type: 2 }
+        where: { username: username, fid_user_type: 3 }
     }).then(data => {
         if (data.length == 0) {
             res.status(200).send({
@@ -276,9 +276,10 @@ exports.postRegisterMarketing = (req, res) => {
                                 const msg4 = process.env.TELEGRAM_URL + '\n\n';
                                 const msg5 = 'Salam Sukses Selalu,\n';
                                 const msg6 = '*Viseetor Team*\n';
-                                const msg7 = 'https://viseetor.com\n';
+                                const msg7 = 'https://viseetor.com\n\n';
+                                const msg8 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
 
-                                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7;
+                                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8;
                                 functions.notificationWhatsAppWithLogo(phone_number, msg);
                                 res.status(200).send({
                                     code: 200,

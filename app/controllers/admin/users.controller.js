@@ -195,9 +195,10 @@ exports.createUserMarketing = (req, res) => {
                                 const msg4 = process.env.TELEGRAM_URL + '\n\n';
                                 const msg5 = 'Salam Sukses Selalu,\n';
                                 const msg6 = '*Viseetor Team*\n';
-                                const msg7 = 'https://viseetor.com\n';
+                                const msg7 = 'https://viseetor.com\n\n';
+                                const msg8 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
 
-                                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7;
+                                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8;
                                 functions.notificationWhatsAppWithLogo(phone_number, msg);
                                 res.status(200).send({
                                     code: 200,
@@ -371,9 +372,10 @@ exports.createUserSpv = (req, res) => {
                                 const msg4 = process.env.TELEGRAM_URL + '\n\n';
                                 const msg5 = 'Salam Sukses Selalu,\n';
                                 const msg6 = '*Viseetor Team*\n';
-                                const msg7 = 'https://viseetor.com\n';
+                                const msg7 = 'https://viseetor.com\n\n';
+                                const msg8 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
 
-                                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7;
+                                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8;
                                 functions.notificationWhatsAppWithLogo(phone_number, msg);
                                 res.status(200).send({
                                     code: 200,
@@ -530,22 +532,16 @@ exports.updateStatusUser = (req, res) => {
                     const msg10 = 'Salam Sukses Selalu,\n';
                     const msg11 = '*Viseetor Team*\n';
                     const msg12 = 'https://viseetor.com\n';
-                    const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.';
+                    const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.\n\n';
+                    const msg14 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
 
-                    const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13;
+                    const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13 + msg14;
                     functions.notificationWhatsAppWithLogo(phone_number, msg);
                     functions.auditLog('PUT', 'Update status User ' + nameExt, 'Any', 'users', data.id, fid_user_admin)
                     res.status(200).send({
                         code: 200,
                         success: true,
                         message: "Create data success."
-                    });
-                    return;
-
-                    res.status(200).send({
-                        code: 200,
-                        success: true,
-                        message: "Status updated."
                     });
                     return;
                 }).catch(err => {
@@ -558,10 +554,46 @@ exports.updateStatusUser = (req, res) => {
                     });
                 });
         } else {
-            console.log('pass')
+            user.update({
+                fid_user_status: status,
+                password: md5(password)
+            }, { where: { id: userid } })
+                .then(data2 => {
+                    const msg0 = 'Hallo ' + nameExt + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
+                    const msg1 = 'Akun Kamu sudah kami Aktifkan kembali. Kamu sudah dapat menggunakan Platform Viseetor Partnership.\n';
+                    const msg2 = 'Berikut adalah detail akun kamu:\n';
+                    const msg3 = 'Platform : ' + process.env.ADMIN_URL + '\n';
+                    const msg4 = 'Email : ' + emailExt + '\n';
+                    const msg5 = 'Password : ' + password + '\n';
+                    const msg6 = 'Silahkan ganti password Kamu pada Halaman Profil.\n\n';
+                    const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
+                    const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
+                    const msg9 = process.env.TELEGRAM_URL + '\n\n';
+                    const msg10 = 'Salam Sukses Selalu,\n';
+                    const msg11 = '*Viseetor Team*\n';
+                    const msg12 = 'https://viseetor.com\n';
+                    const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.\n\n';
+                    const msg14 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
+
+                    const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13 + msg14;
+                    functions.notificationWhatsAppWithLogo(phone_number, msg);
+                    functions.auditLog('PUT', 'Update status User ' + nameExt, 'Any', 'users', data.id, fid_user_admin)
+                    res.status(200).send({
+                        code: 200,
+                        success: true,
+                        message: "Create data success."
+                    });
+                    return;
+                }).catch(err => {
+                    console.log(err);
+                    res.status(500).send({
+                        code: 500,
+                        success: false,
+                        message:
+                            err.message || "Some error occurred while retrieving data."
+                    });
+                });
         }
-
-
     }).catch(err => {
         console.log(err);
         res.status(500).send({
