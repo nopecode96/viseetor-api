@@ -7,4 +7,7 @@ module.exports = app => {
 
     router.get("/check-mutasi", controller.checkmutasi);
     app.use('/' + process.env.ENVIRONMENT + '/thirdpary', router);
+
+    router.post("/webhook", controller.webhook);
+    app.use('/' + process.env.ENVIRONMENT + '/thirdparty/motasi', router);
 };
