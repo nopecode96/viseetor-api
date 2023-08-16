@@ -40,11 +40,161 @@ exports.getPromo = (req, res) => {
     })
 }
 
+exports.getPromoDetail = (req, res) => {
+    const fid_user = req.userid;
+    const { promoID } = req.query;
+
+    if (promoID.length == 0) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: 'Promoo ID not found'
+        })
+        return;
+    }
+
+    promotion.findAll({
+        where: { id: promoID }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Data not found."
+            });
+            return;
+        }
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Data Found.",
+            data: data[0]
+        });
+        return;
+    })
+}
+
 exports.postPromo = (req, res) => {
     const fid_user = req.userid;
-    const { title, description, code, discount, start_date, end_date } = req.query;
+    const { title, description, code, discount, start_date, end_date } = req.body;
     const usage = 0;
     const published = true;
 
+    if (!req.file) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Please insert Image."
+        });
+        return;
+    }
+
+    if (!title || !description || !code || !discount || !start_date || !end_date) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field.",
+            field: {
+                'title': title,
+                'description': description,
+                'code': code,
+                'discount': discount,
+                'start_date': start_date,
+                'end_date': end_date
+            }
+        });
+        return;
+    }
+
+    const image = req.file.filename;
+    promotion.create({ image, title, description, code, discount, start_date, end_date, usage, published, fid_user })
+        .then(data => {
+            res.status(201).send({
+                code: 201,
+                success: true,
+                message: "Create data success.",
+            });
+            return;
+        }).catch(err => {
+            console.log(err);
+            res.status(400).send({
+                code: 400,
+                success: false,
+                message:
+                    err.message || "Some error occurred while retrieving data."
+            });
+            return;
+        });
+}
+
+exports.updatePromoPublished = (req, res) => {
+    const fid_user = req.userid;
+    const { promoID, published } = req.query;
+
+    if (promoID.length == 0) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: 'Promoo ID not found'
+        })
+        return;
+    }
+
+    promotion.update(
+        { published, fid_user },
+        { where: { id: promoID } }
+    ).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Data Publish Status Updated."
+        });
+        return;
+    })
+}
+
+exports.promoUpdate = (req, res) => {
+    const fid_user = req.userid;
+    const { promoID } = req.query;
+    const { title, description, code, discount, start_date, end_date } = req.body;
+
+    if (promoID.length == 0) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: 'Promo ID not found'
+        })
+        return;
+    }
+
+    if (req.file) {
+        const image = req.file.filename;
+        promotion.update(
+            { image, title, description, code, discount, start_date, end_date, fid_user },
+            { where: { id: promoID } }
+        ).then(data => {
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: "Data Updated."
+            });
+            return;
+        })
+    } else {
+        promotion.update(
+            { title, description, code, discount, start_date, end_date, fid_user },
+            { where: { id: promoID } }
+        ).then(data => {
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: "Data Updated."
+            });
+            return;
+        })
+    }
+
 
 }
+

@@ -8,5 +8,8 @@ module.exports = app => {
 
   router.post("/login", authValidation.apiKeyValidation, controller.login);
   router.post("/logincheck", authValidation.apiKeyValidation, controller.logincheck);
+  router.get("/register", authValidation.apiKeyValidation, controller.getRegisterMarketing);
+  router.post("/register", authValidation.apiKeyValidation, controller.postRegisterMarketing);
+  router.get("/find-spv", authValidation.apiKeyValidation, controller.findSpvByUserName);
   app.use('/' + process.env.ENVIRONMENT + '/auth', router);
 };

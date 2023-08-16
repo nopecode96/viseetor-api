@@ -42,10 +42,12 @@
     "qrcode": "^1.5.3",
     "randomstring": "^1.2.3",
     "sequelize": "^6.28.0",
-    "sequelize-cli": "^6.6.0",
     "set-tz": "^0.2.0",
     "tzdata": "^1.0.36",
     "winston": "^3.10.0",
     "xhr2": "^0.2.1"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.1"
   }
 }

@@ -3,13 +3,16 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addColumn('transactions', { unix: Sequelize.DOUBLE });
     /**
      * Add altering commands here.
      *
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
+
+    return queryInterface.addColumn('users', 'parent_id', {
+      type: Sequelize.DataTypes.INTEGER
+    });
   },
 
   async down(queryInterface, Sequelize) {
@@ -19,5 +22,7 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
+
+    return queryInterface.removeColumn('users', 'parent_id');
   }
 };

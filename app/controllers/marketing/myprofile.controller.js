@@ -181,10 +181,10 @@ exports.update = (req, res) => {
     userProfile.findAll({
         where: { fid_user: fid_user }
     }).then(data => {
-        console.log(data.length);
+        // console.log(data.length);
         if (data.length > 0) {
             userProfile.update({ phone_number, gender, birth_place, birthday, address, hobbies, instagram, facebook, bank_account_number, bank_account_name, fid_bank, fid_occupation, fid_regency }, {
-                where: { id: fid_user }
+                where: { fid_user: fid_user }
             }).then(data => {
                 res.status(202).send({
                     code: 202,
