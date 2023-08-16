@@ -4,13 +4,13 @@ const md5 = require('md5');
 var functions = require("../../config/function");
 const async = require('async')
 const sequelize = require('sequelize');
-const { user, userProfile, regRegencies, regProvincies, masterOccupation } = require("../models/index.model");
+const { user, userProfile, userType, masterUserStatus, regRegencies, regProvincies, masterOccupation } = require("../models/index.model");
 
 exports.logincheck = (req, res) => {
     const { userid, token } = req.body;
     var condition = { id: userid, token: token };
 
-    User.findAll({ where: condition })
+    user.findAll({ where: condition })
         .then(data => {
             if (data.length == 0) {
                 res.status(200).send({
@@ -52,9 +52,10 @@ exports.login = (req, res) => {
     const email = req.body.email;
     const password = md5(req.body.password);
 
-    User.findAll({
+    user.findAll({
         where: { email: email, password: password }
     }).then(data => {
+        // console.log(data)
         if (data.length == 0) {
             res.status(200).send({
                 code: 200,
@@ -75,14 +76,14 @@ exports.login = (req, res) => {
                 lastLogin: Date()
             }
 
-            User.update(update, { where: { id: userid } })
+            user.update(update, { where: { id: userid } })
                 .then(data2 => {
-                    User.findAll({
+                    user.findAll({
                         where: { id: userid, published: true },
                         attributes: ['id', 'email', 'name', 'photo', 'token', 'lastLogin', 'fid_user_type', 'fid_user_status'],
                         include: [
-                            { model: UserType, attributes: ['id', 'type_name'] },
-                            { model: UserStatus, attributes: ['id', 'title'] },
+                            { model: userType, attributes: ['id', 'type_name'] },
+                            { model: masterUserStatus, attributes: ['id', 'title'] },
                         ]
                     }).then(data3 => {
                         if (data3.length == 0) {
@@ -111,7 +112,7 @@ exports.login = (req, res) => {
                             }
                         }
                     }).catch(err => {
-                        // console.log(err);
+                        console.log(err);
                         res.status(400).send({
                             code: 400,
                             success: false,
@@ -119,6 +120,7 @@ exports.login = (req, res) => {
                         })
                     })
                 }).catch(err => {
+                    console.log(err);
                     res.status(400).send({
                         code: 400,
                         success: false,
