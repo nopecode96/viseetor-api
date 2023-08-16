@@ -3355,3 +3355,124 @@
 2023-08-15 13:47:05:475 [32minfo[39m: [32mTue Aug 15 2023 13:47:05 GMT+0700 (Western Indonesia Time)[39m
 2023-08-15 13:47:58:4758 [32minfo[39m: [32mServer v2 is running on port 9091[39m
 2023-08-15 13:47:58:4758 [32minfo[39m: [32mTue Aug 15 2023 13:47:58 GMT+0700 (Western Indonesia Time)[39m
+2023-08-15 22:37:12:3712 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-15 22:37:13:3713 [32minfo[39m: [32mTue Aug 15 2023 22:37:13 GMT+0700 (Western Indonesia Time)[39m
+2023-08-15 22:39:57:3957 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-15 22:39:57:3957 [32minfo[39m: [32mTue Aug 15 2023 22:39:57 GMT+0700 (Western Indonesia Time)[39m
+2023-08-15 22:40:10:4010 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-15 22:40:10:4010 [32minfo[39m: [32mTue Aug 15 2023 22:40:10 GMT+0700 (Western Indonesia Time)[39m
+2023-08-15 22:41:55:4155 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-15 22:41:55:4155 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/motasi/webhook [90mat [37mSel Agt 15 2023 22:41:55 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-15 22:41:55:4155 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"API-KEY":"XXXXXX","TYPE":"CR","BANK":"BCA","NOREK":"XXXXXX","FROM_DATE":"2022-09-01[0m [97m00:00:00","TO_DATE":"2022-09-08[0m [97m23:59:59"}[0m [39m
+2023-08-15 22:41:55:4155 [32minfo[39m: [32m[96mResponse: [33m404 [37m2.114 ms  [39m
+2023-08-15 22:42:14:4214 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-15 22:42:14:4214 [32minfo[39m: [32mTue Aug 15 2023 22:42:14 GMT+0700 (Western Indonesia Time)[39m
+2023-08-15 22:42:15:4215 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-15 22:42:15:4215 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/motasi/webhook [90mat [37mSel Agt 15 2023 22:42:15 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-15 22:42:15:4215 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"API-KEY":"XXXXXX","TYPE":"CR","BANK":"BCA","NOREK":"XXXXXX","FROM_DATE":"2022-09-01[0m [97m00:00:00","TO_DATE":"2022-09-08[0m [97m23:59:59"}[0m [39m
+2023-08-15 22:42:15:4215 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Thanks"}[0m [39m
+2023-08-15 22:42:15:4215 [32minfo[39m: [32m[96mResponse: [32m200 [37m16.242 ms  [39m
+2023-08-16 11:52:38:5238 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 11:52:38:5238 [32minfo[39m: [32mWed Aug 16 2023 11:52:38 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 11:52:51:5251 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 11:52:51:5251 [32minfo[39m: [32mWed Aug 16 2023 11:52:51 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 11:53:27:5327 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 11:53:27:5327 [32minfo[39m: [32mWed Aug 16 2023 11:53:27 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 11:53:35:5335 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 11:53:35:5335 [32minfo[39m: [32mWed Aug 16 2023 11:53:35 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:05:14:514 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 12:05:14:514 [32minfo[39m: [32mWed Aug 16 2023 12:05:14 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:05:21:521 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:05:21:521 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mRab Agt 16 2023 12:05:21 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:05:21:521 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-16 12:05:21:521 [32minfo[39m: [32m[96mResponse: [31m500 [37m6.852 ms  [39m
+2023-08-16 12:06:33:633 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 12:06:33:633 [32minfo[39m: [32mWed Aug 16 2023 12:06:33 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:07:54:754 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 12:07:54:754 [32minfo[39m: [32mWed Aug 16 2023 12:07:54 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:07:57:757 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:07:57:757 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mRab Agt 16 2023 12:07:57 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:07:57:757 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-16 12:07:57:757 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":400,"success":false,"message":{}}[0m [39m
+2023-08-16 12:07:57:757 [32minfo[39m: [32m[96mResponse: [33m400 [37m43.432 ms  [39m
+2023-08-16 12:08:09:89 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 12:08:09:89 [32minfo[39m: [32mWed Aug 16 2023 12:08:09 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:08:10:810 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:08:10:810 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mRab Agt 16 2023 12:08:10 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:08:10:810 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-16 12:08:10:810 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":400,"success":false,"message":{}}[0m [39m
+2023-08-16 12:08:10:810 [32minfo[39m: [32m[96mResponse: [33m400 [37m174.387 ms  [39m
+2023-08-16 12:08:35:835 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:08:35:835 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mRab Agt 16 2023 12:08:35 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:08:35:835 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-16 12:08:35:835 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":400,"success":false,"message":{}}[0m [39m
+2023-08-16 12:08:35:835 [32minfo[39m: [32m[96mResponse: [33m400 [37m52.870 ms  [39m
+2023-08-16 12:09:28:928 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:09:28:928 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mRab Agt 16 2023 12:09:28 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:09:28:928 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-16 12:09:28:928 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":400,"success":false,"message":{}}[0m [39m
+2023-08-16 12:09:28:928 [32minfo[39m: [32m[96mResponse: [33m400 [37m36.210 ms  [39m
+2023-08-16 12:10:15:1015 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 12:10:15:1015 [32minfo[39m: [32mWed Aug 16 2023 12:10:15 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:10:21:1021 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 12:10:21:1021 [32minfo[39m: [32mWed Aug 16 2023 12:10:21 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:10:23:1023 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:10:23:1023 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mRab Agt 16 2023 12:10:23 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:10:23:1023 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-16 12:10:23:1023 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":400,"success":false,"message":{}}[0m [39m
+2023-08-16 12:10:23:1023 [32minfo[39m: [32m[96mResponse: [33m400 [37m60.014 ms  [39m
+2023-08-16 12:10:56:1056 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 12:10:56:1056 [32minfo[39m: [32mWed Aug 16 2023 12:10:56 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:10:59:1059 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:10:59:1059 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mRab Agt 16 2023 12:10:59 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:10:59:1059 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-16 12:10:59:1059 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":400,"success":false,"message":{}}[0m [39m
+2023-08-16 12:10:59:1059 [32minfo[39m: [32m[96mResponse: [33m400 [37m130.996 ms  [39m
+2023-08-16 12:11:22:1122 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 12:11:23:1123 [32minfo[39m: [32mWed Aug 16 2023 12:11:23 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:11:27:1127 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:11:27:1127 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mRab Agt 16 2023 12:11:27 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:11:27:1127 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-16 12:11:27:1127 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":400,"success":false,"message":{}}[0m [39m
+2023-08-16 12:11:27:1127 [32minfo[39m: [32m[96mResponse: [33m400 [37m37.558 ms  [39m
+2023-08-16 12:11:41:1141 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 12:11:41:1141 [32minfo[39m: [32mWed Aug 16 2023 12:11:41 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:11:44:1144 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:11:44:1144 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mRab Agt 16 2023 12:11:44 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:11:44:1144 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-16 12:11:44:1144 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":400,"success":false,"message":{}}[0m [39m
+2023-08-16 12:11:44:1144 [32minfo[39m: [32m[96mResponse: [33m400 [37m160.349 ms  [39m
+2023-08-16 12:12:27:1227 [32minfo[39m: [32mServer v2 is running on port 9091[39m
+2023-08-16 12:12:27:1227 [32minfo[39m: [32mWed Aug 16 2023 12:12:27 GMT+0700 (Western Indonesia Time)[39m
+2023-08-16 12:12:29:1229 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:12:29:1229 [32minfo[39m: [32m [96mRequest: [93mPOST [97m/v2/auth/login/ [90mat [37mRab Agt 16 2023 12:12:29 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:12:29:1229 [32minfo[39m: [32m[95mRequest Body:[0m [97m{"email":"admin@viseetor.id","password":"[FILTERED]"}[0m [39m
+2023-08-16 12:12:29:1229 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Login[0m [97mSuccess.","data":{"id":1,"email":"admin@viseetor.id","name":"Admin","photo":"ikbar.jpeg","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInBhc3N3b3JkIjoiNWY0ZGNjM2I1YWE3NjVkNjFkODMyN2RlYjg4MmNmOTkiLCJpYXQiOjE2OTIxNjI3NDl9.Dbuv822NUohcXFMz8lg1Zomb_SDGyRMODFPNaGC1fRk","lastLogin":"2023-08-16T05:12:29.000Z","fid_user_type":1,"fid_user_status":1,"user_type":{"id":1,"type_name":"Admin"},"master_status_user":{"id":1,"title":"Activated"}}}[0m [39m
+2023-08-16 12:12:29:1229 [32minfo[39m: [32m[96mResponse: [32m200 [37m73.735 ms  [39m
+2023-08-16 12:13:01:131 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:13:01:131 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/transactions?status=UNPAID [90mat [37mRab Agt 16 2023 12:13:01 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:13:01:131 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Datas[0m [97mFound.","data":{"totalItems":4,"datas":[{"id":6,"order_number":"VASAI8N3J2","qty":"100","unit_price":5500,"unit_commission":2500,"total_price":550000,"discount_percent":0,"discount_nominal":0,"total_before_tax":550000,"tax":10,"tax_nominal":55000,"total_payment":605000,"total_commission":250000,"status":"UNPAID","published":true,"createdAt":"2023-07-22T05:06:40.990Z","updatedAt":"2023-07-22T05:06:40.990Z","fid_events":1,"fid_user":2,"fid_bank_payment":1,"fid_promotion":null,"fid_price":3,"event":{"title":"Pernikahan[0m [97mWiwid[0m [97m&[0m [97mRonald","event_date":"2023-06-30T14:26:52.000Z","invitation_limit":90,"company":{"id":2,"title":"PT.[0m [97mTriangle[0m [97mWO"}},"master_price":{"id":3,"title":"Bronze[0m [97mPackage","limit_min":101,"limit_max":500,"commission":1500},"user":{"id":2,"name":"John[0m [97mDoe","email":"demo@viseetor.id"}},{"id":5,"order_number":"BCCB2GP076","qty":"100","unit_price":5500,"unit_commission":2500,"total_price":550000,"discount_percent":0,"discount_nominal"[0m [97m...[0m [39m
+2023-08-16 12:13:01:131 [32minfo[39m: [32m[96mResponse: [32m200 [37m58.696 ms  [39m
+2023-08-16 12:13:14:1314 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:13:14:1314 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/users/marketing [90mat [37mRab Agt 16 2023 12:13:14 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:13:14:1314 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Datas[0m [97mFound.","data":{"totalItems":15,"datas":[{"id":24,"email":"a@a.com","username":"viseetor","name":"NOW[0m [97mLAVANDA","photo":null,"published":true,"lastLogin":null,"fid_user_type":2,"fid_user_status":2,"createdAt":"2023-08-15T06:42:15.661Z","user_profile":{"phone_number":"+6281919729696"},"user_type":{"type_name":"Marketing"},"master_status_user":{"title":"Pending"}},{"id":23,"email":"testtest@viseetor.id","username":"testaccount","name":"Test[0m [97mAccount","photo":null,"published":true,"lastLogin":null,"fid_user_type":2,"fid_user_status":2,"createdAt":"2023-08-13T11:32:07.971Z","user_profile":{"phone_number":"+628191972969"},"user_type":{"type_name":"Marketing"},"master_status_user":{"title":"Pending"}},{"id":22,"email":"andik@viseetor.id","username":"Andika","name":"Test[0m [97mAccount","photo":null,"published":true,"lastLogin":null,"fid_user_type":2,"fid_user_status":2,"createdAt":"2023-08-13T11:30:20.031Z","user_profile":{"phone_number":"+6285727373457"},"[0m [97m...[0m [39m
+2023-08-16 12:13:14:1314 [32minfo[39m: [32m[96mResponse: [32m200 [37m70.016 ms  [39m
+2023-08-16 12:13:29:1329 [35mhttp[39m: [35m::1[39m
+[35m[39m
+2023-08-16 12:13:29:1329 [32minfo[39m: [32m [96mRequest: [93mGET [97m/v2/admin/users/spv [90mat [37mRab Agt 16 2023 12:13:29 GMT+0700, [90mIP: [37m::1[0m, [90mUser Agent: PostmanRuntime/7.32.3[0m [39m
+2023-08-16 12:13:29:1329 [32minfo[39m: [32m[95mResponse Body:[0m [97m{"code":200,"success":true,"message":"Datas[0m [97mFound.","data":{"totalItems":3,"datas":[{"id":16,"email":"aa@ss.dom","username":"supervisor","name":"Usee[0m [97mName","photo":null,"published":true,"lastLogin":null,"fid_user_type":3,"fid_user_status":2,"createdAt":"2023-08-12T16:06:16.981Z","user_profile":{"phone_number":"+628244443333"},"user_type":{"type_name":"Supervisor"},"master_status_user":{"title":"Pending"}},{"id":15,"email":"aaa@@ssssmm.dom","username":"okokok","name":"Usee[0m [97mName","photo":null,"published":true,"lastLogin":null,"fid_user_type":3,"fid_user_status":2,"createdAt":"2023-08-12T16:05:07.513Z","user_profile":{"phone_number":"+62822223333"},"user_type":{"type_name":"Supervisor"},"master_status_user":{"title":"Pending"}},{"id":2,"email":"demo@viseetor.id","username":"johndoe","name":"John[0m [97mDoe","photo":"1687070948381.jpg","published":true,"lastLogin":"2023-08-01T04:45:59.000Z","fid_user_type":3,"fid_user_status":1,"createdAt":"2023-04-05T08:40:44.000Z","user_profile":{"phone_number"[0m [97m...[0m [39m
+2023-08-16 12:13:29:1329 [32minfo[39m: [32m[96mResponse: [32m200 [37m122.456 ms  [39m
