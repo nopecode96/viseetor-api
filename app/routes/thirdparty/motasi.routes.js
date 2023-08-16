@@ -6,8 +6,6 @@ module.exports = app => {
     var router = require("express").Router();
 
     router.get("/check-mutasi", controller.checkmutasi);
-    app.use('/' + process.env.ENVIRONMENT + '/thirdpary', router);
-
     router.post("/webhook", controller.webhook);
-    app.use('/' + process.env.ENVIRONMENT + '/thirdparty/motasi', router);
+    app.use('/' + process.env.ENVIRONMENT + '/motasi', router);
 };
