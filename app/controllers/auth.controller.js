@@ -292,51 +292,56 @@ exports.postRegisterMarketing = (req, res) => {
 
                             }).catch(err => {
                                 console.log('1');
+                                console.log(err);
                                 res.status(500).send({
                                     code: 500,
                                     success: false,
                                     message:
-                                        err.message || "Some error occurred while retrieving data."
+                                        'res err 1 : ' + err.message || "Some error occurred while retrieving data."
                                 });
                                 return;
                             });
                     }).catch(err => {
                         console.log('2');
+                        console.log(err);
                         res.status(500).send({
                             code: 500,
                             success: false,
                             message:
-                                err.message || "Some error occurred while retrieving data."
+                                'res err 2 : ' + err.message || "Some error occurred while retrieving data."
                         });
                         return;
                     });
             }).catch(err => {
                 console.log('3');
+                console.log(err);
                 res.status(500).send({
                     code: 500,
                     success: false,
                     message:
-                        err.message || "Some error occurred while retrieving data."
+                        'res err 3 : ' + err.message || "Some error occurred while retrieving data."
                 });
                 return;
             });
         }).catch(err => {
             console.log('4');
+            console.log(err);
             res.status(500).send({
                 code: 500,
                 success: false,
                 message:
-                    err.message || "Some error occurred while retrieving data."
+                    'res err 4 : ' + err.message || "Some error occurred while retrieving data."
             });
             return;
         });
     }).catch(err => {
         console.log('5');
+        console.log(err);
         res.status(500).send({
             code: 500,
             success: false,
             message:
-                err.message || "Some error occurred while retrieving data."
+                'res err 5 : ' + err.message || "Some error occurred while retrieving data."
         });
         return;
     });
