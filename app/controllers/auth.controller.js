@@ -209,7 +209,7 @@ exports.postRegisterMarketing = (req, res) => {
     const { username, email, phone_number, name, gender, birth_place, birthday, instagram, address, fid_regency, fid_occupation, reference_id } = req.body;
     const parent_id = (reference_id === '') ? '1' : reference_id;
 
-    if (!username || !name || !email || !phone_number || !gender || !birth_place || !birthday || !instagram || !address || !fid_regency || !fid_occupation) {
+    if (!username || !name || !email || !phone_number || !gender || !birth_place || !birthday || !address || !fid_regency || !fid_occupation) {
         res.status(200).send({
             code: 200,
             success: false,
