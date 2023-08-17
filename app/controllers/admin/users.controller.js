@@ -475,6 +475,7 @@ exports.getAccountDetail = (req, res) => {
 }
 
 exports.updateStatusUser = (req, res) => {
+    const fid_user_admin = req.userid;
     const { userid, status } = req.body;
 
     if (userid == '1') {
@@ -487,11 +488,16 @@ exports.updateStatusUser = (req, res) => {
     }
 
     user.findAll({
-        where: { id: userid }
+        where: { id: userid },
+        include: {
+            model: userProfile
+        }
     }).then(data => {
+        // console.log(data[0].user_profile.phone_number)
         const nameExt = data[0].name;
-        const passwordExt = data[0].password;
+        const passwordExt = data[0].user_profile.phone_number;
         const emailExt = data[0].email;
+        const usernameExt = data[0].username;
 
         if (data[0].fid_user_type == '1') {
             res.status(200).send({
@@ -525,7 +531,7 @@ exports.updateStatusUser = (req, res) => {
                     const msg3 = 'Platform : ' + process.env.ADMIN_URL + '\n';
                     const msg4 = 'Email : ' + emailExt + '\n';
                     const msg5 = 'Password : ' + password + '\n';
-                    const msg6 = 'Silahkan ganti password Kamu pada Halaman Profil.\n\n';
+                    const msg6 = 'Silahkan ganti password Kamu pada Halaman Profil.\n\nKode Referal: ' + usernameExt + '\n\n';
                     const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
                     const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
                     const msg9 = process.env.TELEGRAM_URL + '\n\n';
@@ -536,12 +542,12 @@ exports.updateStatusUser = (req, res) => {
                     const msg14 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
 
                     const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13 + msg14;
-                    functions.notificationWhatsAppWithLogo(phone_number, msg);
+                    functions.notificationWhatsAppWithLogo(passwordExt, msg);
                     functions.auditLog('PUT', 'Update status User ' + nameExt, 'Any', 'users', data.id, fid_user_admin)
                     res.status(200).send({
                         code: 200,
                         success: true,
-                        message: "Create data success."
+                        message: "Status Updated."
                     });
                     return;
                 }).catch(err => {
@@ -576,12 +582,12 @@ exports.updateStatusUser = (req, res) => {
                     const msg14 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
 
                     const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13 + msg14;
-                    functions.notificationWhatsAppWithLogo(phone_number, msg);
+                    functions.notificationWhatsAppWithLogo(passwordExt, msg);
                     functions.auditLog('PUT', 'Update status User ' + nameExt, 'Any', 'users', data.id, fid_user_admin)
                     res.status(200).send({
                         code: 200,
                         success: true,
-                        message: "Create data success."
+                        message: "Status Updated."
                     });
                     return;
                 }).catch(err => {
