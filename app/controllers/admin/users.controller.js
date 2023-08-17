@@ -531,7 +531,7 @@ exports.updateStatusUser = (req, res) => {
                     const msg3 = 'Platform : ' + process.env.ADMIN_URL + '\n';
                     const msg4 = 'Email : ' + emailExt + '\n';
                     const msg5 = 'Password : ' + password + '\n';
-                    const msg6 = 'Silahkan ganti password Kamu pada Halaman Profil.\n\nKode Referal: ' + usernameExt + '\n\n';
+                    const msg6 = 'Silahkan ganti password Kamu pada Halaman Profil.\n\n';
                     const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
                     const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
                     const msg9 = process.env.TELEGRAM_URL + '\n\n';
@@ -571,7 +571,7 @@ exports.updateStatusUser = (req, res) => {
                     const msg3 = 'Platform : ' + process.env.ADMIN_URL + '\n';
                     const msg4 = 'Email : ' + emailExt + '\n';
                     const msg5 = 'Password : ' + password + '\n';
-                    const msg6 = 'Silahkan ganti password Kamu pada Halaman Profil.\n\n';
+                    const msg6 = 'Silahkan ganti password Kamu pada Halaman Profil.\n\nKode Referal: ' + usernameExt + '\n\n';
                     const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
                     const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
                     const msg9 = process.env.TELEGRAM_URL + '\n\n';
