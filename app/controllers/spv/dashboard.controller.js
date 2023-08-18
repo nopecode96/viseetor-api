@@ -5,7 +5,7 @@ const axios = require("axios")
 var randomstring = require("randomstring");
 
 var functions = require("../../../config/function");
-const { user, company, userProfile, userType, masterUserStatus, regRegencies, regProvincies, masterBank, masterOccupation } = require("../../models/index.model");
+const { user, company, events, userProfile, userType, masterUserStatus, regRegencies, regProvincies, masterBank, masterOccupation, eventsGuest } = require("../../models/index.model");
 
 exports.getDataDashboard = (req, res) => {
     const parent_id = req.userid;
@@ -27,7 +27,16 @@ exports.getDataDashboard = (req, res) => {
         },
         totalEvent: function (callback) {
             events.findAndCountAll({
-                where: { fid_company_status: 1 },
+                // where: { fid_status: 1 },
+                include: {
+                    model: user,
+                    where: { parent_id: parent_id }
+                }
+            }).then(data => callback(null, data))
+        },
+        totalGuest: function (callback) {
+            eventsGuest.findAndCountAll({
+                // where: { fid_status: 1 },
                 include: {
                     model: user,
                     where: { parent_id: parent_id }
@@ -49,9 +58,10 @@ exports.getDataDashboard = (req, res) => {
             success: true,
             message: 'Data Found',
             data: {
-                total_my_marketing: results.totalMyUser.count,
+                total_marketing: results.totalMyUser.count,
                 total_client: results.totalCLient.count,
-
+                total_events: results.totalEvent.count,
+                total_guest: results.totalGuest.count,
             }
         })
         return;
