@@ -474,9 +474,10 @@ exports.getAccountDetail = (req, res) => {
     });
 }
 
-exports.updateStatusUser = (req, res) => {
+exports.activateUser = (req, res) => {
     const fid_user_admin = req.userid;
-    const { userid, status } = req.body;
+    const status = 1;
+    const { userid } = req.body;
 
     if (userid == '1') {
         res.status(200).send({
@@ -495,7 +496,8 @@ exports.updateStatusUser = (req, res) => {
     }).then(data => {
         // console.log(data[0].user_profile.phone_number)
         const nameExt = data[0].name;
-        const passwordExt = data[0].user_profile.phone_number;
+        const passwordExt = data[0].password;
+        const phoneNumber = data[0].user_profile.phone_number;
         const emailExt = data[0].email;
         const usernameExt = data[0].username;
 
@@ -519,87 +521,45 @@ exports.updateStatusUser = (req, res) => {
 
         const password = randomstring.generate({ length: 5 });
 
-        if (passwordExt === null) {
-            user.update({
-                fid_user_status: status,
-                password: md5(password)
-            }, { where: { id: userid } })
-                .then(data2 => {
-                    const msg0 = 'Hallo ' + nameExt + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
-                    const msg1 = 'Akun Kamu sudah Aktif. Kamu sudah dapat menggunakan Platform Viseetor Partnership.\n';
-                    const msg2 = 'Berikut adalah detail akun kamu:\n';
-                    const msg3 = 'Platform : ' + process.env.ADMIN_URL + '\n';
-                    const msg4 = 'Email : ' + emailExt + '\n';
-                    const msg5 = 'Password : ' + password + '\n';
-                    const msg6 = 'Silahkan ganti password Kamu pada Halaman Profil.\n\n';
-                    const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
-                    const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
-                    const msg9 = process.env.TELEGRAM_URL + '\n\n';
-                    const msg10 = 'Salam Sukses Selalu,\n';
-                    const msg11 = '*Viseetor Team*\n';
-                    const msg12 = 'https://viseetor.com\n';
-                    const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.\n\n';
-                    const msg14 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
+        user.update({
+            fid_user_status: status,
+            password: md5(password)
+        }, { where: { id: userid } })
+            .then(data2 => {
+                const msg0 = 'Hallo ' + nameExt + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
+                const msg1 = 'Akun Kamu sudah diaktifkan. Kamu sudah dapat menggunakan Platform Viseetor Partnership.\n';
+                const msg2 = 'Berikut adalah detail akun kamu:\n';
+                const msg3 = 'Platform : ' + process.env.ADMIN_URL + '\n';
+                const msg4 = 'Email : ' + emailExt + '\n';
+                const msg5 = 'Password : ' + password + '\n';
+                const msg6 = 'Silahkan ganti password Kamu pada Halaman Profil.\n\n';
+                const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
+                const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
+                const msg9 = process.env.TELEGRAM_URL + '\n\n';
+                const msg10 = 'Salam Sukses Selalu,\n';
+                const msg11 = '*Viseetor Team*\n';
+                const msg12 = 'https://viseetor.com\n';
+                const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.\n\n';
+                const msg14 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
 
-                    const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13 + msg14;
-                    functions.notificationWhatsAppWithLogo(passwordExt, msg);
-                    functions.auditLog('PUT', 'Update status User ' + nameExt, 'Any', 'users', data.id, fid_user_admin)
-                    res.status(200).send({
-                        code: 200,
-                        success: true,
-                        message: "Status Updated."
-                    });
-                    return;
-                }).catch(err => {
-                    console.log(err);
-                    res.status(500).send({
-                        code: 500,
-                        success: false,
-                        message:
-                            err.message || "Some error occurred while retrieving data."
-                    });
+                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13 + msg14;
+                functions.notificationWhatsAppWithLogo(phoneNumber, msg);
+                functions.auditLog('PUT', 'Update status User ' + nameExt, 'Any', 'users', data.id, fid_user_admin)
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Status Updated."
                 });
-        } else {
-            user.update({
-                fid_user_status: status,
-                password: md5(password)
-            }, { where: { id: userid } })
-                .then(data2 => {
-                    const msg0 = 'Hallo ' + nameExt + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
-                    const msg1 = 'Akun Kamu sudah kami Aktifkan kembali. Kamu sudah dapat menggunakan Platform Viseetor Partnership.\n';
-                    const msg2 = 'Berikut adalah detail akun kamu:\n';
-                    const msg3 = 'Platform : ' + process.env.ADMIN_URL + '\n';
-                    const msg4 = 'Email : ' + emailExt + '\n';
-                    const msg5 = 'Password : ' + password + '\n';
-                    const msg6 = 'Silahkan ganti password Kamu pada Halaman Profil.\n\nKode Referal: ' + usernameExt + '\n\n';
-                    const msg7 = 'Selamat bekerja dan raih penghasilan sebanyak-banyaknya.\n\n';
-                    const msg8 = 'Kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
-                    const msg9 = process.env.TELEGRAM_URL + '\n\n';
-                    const msg10 = 'Salam Sukses Selalu,\n';
-                    const msg11 = '*Viseetor Team*\n';
-                    const msg12 = 'https://viseetor.com\n';
-                    const msg13 = 'Jika Kamu tidak dapat login, silahkan hubungi Admin Viseetor melalui Group Telegram.\n\n';
-                    const msg14 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
-
-                    const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13 + msg14;
-                    functions.notificationWhatsAppWithLogo(passwordExt, msg);
-                    functions.auditLog('PUT', 'Update status User ' + nameExt, 'Any', 'users', data.id, fid_user_admin)
-                    res.status(200).send({
-                        code: 200,
-                        success: true,
-                        message: "Status Updated."
-                    });
-                    return;
-                }).catch(err => {
-                    console.log(err);
-                    res.status(500).send({
-                        code: 500,
-                        success: false,
-                        message:
-                            err.message || "Some error occurred while retrieving data."
-                    });
+                return;
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
                 });
-        }
+            });
     }).catch(err => {
         console.log(err);
         res.status(500).send({
