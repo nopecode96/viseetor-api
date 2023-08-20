@@ -43,7 +43,7 @@ db.sequelize.sync()
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
 // });
-// db.eventsAppScan.sync(
+// db.events.sync(
 //   { force: true, logging: console.log }
 // )
 // db.eventsMessage.sync(
