@@ -544,7 +544,107 @@ exports.activateUser = (req, res) => {
 
                 const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8 + msg9 + msg10 + msg11 + msg12 + msg13 + msg14;
                 functions.notificationWhatsAppWithLogo(phoneNumber, msg);
-                functions.auditLog('PUT', 'Update status User ' + nameExt, 'Any', 'users', data.id, fid_user_admin)
+                functions.auditLog('PUT', 'Update activated User ' + nameExt, 'Any', 'users', data.id, fid_user_admin)
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Status Updated."
+                });
+                return;
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+            });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({
+            code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.pendingUser = (req, res) => {
+    const fid_user_admin = req.userid;
+    const status = 2;
+    const { userid } = req.body;
+
+    res.status(200).send({
+        code: 200,
+        success: false,
+        message: "Yoou cant Pending this user."
+    });
+    return;
+}
+
+exports.deactiveUser = (req, res) => {
+    const fid_user_admin = req.userid;
+    const status = 3;
+    const { userid } = req.body;
+
+    if (userid == '1') {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "You do not permission to update this user."
+        });
+        return;
+    }
+
+    user.findAll({
+        where: { id: userid },
+        include: {
+            model: userProfile
+        }
+    }).then(data => {
+        // console.log(data[0].user_profile.phone_number)
+        const nameExt = data[0].name;
+        const passwordExt = data[0].password;
+        const phoneNumber = data[0].user_profile.phone_number;
+        const emailExt = data[0].email;
+        const usernameExt = data[0].username;
+
+        if (data[0].fid_user_type == '1') {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "You do not permission to update this user."
+            });
+            return;
+        }
+
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "User Not Found."
+            });
+            return;
+        }
+
+        user.update({
+            fid_user_status: status
+            // password: md5(password)
+        }, { where: { id: userid } })
+            .then(data2 => {
+                const msg0 = 'Hallo ' + nameExt + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
+                const msg1 = 'Akun Kamu sudah dibekukan. Ini terjadi karena kamu telah melanggar Syarat dan Ketentuan Viseetor.\n';
+                const msg2 = 'Silahkan hubungi Admin Kami untuk info lebih lanjut\n';
+                const msg3 = 'Salam Sukses Selalu,\n';
+                const msg4 = '*Viseetor Team*\n';
+                const msg5 = 'https://viseetor.com\n';
+                const msg6 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
+
+                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6;
+                functions.notificationWhatsAppWithLogo(phoneNumber, msg);
+                functions.auditLog('PUT', 'Update deactive User ' + nameExt, 'Any', 'users', data.id, fid_user_admin)
                 res.status(200).send({
                     code: 200,
                     success: true,
