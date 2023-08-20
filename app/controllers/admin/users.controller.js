@@ -636,7 +636,7 @@ exports.deactiveUser = (req, res) => {
             .then(data2 => {
                 const msg0 = 'Hallo ' + nameExt + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
                 const msg1 = 'Akun Kamu sudah dibekukan. Ini terjadi karena kamu telah melanggar Syarat dan Ketentuan Viseetor.\n';
-                const msg2 = 'Silahkan hubungi Admin Kami untuk info lebih lanjut\n';
+                const msg2 = 'Silahkan hubungi Admin Kami untuk info lebih lanjut.\n\n';
                 const msg3 = 'Salam Sukses Selalu,\n';
                 const msg4 = '*Viseetor Team*\n';
                 const msg5 = 'https://viseetor.com\n';
