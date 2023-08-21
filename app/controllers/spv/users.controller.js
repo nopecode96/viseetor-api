@@ -133,7 +133,7 @@ exports.getDetail = (req, res) => {
                     total_guest: results.dataGuest.count,
                 },
                 dataUser: results.dataUser[0],
-                dataUserEvent: results.dataUserEvent[0]
+                dataUserEvent: results.dataUserEvent
             }
         })
         return;
