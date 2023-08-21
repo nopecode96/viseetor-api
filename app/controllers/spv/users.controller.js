@@ -106,7 +106,11 @@ exports.getDetail = (req, res) => {
                     },
                 ]
             }).then(data => callback(null, data))
-        }
+        },
+        dataUserEvent: function (callback) {
+            events.findAll({ where: { fid_user: userid } })
+                .then(data => callback(null, data))
+        },
     }, function (err, results) {
         if (err == 'null') {
             res.status(400).send({
@@ -128,7 +132,8 @@ exports.getDetail = (req, res) => {
                     total_events: results.dataEvents.count,
                     total_guest: results.dataGuest.count,
                 },
-                dataUser: results.dataUser[0]
+                dataUser: results.dataUser[0],
+                dataUserEvent: results.dataUserEvent[0]
             }
         })
         return;

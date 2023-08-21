@@ -253,17 +253,17 @@ exports.findAllSpv = (req, res) => {
     const { limit, offset } = functions.getPagination(page - 1, size);
 
     if (name && username && user_status) {
-        var condition = { name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'), username: username, fid_user_status: user_status, fid_user_type: 2 }
+        var condition = { name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'), username: username, fid_user_status: user_status, fid_user_type: 3 }
     } else if (name && user_status) {
-        var condition = { name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'), fid_user_status: user_status, fid_user_type: 2 }
+        var condition = { name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'), fid_user_status: user_status, fid_user_type: 3 }
     } else if (username && user_status) {
-        var condition = { username: username, fid_user_status: user_status, fid_user_type: 2 }
+        var condition = { username: username, fid_user_status: user_status, fid_user_type: 3 }
     } else if (name) {
-        var condition = { name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'), fid_user_type: 2 }
+        var condition = { name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'), fid_user_type: 3 }
     } else if (username) {
-        var condition = { username: username, fid_user_type: 2 }
+        var condition = { username: username, fid_user_type: 3 }
     } else if (user_status) {
-        var condition = { fid_user_status: user_status, fid_user_type: 2 }
+        var condition = { fid_user_status: user_status, fid_user_type: 3 }
     } else {
         var condition = { fid_user_type: 3 }
     }
@@ -310,6 +310,180 @@ exports.createUserSpv = (req, res) => {
     const fid_user_admin = req.userid;
     const fid_user_type = 3;
     const fid_user_status = 2;
+    const published = true;
+    const createdBy = fid_user_admin;
+    const { username, name, phone_number, email, password_str } = req.body;
+
+    console.log(fid_user_admin)
+    if (!username || !name || !email || !phone_number || !password_str) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field."
+        });
+        return;
+    }
+
+    if (username.indexOf(' ') > 0) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Username cant acceptable white space."
+        });
+        return;
+    }
+
+    user.findAll({
+        where: { username: username }
+    }).then(dat => {
+        user.findAll({
+            where: { email: email }
+        }).then(data => {
+            if (data.length > 0) {
+                res.status(200).send({
+                    code: 200,
+                    success: false,
+                    message: "Email has already joined, please use other one."
+                });
+                return;
+            }
+
+            userProfile.findAll({
+                where: { phone_number: phone_number }
+            }).then(data2 => {
+                if (data2.length > 0) {
+                    res.status(200).send({
+                        code: 200,
+                        success: false,
+                        message: "Phone has already joined, please use other one."
+                    });
+                    return;
+                }
+                let password = md5(password_str);
+                user.create({ username, name, email, password, fid_user_type, fid_user_status, published, createdBy })
+                    .then(data3 => {
+                        const fid_user = data3.id;
+                        userProfile.create({ phone_number, fid_user })
+                            .then(data4 => {
+                                const msg0 = 'Hallo ' + name + ', ini adalah pesan resmi dari Viseetor.com.\n\n';
+                                const msg1 = 'Terima kasih Kamu sudah mendaftar dalam Program Kemitraan Viseetor. Kamu akan segera menjadi bagian dari Komunitas Mitra Viseetor.\n\n';
+                                const msg2 = 'Harap besabar ya, kami akan segera memproses aktivasi akun Kamu.\n\n';
+                                const msg3 = 'Sambil menunggu proses aktivasi akun, kamu juga bisa bergabung pada group Komunitas Telegram Mitra Viseetor pada link berikut:\n';
+                                const msg4 = process.env.TELEGRAM_URL + '\n\n';
+                                const msg5 = 'Salam Sukses Selalu,\n';
+                                const msg6 = '*Viseetor Team*\n';
+                                const msg7 = 'https://viseetor.com\n\n';
+                                const msg8 = 'Balas dengan ketik OK agar dapat membuka link diatas.\n';
+
+                                const msg = msg0 + msg1 + msg2 + msg3 + msg4 + msg5 + msg6 + msg7 + msg8;
+                                functions.notificationWhatsAppWithLogo(phone_number, msg);
+                                res.status(200).send({
+                                    code: 200,
+                                    success: true,
+                                    message: "Pendaftaran Kamu berhasil terkirim."
+                                });
+                                return;
+                            })
+                    }).catch(err => {
+                        console.log(err);
+                        res.status(500).send({
+                            code: 500,
+                            success: false,
+                            message:
+                                err.message || "Some error occurred while retrieving data."
+                        });
+                    });
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    code: 500,
+                    success: false,
+                    message:
+                        err.message || "Some error occurred while retrieving data."
+                });
+            });
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send({
+                code: 500,
+                success: false,
+                message:
+                    err.message || "Some error occurred while retrieving data."
+            });
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({
+            code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.findAllLeader = (req, res) => {
+    const { page, size, name, username, user_status } = req.query;
+    const { limit, offset } = functions.getPagination(page - 1, size);
+
+    if (name && username && user_status) {
+        var condition = { name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'), username: username, fid_user_status: user_status, fid_user_type: 4 }
+    } else if (name && user_status) {
+        var condition = { name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'), fid_user_status: user_status, fid_user_type: 4 }
+    } else if (username && user_status) {
+        var condition = { username: username, fid_user_status: user_status, fid_user_type: 4 }
+    } else if (name) {
+        var condition = { name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + name + '%'), fid_user_type: 4 }
+    } else if (username) {
+        var condition = { username: username, fid_user_type: 4 }
+    } else if (user_status) {
+        var condition = { fid_user_status: user_status, fid_user_type: 4 }
+    } else {
+        var condition = { fid_user_type: 4 }
+    }
+
+    user.findAndCountAll({
+        where: condition, limit, offset,
+        order: [
+            ['updatedAt', 'DESC'],
+        ],
+        attributes: ['id', 'email', 'username', 'name', 'photo', 'published', 'lastLogin', 'fid_user_type', 'fid_user_status', 'createdAt'],
+        include: [
+            {
+                model: userProfile,
+                attributes: ['phone_number']
+            },
+            {
+                model: userType,
+                attributes: ['type_name']
+            },
+            {
+                model: masterUserStatus,
+                attributes: ['title']
+            }
+        ]
+    }).then(data => {
+        const response = functions.getPagingData(data, page, limit);
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: response
+        });
+    }).catch(err => {
+        res.status(500).send({
+            code: 500,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.createUserLeader = (req, res) => {
+    const fid_user_admin = req.userid;
+    const fid_user_type = 4;
+    const fid_user_status = 1;
     const published = true;
     const createdBy = fid_user_admin;
     const { username, name, phone_number, email, password_str } = req.body;
