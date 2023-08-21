@@ -7,5 +7,6 @@ module.exports = app => {
     var router = require("express").Router();
 
     router.get("/", authValidation.apiKeyValidation, authValidation.tokenSpvValidation, controller.findMyUsers);
+    router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenSpvValidation, controller.getDetail);
     app.use('/' + process.env.ENVIRONMENT + '/spv/users', router);
 };
