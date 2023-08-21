@@ -5,7 +5,7 @@ const axios = require("axios")
 var randomstring = require("randomstring");
 
 var functions = require("../../../config/function");
-const { user, userProfile, userType, masterUserStatus, events, eventsGuest, regRegencies, regProvincies, masterBank, masterOccupation, company } = require("../../models/index.model");
+const { user, userProfile, userType, masterUserStatus, events, eventsGuest, regRegencies, regProvincies, masterEvent, masterBank, masterOccupation, company } = require("../../models/index.model");
 
 exports.findMyUsers = (req, res) => {
     const parent_id = req.userid;
@@ -108,8 +108,28 @@ exports.getDetail = (req, res) => {
             }).then(data => callback(null, data))
         },
         dataUserEvent: function (callback) {
-            events.findAll({ where: { fid_user: userid } })
-                .then(data => callback(null, data))
+            events.findAll({
+                where: { fid_user: userid },
+                attributes: ['banner', 'title', 'venue_name', 'invitation_limit'],
+                include: [
+                    {
+                        model: masterEvent,
+                        attributes: ['id', 'title']
+                    },
+                    {
+                        model: company,
+                        attributes: ['id', 'title']
+                    },
+                    {
+                        model: regRegencies,
+                        attributes: ['id', 'name'],
+                        include: {
+                            model: regProvincies,
+                            attributes: ['id', 'name'],
+                        }
+                    }
+                ]
+            }).then(data => callback(null, data))
         },
     }, function (err, results) {
         if (err == 'null') {
