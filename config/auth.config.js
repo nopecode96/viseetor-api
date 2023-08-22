@@ -39,8 +39,11 @@ exports.tokenValidation = (req, res, next) => {
             });
             return;
           } else {
+            const userType = data[0].fid_user_type;
+            console.log(userType);
             res.locals.userid = userId;
             req.userid = userId;
+            req.userType = userType;
             next();
           }
         })

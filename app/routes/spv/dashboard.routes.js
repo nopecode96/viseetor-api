@@ -6,7 +6,7 @@ module.exports = app => {
     const controller = require("../../controllers/spv/dashboard.controller");
     var router = require("express").Router();
 
-    router.get("/", authValidation.apiKeyValidation, authValidation.tokenSpvValidation, controller.getDataDashboard);
+    router.get("/", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDataDashboard);
     // // router.get("/detail", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getDetail);
     // router.put("/withdraw-success", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, controller.withdrawUpdateSuccess);
     // router.put("/withdraw-reject", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, controller.withdrawUpdateReject);

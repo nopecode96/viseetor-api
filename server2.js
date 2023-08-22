@@ -84,6 +84,7 @@ morganBody(app, {
 });
 
 require("./app/routes/auth.routes")(app);
+require("./app/routes/admin/dashboard.routes")(app);
 require("./app/routes/admin/master_event.routes")(app);
 require("./app/routes/admin/master_industry.routes")(app);
 require("./app/routes/admin/master_vanue.routes")(app);

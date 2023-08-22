@@ -4,11 +4,12 @@ const fs = require("fs");
 const async = require('async')
 
 var functions = require("../../../config/function");
-const { events, eventsGuest, company, commission, masterEvent, regRegencies } = require("../../models/index.model");
+const { events, eventsGuest, company, commission, masterEvent, regRegencies, user } = require("../../models/index.model");
 
 exports.getDashboardData = (req, res) => {
     // console.log(req.userid);
     const fid_user = req.userid;
+    const userType = req.userType;
     // const fid_user = 1;
     const today = new Date();
     // console.log(new Date.now)
@@ -79,20 +80,46 @@ exports.getDashboardData = (req, res) => {
             })
             return;
         }
-        res.status(200).send({
-            code: 200,
-            success: true,
-            message: 'Data Found',
-            data: {
-                total_client: results.dataCompany.count,
-                total_events: results.dataEvents.count,
-                total_guest: results.dataGuest.count,
-                total_commission: (results.dataCommission[0].dataValues.total_in == null) ? 0 : parseInt(results.dataCommission[0].dataValues.total_in),
-                my_balance: results.dataBalance.length == 0 ? 0 : results.dataBalance[0].dataValues.balance,
-                upcoming_event: results.dataEventLastMonth,
-            }
-        })
-        return;
+
+        if (userType == 3) {
+            console.log('disini')
+            user.findAndCountAll({ where: { parent_id: fid_user } })
+                .then(data => {
+                    console.log(data.count);
+                    res.status(200).send({
+                        code: 200,
+                        success: true,
+                        message: 'Data Found',
+                        data: {
+                            total_my_marketing: data.count,
+                            total_client: results.dataCompany.count,
+                            total_events: results.dataEvents.count,
+                            total_guest: results.dataGuest.count,
+                            total_commission: (results.dataCommission[0].dataValues.total_in == null) ? 0 : parseInt(results.dataCommission[0].dataValues.total_in),
+                            my_balance: results.dataBalance.length == 0 ? 0 : results.dataBalance[0].dataValues.balance,
+                            upcoming_event: results.dataEventLastMonth,
+                        }
+                    })
+                    return;
+                })
+        } else {
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: 'Data Found',
+                data: {
+                    total_client: results.dataCompany.count,
+                    total_events: results.dataEvents.count,
+                    total_guest: results.dataGuest.count,
+                    total_commission: (results.dataCommission[0].dataValues.total_in == null) ? 0 : parseInt(results.dataCommission[0].dataValues.total_in),
+                    my_balance: results.dataBalance.length == 0 ? 0 : results.dataBalance[0].dataValues.balance,
+                    upcoming_event: results.dataEventLastMonth,
+                }
+            })
+            return;
+        }
+
+
         // results now equals to: { task1: 1, task2: 2 }
     });
 }
