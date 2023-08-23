@@ -609,6 +609,8 @@ exports.getAccountDetail = (req, res) => {
         return;
     }
 
+
+
     user.findAll({
         where: { id: userid },
         attributes: ['id', 'username', 'email', 'name', 'photo', 'published', 'lastLogin', 'createdAt'],
