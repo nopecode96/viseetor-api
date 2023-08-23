@@ -99,10 +99,11 @@ exports.getDataDashboard = (req, res) => {
                     totalEvent: results.totalEvent.count,
                     totalEventGuest: results.totalGuest.count,
                 },
-                graphic: {
+                graph: {
                     dataGrowthRegisteredMarketing: results.growthRegisteredMarketing,
                     dataGrowthRegisteredSpv: results.growthRegisteredSupervisor,
                     dataGrowthEvents: results.growthEvent,
+                    dataGrowthEventGuest: results.growthEventGuest,
                 }
 
             }
