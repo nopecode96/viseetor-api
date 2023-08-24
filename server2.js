@@ -92,6 +92,7 @@ require("./app/routes/admin/user.routes")(app);
 require("./app/routes/admin/transaction.routes")(app);
 require("./app/routes/admin/commission.routes")(app);
 require("./app/routes/admin/information.routes")(app);
+require("./app/routes/admin/activity.routes")(app);
 
 require("./app/routes/spv/dashboard.routes")(app);
 require("./app/routes/spv/user.routes")(app);
