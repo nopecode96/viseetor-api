@@ -6,7 +6,7 @@ const axios = require("axios")
 var randomstring = require("randomstring");
 
 var functions = require("../../../config/function");
-const { user, userProfile, userType, masterUserStatus, regRegencies, regProvincies, masterBank, masterOccupation } = require("../../models/index.model");
+const { user, userProfile, userType, masterUserStatus, regRegencies, regProvincies, masterBank, masterOccupation, events } = require("../../models/index.model");
 
 exports.findAllUsersAdmin = (req, res) => {
     // console.log("User ID : " + req.userid);
@@ -84,6 +84,7 @@ exports.findAllMarketing = (req, res) => {
 
     user.findAndCountAll({
         where: condition, limit, offset,
+        // subQuery: false,
         order: [
             ['updatedAt', 'DESC'],
         ],
@@ -100,8 +101,13 @@ exports.findAllMarketing = (req, res) => {
             {
                 model: masterUserStatus,
                 attributes: ['title']
-            }
-        ]
+            },
+            // {
+            //     model: events,
+            //     attributes: [[sequelize.fn('COUNT', sequelize.col('events.fid_user')), 'ProjectCount']],
+            //     group: ['events.fid_user']
+            // }
+        ],
     }).then(data => {
         const response = functions.getPagingData(data, page, limit);
         res.status(200).send({
