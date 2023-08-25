@@ -4,7 +4,7 @@ const sequelize = require('sequelize');
 const async = require('async')
 
 var functions = require("../../../config/function");
-const { user, userProfile, userType, company, masterEvent, events, eventsGuest, masterCompanyStatus, masterIndustry, regRegencies, regProvincies } = require("../../models/index.model");
+const { user, userProfile, userType, company, masterEvent, events, eventsGuest, masterCompanyStatus, masterIndustry, regRegencies, regProvincies, eventsAppScan } = require("../../models/index.model");
 
 exports.getClient = (req, res) => {
     const { page, size, title, industry_id, statusid } = req.query;
@@ -244,7 +244,26 @@ exports.findGuest = (req, res) => {
         dataGuestList: function (callback) {
             eventsGuest.findAndCountAll({
                 where: condition, limit, offset,
+                attributes: ['id', 'barcode', 'phone', 'name', 'email', 'guest_max', 'guest_actual', 'invitation_status', 'invitation_send_count', 'barcode_send_count'],
                 order: [['updatedAt', 'DESC']],
+                include: [
+                    {
+                        model: eventsAppScan,
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: events,
+                        attributes: ['id', 'title'],
+                        include: {
+                            model: company,
+                            attributes: ['id', 'title']
+                        }
+                    },
+                    {
+                        model: user,
+                        attributes: ['id', 'name']
+                    }
+                ]
             }).then(data => {
                 const response = functions.getPagingData(data, page, limit);
                 callback(null, response)
