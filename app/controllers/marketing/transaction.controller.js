@@ -7,6 +7,8 @@ const async = require('async')
 var functions = require("../../../config/function");
 const { user, masterPrice, promotion, transaction, events, company, userProfile, regRegencies, regProvincies, userType, masterBankPayment } = require("../../models/index.model");
 
+
+
 exports.getTransactions = (req, res) => {
     const fid_user = req.userid;
     const { page, size, order_number, status } = req.query;
@@ -320,9 +322,11 @@ exports.getPromoCode = (req, res) => {
 exports.createTransaction = (req, res) => {
     const fid_user = req.userid;
     const { qty, fid_events, fid_price, fid_bank_payment, fid_promotion } = req.body;
+    const { paymentService } = req.app.locals.services;
     const tax = process.env.TAX;
     const status = 'UNPAID';
     const published = true;
+
 
     const order_number = randomstring.generate({
         length: 10,
@@ -366,7 +370,9 @@ exports.createTransaction = (req, res) => {
             const discount_percent = 0;
 
             transaction.create({ order_number, qty, unit_price, unit_commission, total_price, discount_percent, discount_nominal, total_before_tax, tax, tax_nominal, total_payment, total_commission, status, published, fid_events, fid_user, fid_bank_payment, fid_price })
-                .then(data => {
+                .then(async data => {
+                    await paymentService.createOpen(order_number);
+
                     res.status(201).send({
                         code: 201,
                         success: true,
@@ -454,3 +460,4 @@ exports.paymentConfirmation = (req, res) => {
 //     });
 
 // }
+
