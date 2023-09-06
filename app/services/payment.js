@@ -12,7 +12,7 @@ class Payment {
         this.tripayConn = tripayConn;
     }
 
-    async createOpen(orderNumber) {
+    async createClose(orderNumber) {
         const { transaction, events, company, masterBankPayment } = this.models;
 
         const trx = await transaction.findOne({
@@ -26,7 +26,7 @@ class Payment {
                     include: [
                         {
                             model: company,
-                            attributes: ['id', 'title', 'logo', 'address', 'contact_person', 'contact_phone']
+                            attributes: ['id', 'title', 'logo', 'address', 'contact_person', 'contact_phone', 'contact_email']
                         }
                     ]
                 },
@@ -42,39 +42,45 @@ class Payment {
 
         const payload = {
             method: trx['master_bank_payment.tripay_payment_method'],
+            amount: trx.total_payment,
             merchant_ref: orderNumber,
-            customer_name: trx['event.company.contact_person']
-        }
+            customer_name: trx['event.company.contact_person'],
+            customer_email: trx['event.company.contact_email'],
+            customer_phone: trx['event.company.contact_phone'],
+            order_items: [
+                {
+                    sku: trx.id,
+                    name: trx['event.title'],
+                    price: trx.total_payment,
+                    quantity: 1,
+                    product_url: '',
+                    image_url: ''
+                }
+            ]
+        };
 
         try {
-            const tripayTrx = await this.tripayConn.createOpenPayment(payload);
+            const tripayTrx = await this.tripayConn.createClosePayment(payload);
 
-            await transaction.update({ 
-                tripay_uuid: tripayTrx.data.uuid,
+            const payloadtrx = {
+                tripay_uuid: tripayTrx.data.reference,
                 tripay_paycode: tripayTrx.data.pay_code,
-                tripay_response_data: tripayTrx.data
-            }, {
-                where: { order_number: tripayTrx.merchant_ref }
+                tripay_response_data: JSON.stringify(tripayTrx.data)
+            }
+
+            await transaction.update(payloadtrx, 
+            {
+                where: { order_number: orderNumber }
             });
 
             // TODO
             // send whatsapps to contact_phone contact_person sebagai nama penerima
             // send whatsapps to mitra 
 
-            return {
-                code: 200,
-                success: true,
-                message: "",
-                data: tripayTrx.data
-            };
-
+            return tripayTrx.data;
         } catch (err) {
             this.logger.error(`[Payment Service] Error ${err}`);
-            return {
-                code: 500,
-                success: false,
-                message: 'Downstream Tripay Error'
-            };
+            return err;
         }
     }
     

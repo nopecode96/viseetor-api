@@ -11,7 +11,8 @@ module.exports = (req, res, next) => {
         apiKey: process.env.TRIPAY_API_KEY,
         baseUrl: process.env.TRIPAY_URL,
         privateKey: process.env.TRIPAY_PRIVATE_KEY,
-        merchantCode: process.env.TRIPAY_MERCHANT_CODE
+        merchantCode: process.env.TRIPAY_MERCHANT_CODE,
+        paymentReturnUrl: process.env.TRIPAY_PAYMENT_RETURN_URL
     }
     
     req.app.locals.connectors = {
