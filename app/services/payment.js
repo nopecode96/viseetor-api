@@ -100,11 +100,7 @@ class Payment {
             }
         }
 
-        if (trx.status !== 'PAID') {
-            const trxTripay = tripayConn.getDetail(reference);
-        }
-
-        const trxTripay = tripayConn.get(reference);
+        const trxTripayData = JSON.parse(trx.tripay_response_data);
 
         let result = {
             code: 200,
@@ -116,26 +112,15 @@ class Payment {
                     orderNumber: trx.order_number,
                     createdAt: format(trx.createdAt, 'dd MMM, yyyy', {locale: id}),
                     totalPayment: trx.total_payment,
-                    totalPaymentStr: trx.total_payment.toLocaleString('id-ID')
-                    // paymentMethod: 
+                    totalPaymentStr: trx.total_payment.toLocaleString('id-ID'),
+                    status: trx.status,
+                    paymentMethod: trxTripayData.payment_name
                 },
-                how_to_pay: [
-                    "Login ke aplikasi BRImo Anda",
-                    "Pilih menu <b>BRIVA</b>",
-                    "Pilih sumber dana dan masukkan Nomor Pembayaran (<b>{{pay_code}}</b>) lalu klik <b>Lanjut</b>",
-                    "Klik <b>Lanjut</b>",
-                    "Detail transaksi akan ditampilkan, pastikan data sudah sesuai",
-                    "Klik <b>Konfirmasi</b>",
-                    "Klik <b>Lanjut</b>",
-                    "Masukkan kata sandi ibanking Anda",
-                    "Klik <b>Lanjut</b>",
-                    "Transaksi sukses, simpan bukti transaksi Anda"
-                ]
+                how_to_pay: trxTripayData.instructions
             }
         }
 
-
-
+        return result;
     }
 
     /**
