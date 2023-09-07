@@ -28,15 +28,12 @@ app.use(function (req, res, next) {
 });
 app.options('*', cors());
 
-// middlewares
-const morganMiddleware = require("./app/middlewares/morgan.middleware");
 const logger = require("./app/utils/logger");
 app.locals.logger = logger;
 
-app.use(morganMiddleware);
-
 const db = require("./app/models/index.model");
 db.sequelize.sync()
+app.locals.db = db;
 
 // db.sequelize.sync({ force: true })
 // db.sequelize.sync({ logging: console.log })
@@ -64,6 +61,11 @@ db.sequelize.sync()
 // db.userProfile.sync(
 //   { force: true, logging: console.log}
 // )
+
+
+//middlewares
+const middlewares = require("./app/middlewares/index");
+app.use(middlewares);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
