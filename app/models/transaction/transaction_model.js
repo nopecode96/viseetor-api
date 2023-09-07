@@ -42,6 +42,15 @@ module.exports = (sequelize, Sequelize) => {
         published: {
             type: Sequelize.BOOLEAN
         },
+        tripay_uuid: {
+            type: Sequelize.STRING
+        },
+        tripay_paycode: {
+            type: Sequelize.STRING
+        },
+        tripay_response_data: {
+            type: Sequelize.JSON
+        }
     }
     );
     return transactionModel;

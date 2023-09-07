@@ -1,19 +1,135 @@
+const { format } = require('date-fns');
+const { id } = require('date-fns/locale');
 
 const { ViseetorError } = require('../utils/errors');
-const { transaction, events, userType, commission } = require("../models/index.model");
 const functions = require("../../config/function");
 
 class Payment {
 
-    constructor (args) {
-        this.logger = args.logger;
+    constructor (logger, models, tripayConn) {
+        this.logger = logger;
+        this.models = models;
+        this.tripayConn = tripayConn;
+    }
+
+    async createClose(orderNumber) {
+        const { transaction, events, company, masterBankPayment } = this.models;
+
+        const trx = await transaction.findOne({
+            where: {
+                order_number: orderNumber
+            },
+            include: [
+                {
+                    model: events,
+                    attributes: ['title', 'event_date'],
+                    include: [
+                        {
+                            model: company,
+                            attributes: ['id', 'title', 'logo', 'address', 'contact_person', 'contact_phone', 'contact_email']
+                        }
+                    ]
+                },
+                {
+                    model: masterBankPayment,
+                    attributes: ['id', 'tripay_payment_method']
+                }
+            ],
+            raw: true            
+        });
+
+        // custumer name get from events > fid_company > companies belong to transaction id
+
+        const payload = {
+            method: trx['master_bank_payment.tripay_payment_method'],
+            amount: trx.total_payment,
+            merchant_ref: orderNumber,
+            customer_name: trx['event.company.contact_person'],
+            customer_email: trx['event.company.contact_email'],
+            customer_phone: trx['event.company.contact_phone'],
+            order_items: [
+                {
+                    sku: trx.id,
+                    name: trx['event.title'],
+                    price: trx.total_payment,
+                    quantity: 1,
+                    product_url: '',
+                    image_url: ''
+                }
+            ]
+        };
+
+        try {
+            const tripayTrx = await this.tripayConn.createClosePayment(payload);
+
+            const payloadtrx = {
+                tripay_uuid: tripayTrx.data.reference,
+                tripay_paycode: tripayTrx.data.pay_code,
+                tripay_response_data: JSON.stringify(tripayTrx.data)
+            }
+
+            await transaction.update(payloadtrx, 
+            {
+                where: { order_number: orderNumber }
+            });
+
+            // TODO
+            // send whatsapps to contact_phone contact_person sebagai nama penerima
+            // send whatsapps to mitra 
+
+            return tripayTrx.data;
+        } catch (err) {
+            this.logger.error(`[Payment Service] Error ${err}`);
+            return err;
+        }
     }
     
+    async inquiry({orderNumber}) {
+        const trx = this.transactionModel.findOne({
+            where: {
+                order_number: orderNumber
+            }
+        });
+
+        if (trx == null) {
+            return {
+                code: 404,
+                success: false,
+                message: 'Transaction not found',
+
+            }
+        }
+
+        const trxTripayData = JSON.parse(trx.tripay_response_data);
+
+        let result = {
+            code: 200,
+            success: true,
+            message: "",
+            data: {
+                transaction: {
+                    id: trx.id,
+                    orderNumber: trx.order_number,
+                    createdAt: format(trx.createdAt, 'dd MMM, yyyy', {locale: id}),
+                    totalPayment: trx.total_payment,
+                    totalPaymentStr: trx.total_payment.toLocaleString('id-ID'),
+                    status: trx.status,
+                    paymentMethod: trxTripayData.payment_name
+                },
+                how_to_pay: trxTripayData.instructions
+            }
+        }
+
+        return result;
+    }
+
     /**
      * Payment received 
      * @param {*} param0 
      */
     async received ({order_number, status}) {
+        const { transaction, events } = this.models;
+
         if (!order_number) {
             throw new ViseetorError('Order number required', 400, 400);
         }
@@ -73,8 +189,7 @@ class Payment {
     }
 
     async addCommisions({fid_user, order_number, total_commission, fid_transaction}) {
-
-        console.log('order_number', order_number)
+        const { commission } = this.models;
         const commisionData = await commission.findOne({where: { fid_user: fid_user }});
 
         let balance = '0';
