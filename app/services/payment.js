@@ -84,43 +84,59 @@ class Payment {
         }
     }
     
-    async inquiry({orderNumber}) {
-        const trx = this.transactionModel.findOne({
-            where: {
-                order_number: orderNumber
-            }
-        });
+    async inquiry(orderNumber) {
+        const { transaction } = this.models;
 
-        if (trx == null) {
+        try {
+            const trx = await transaction.findOne({
+                where: {
+                    order_number: orderNumber
+                }
+            });
+
+            if (trx == null) {
+                return {
+                    code: 404,
+                    success: false,
+                    message: 'Transaction not found'
+                }
+            }
+
+            const trxTripayData = JSON.parse(trx.tripay_response_data);
+
+            let result = {
+                code: 200,
+                success: true,
+                message: "",
+                data: {
+                    transaction: {
+                        id: trx.id,
+                        orderNumber: trx.order_number,
+                        createdAt: format(trx.createdAt, 'dd MMM, yyyy', {locale: id}),
+                        totalPayment: trx.total_payment,
+                        totalPaymentStr: trx.total_payment.toLocaleString('id-ID'),
+                        status: trx.status,
+                        paymentMethod: '',
+                        checkoutUrl: ''
+                    },
+                    raw_tripay: trxTripayData
+                }
+            }
+
+            if (trxTripayData != null ) {
+                result.data.transaction.paymentMethod = trxTripayData.payment_name;
+                result.data.transaction.checkoutUrl = trxTripayData.checkout_url
+            }
+            
+            return result;
+        } catch (err) {
+            this.logger.error(`[Payment Services] inquiry ${err}`);
             return {
-                code: 404,
+                code: 500,
                 success: false,
-                message: 'Transaction not found',
-
+                message: 'Internal Service Error'
             }
         }
-
-        const trxTripayData = JSON.parse(trx.tripay_response_data);
-
-        let result = {
-            code: 200,
-            success: true,
-            message: "",
-            data: {
-                transaction: {
-                    id: trx.id,
-                    orderNumber: trx.order_number,
-                    createdAt: format(trx.createdAt, 'dd MMM, yyyy', {locale: id}),
-                    totalPayment: trx.total_payment,
-                    totalPaymentStr: trx.total_payment.toLocaleString('id-ID'),
-                    status: trx.status,
-                    paymentMethod: trxTripayData.payment_name
-                },
-                how_to_pay: trxTripayData.instructions
-            }
-        }
-
-        return result;
     }
 
     /**

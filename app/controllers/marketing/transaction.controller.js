@@ -427,8 +427,14 @@ exports.createTransaction = (req, res) => {
     })
 }
 
-exports.paymentConfirmation = (req, res) => {
+exports.paymentConfirmation = async (req, res) => {
+    const { order_number } = req.params;
 
+    const { paymentService } = req.app.locals.services;
+
+    const paymentInquiry = await paymentService.inquiry(order_number);
+
+    return res.status(paymentInquiry.code).send(paymentInquiry);
 }
 
 
