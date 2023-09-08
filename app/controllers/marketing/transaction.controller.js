@@ -2,12 +2,13 @@ const { Sequelize, Op } = require('sequelize');
 const fs = require('fs');
 const sequelize = require('sequelize');
 var randomstring = require("randomstring");
-const async = require('async')
+const async = require('async');
+const ejs = require('ejs');
+const path = require('path');
+
 
 var functions = require("../../../config/function");
 const { user, masterPrice, promotion, transaction, events, company, userProfile, regRegencies, regProvincies, userType, masterBankPayment } = require("../../models/index.model");
-
-
 
 exports.getTransactions = (req, res) => {
     const fid_user = req.userid;

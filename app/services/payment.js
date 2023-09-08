@@ -1,19 +1,22 @@
 const { format } = require('date-fns');
 const { id } = require('date-fns/locale');
+const path = require('path');
+const ejs = require('ejs');
 
 const { ViseetorError } = require('../utils/errors');
 const functions = require("../../config/function");
 
 class Payment {
 
-    constructor (logger, models, tripayConn) {
+    constructor (logger, models, tripayConn, wapiConn) {
         this.logger = logger;
         this.models = models;
         this.tripayConn = tripayConn;
+        this.wapiConn = wapiConn;
     }
 
     async createClose(orderNumber) {
-        const { transaction, events, company, masterBankPayment } = this.models;
+        const { transaction, events, company, masterBankPayment, masterPrice  } = this.models;
 
         const trx = await transaction.findOne({
             where: {
@@ -33,12 +36,14 @@ class Payment {
                 {
                     model: masterBankPayment,
                     attributes: ['id', 'tripay_payment_method']
+                },
+                {
+                    model: masterPrice,
+                    attributes: ['id', 'title']
                 }
             ],
             raw: true            
         });
-
-        // custumer name get from events > fid_company > companies belong to transaction id
 
         const payload = {
             method: trx['master_bank_payment.tripay_payment_method'],
@@ -72,10 +77,18 @@ class Payment {
             {
                 where: { order_number: orderNumber }
             });
+            
+            // send whatsapps to client contact_phone contact_person sebagai nama penerima
+            const dataWa = {
+                name: trx['event.company.contact_person'],
+                packageName: trx['master_price.title'],
+                orderNumber: orderNumber,
+                totalPaymentStr: trx.total_payment.toLocaleString('id-ID'),
+                notes: '',
+                tripayCheckoutUrl: tripayTrx.data.checkout_url
+            }
 
-            // TODO
-            // send whatsapps to contact_phone contact_person sebagai nama penerima
-            // send whatsapps to mitra 
+            this._sendInvoiceToWa(trx['event.company.contact_phone'], dataWa)
 
             return tripayTrx.data;
         } catch (err) {
@@ -239,6 +252,16 @@ class Payment {
             fid_user: fid_user,
             fid_transaction: fid_transaction
         }
+    }
+
+    _sendInvoiceToWa(destination, data) {
+        const filepath = (path.join(__dirname, 'templates/wa_invoice.ejs')).replace('services', '')
+        const wapiConn = this.wapiConn;
+        ejs.renderFile(filepath, data, {}, function(err, str){
+            const wapiSendMessage = wapiConn.sendMessage(destination, str);
+
+            return wapiSendMessage;
+        });
     }
 
 }
