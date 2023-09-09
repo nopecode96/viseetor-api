@@ -28,6 +28,7 @@
     "date-format": "^4.0.14",
     "dateformat": "^5.0.3",
     "dotenv": "^16.0.3",
+    "ejs": "^3.1.9",
     "es6-error": "^4.1.1",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",

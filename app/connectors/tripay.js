@@ -51,6 +51,7 @@ class Tripay {
             this.logger.info(`[TRIPAY] Response ${url}, status: ${resp.status}, headers: ${JSON.stringify(resp.headers)} body: ${JSON.stringify(resp.data)}`)
             return resp.data;
         } catch (err) {
+            this.logger.error(err)
             this.logger.error(`[TRIPAY] Error ${err}`)
             return err;
         }
