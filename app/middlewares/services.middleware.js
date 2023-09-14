@@ -1,6 +1,6 @@
 const Payment = require('../services/payment');
 const models = require("../models/index.model");
-const { Tripay } = require('../connectors');
+const { Tripay, Wapi,  } = require('../connectors');
 
 module.exports = (req, res, next) => {
     const logger = req.app.locals.logger;
@@ -14,15 +14,23 @@ module.exports = (req, res, next) => {
         merchantCode: process.env.TRIPAY_MERCHANT_CODE,
         paymentReturnUrl: process.env.TRIPAY_PAYMENT_RETURN_URL
     }
+
+    const wapiOptions = {
+        apiKey: process.env.WAPI_API,
+        deviceKey: process.env.WAPI_DEVICE,
+        baseUrl: process.env.WAPI_URL
+    }
     
     req.app.locals.connectors = {
-        tripayConnector: new Tripay(logger, tripayOptions)
+        tripayConnector: new Tripay(logger, tripayOptions),
+        wapiConnector: new Wapi(logger, wapiOptions)
     };
 
     const tripayConn = req.app.locals.connectors.tripayConnector;
+    const wapiConn = req.app.locals.connectors.wapiConnector;
 
     req.app.locals.services = {
-        paymentService: new Payment(logger, models, tripayConn)
+        paymentService: new Payment(logger, models, tripayConn, wapiConn)
     };
 
     return next();

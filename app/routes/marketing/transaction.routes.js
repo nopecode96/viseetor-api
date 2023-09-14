@@ -13,5 +13,6 @@ module.exports = app => {
     router.get("/findprice", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPriceOne);
     router.get("/findpromo", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPromoCode);
     router.post("/create", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.createTransaction);
+    router.get("/payment/:order_number", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.paymentConfirmation);
     app.use('/' + process.env.ENVIRONMENT + '/marketing/transactions', router);
 };
