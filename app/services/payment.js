@@ -201,7 +201,7 @@ class Payment {
 
             const eventUpd = await events.update({ invitation_limit: new_invitation_limit }, { where: { id: fid_events } });
             
-            const addComm = await this.addCommisions({fid_user, order_number, total_commission, fid_transaction});
+            const addComm = await this.addCommisions({fid_user, order_number, total_commission, fid_transaction}, trx);
 
             return {
                 code: 200,
@@ -217,9 +217,23 @@ class Payment {
         
     }
 
-    async addCommisions({fid_user, order_number, total_commission, fid_transaction}) {
-        const { commission } = this.models;
-        const commisionData = await commission.findOne({where: { fid_user: fid_user }});
+    async addCommisions({fid_user, order_number, total_commission, fid_transaction}, trxData) {
+        const { commission, user, masterPrice } = this.models;
+        const commisionData = await commission.findOne({
+                where: { fid_user: fid_user },
+                include: [
+                    {
+                        model: user,
+                        attributes: ['id', 'fid_user_type', 'parent_id'],
+                        /*include: [
+                            {
+                                model: user_type,
+                                attributes: ['id', 'title', 'logo', 'address', 'contact_person', 'contact_phone', 'contact_email']
+                            }
+                        ]*/
+                    }
+                ]
+        });
 
         let balance = '0';
         if (!commisionData) {
@@ -231,12 +245,18 @@ class Payment {
         const lastBalance = parseInt(total_commission) + parseInt(balance);
 
         try {
-            const commCreateBulk = await commission.bulkCreate([
-                this._transformCommision({order_number, total_commission, lastBalance, fid_user, fid_transaction})
-            ]);
+            const dataComm = this._transformCommision({order_number, total_commission, lastBalance, fid_user, fid_transaction});
+
+            const commCreate = await commission.create(dataComm);
+
+            if (commisionData['user.parent_id'] != null && commisionData['user.parent_id'] > 0) {
+                const userParentId = commisionData['user.parent_id'];
+                const commisionSupervisor  = trxData['master_price.commision_supervisor'];
+                await this.addCommisions({userParentId, order_number, commisionSupervisor, fid_transaction})
+            }
 
             functions.auditLog('CREATE', 'Create Commission for Order No. #' + order_number, 'Any', 'commissions', commCreateBulk[0].id)
-            return commCreateBulk;
+            return commCreate;
         } catch (err) {
             return err;
         }
