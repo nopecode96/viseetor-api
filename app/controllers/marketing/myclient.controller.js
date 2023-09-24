@@ -87,6 +87,7 @@ exports.findMyClient = (req, res) => {
 }
 
 exports.getDetail = (req, res) => {
+    // console.log('disini')
     const fid_user = req.userid;
     const { id } = req.query;
     const today = new Date();
@@ -96,7 +97,7 @@ exports.getDetail = (req, res) => {
         company_id: sequelize.where(sequelize.col('event.company.id'), id)
     }
     var condition2 = { id: id, fid_user: fid_user }
-
+    console.log(id);
     async.parallel({
         totalGuest: function (callback) {
             eventsGuest.findAndCountAll({
@@ -141,7 +142,7 @@ exports.getDetail = (req, res) => {
         dataDetail: function (callback) {
             company.findAll({
                 where: condition2,
-                attributes: ['id', 'title', 'logo', 'description', 'address', 'contact_person', 'contact_phone', 'updatedAt'],
+                attributes: ['id', 'title', 'logo', 'description', 'address', 'contact_person', 'contact_phone', 'contact_email', 'website_url'],                
                 include: [
                     {
                         model: regRegencies,
@@ -227,7 +228,7 @@ exports.getDetailEdit = (req, res) => {
         dataDetail: function (callback) {
             company.findAll({
                 where: condition,
-                attributes: ['id', 'title', 'logo', 'description', 'address', 'contact_person', 'contact_phone', 'updatedAt'],
+                attributes: ['id', 'title', 'logo', 'description', 'address', 'contact_person', 'contact_phone', 'contact_email', 'website_url'],                
                 include: [
                     {
                         model: regRegencies,
@@ -332,9 +333,9 @@ exports.pageCreate = (req, res) => {
 
 exports.create = (req, res) => {
     const fid_user = req.userid;
-    const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_company_status } = req.body;
+    const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_company_status, contact_email, website_url } = req.body;
 
-    if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_company_status) {
+    if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !fid_company_status || !contact_email || !website_url) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -344,7 +345,7 @@ exports.create = (req, res) => {
     }
 
     if (!req.file) {
-        company.create({ title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status })
+        company.create({ title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status, contact_email, website_url })
             .then(data => {
                 res.status(201).send({
                     code: 201,
@@ -364,7 +365,7 @@ exports.create = (req, res) => {
             });
     } else {
         const logo = req.file.filename;
-        company.create({ title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status, logo })
+        company.create({ title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, fid_company_status, logo, contact_email, website_url })
             .then(data => {
                 res.status(201).send({
                     code: 201,
@@ -422,20 +423,23 @@ exports.updateStatus = (req, res) => {
 exports.update = (req, res) => {
     const fid_user = req.userid;
     const { id } = req.query;
-    const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry } = req.body;
+    const { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, contact_email, website_url } = req.body;
+    // console.log(website_url);
 
-    if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry) {
+    if (!title || !description || !address || !contact_person || !contact_phone || !fid_regencies || !fid_industry || !contact_email ) {
         res.status(200).send({
             code: 200,
             success: false,
-            message: "Error Insert: Field."
+            message: "Error Insert: Field.",
+            data: {title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, contact_email, website_url }
         });
         return;
     }
 
     if (!req.file) {
+        console.log(website_url);
         company.update(
-            { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user },
+            { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, website_url, contact_email },
             { where: { id: id, fid_user: fid_user } }
         ).then(data => {
             res.status(200).send({
@@ -456,7 +460,7 @@ exports.update = (req, res) => {
     } else {
         const logo = req.file.filename;
         company.update(
-            { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, logo },
+            { title, description, address, contact_person, contact_phone, fid_regencies, fid_industry, fid_user, logo, website_url, contact_email },
             { where: { id: id, fid_user: fid_user } }
         ).then(data => {
             res.status(200).send({

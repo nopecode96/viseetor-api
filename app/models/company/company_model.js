@@ -20,6 +20,9 @@ module.exports = (sequelize, Sequelize) => {
       },
       contact_email: {
         type: Sequelize.STRING
+      },
+      website_url: {
+        type: Sequelize.STRING
       }
     }
   );
