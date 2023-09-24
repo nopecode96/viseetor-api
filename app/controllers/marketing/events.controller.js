@@ -517,7 +517,7 @@ exports.create = (req, res) => {
         return;
     }
 
-    events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_map, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
+    events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template, location_map })
         .then(data => {
             if (!data) {
                 res.status(200).send({
