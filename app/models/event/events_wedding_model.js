@@ -44,7 +44,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         ceremony_type: {
             type: Sequelize.ENUM,
-            values: ['None', 'Akad Nikah', 'Pemberkatan', 'Ceremony']
+            values: ['None', 'Akad Nikah', 'Janji Nikah', 'Pemberkatan Nikah', 'Pawiwahan', 'Senemonial Pernikahan']
         },
 
     }
