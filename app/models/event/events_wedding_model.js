@@ -43,8 +43,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.TEXT
         },
         ceremony_type: {
-            type: Sequelize.ENUM,
-            values: ['None', 'Akad Nikah', 'Janji Nikah', 'Pemberkatan Nikah', 'Pawiwahan', 'Senemonial Pernikahan']
+            type: Sequelize.STRING
         },
 
     }
