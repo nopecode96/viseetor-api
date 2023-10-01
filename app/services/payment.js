@@ -157,14 +157,29 @@ class Payment {
      * @param {*} param0 
      */
     async received ({order_number, status}) {
-        const { transaction, events } = this.models;
+        const { transaction, events, masterBankPayment, masterPrice } = this.models;
 
         if (!order_number) {
             throw new ViseetorError('Order number required', 400, 400);
         }
 
-        try {
-            const trx =  await transaction.findOne({where: {order_number: order_number}});
+        // try {
+            const trx = await transaction.findOne({
+                where: {
+                    order_number: order_number
+                },
+                include: [
+                    {
+                        model: masterBankPayment,
+                        attributes: ['id', 'tripay_payment_method']
+                    },
+                    {
+                        model: masterPrice,
+                        attributes: ['id', 'title', 'commission_supervisor', 'commission_group_leader']
+                    }
+                ],
+                raw: true        
+            });
 
             if (!trx) {
                 this.logger.error(`[DB] Transaction with order_number ${order_number} not found`);
@@ -210,30 +225,29 @@ class Payment {
                 data: addComm
             }
 
-        } catch (err) {
+        /*} catch (err) {
             this.logger.error(err);
             return err;
-        }
+        }*/
         
     }
 
     async addCommisions({fid_user, order_number, total_commission, fid_transaction}, trxData) {
-        const { commission, user, masterPrice } = this.models;
+        const self = this;
+        const { commission, user, transaction, userType } = this.models;
+
         const commisionData = await commission.findOne({
                 where: { fid_user: fid_user },
                 include: [
                     {
                         model: user,
-                        attributes: ['id', 'fid_user_type', 'parent_id'],
-                        /*include: [
-                            {
-                                model: user_type,
-                                attributes: ['id', 'title', 'logo', 'address', 'contact_person', 'contact_phone', 'contact_email']
-                            }
-                        ]*/
+                        attributes: ['id', 'fid_user_type', 'parent_id']
                     }
-                ]
+                ],
+                raw: true
         });
+
+        console.log('parent id ---', commisionData['user.parent_id'])
 
         let balance = '0';
         if (!commisionData) {
@@ -251,8 +265,57 @@ class Payment {
 
             if (commisionData['user.parent_id'] != null && commisionData['user.parent_id'] > 0) {
                 const userParentId = commisionData['user.parent_id'];
-                const commisionSupervisor  = trxData['master_price.commision_supervisor'];
-                await this.addCommisions({userParentId, order_number, commisionSupervisor, fid_transaction})
+
+                const findUserParent = await user.findOne({
+                    where: {
+                        id: userParentId
+                    }
+                })
+
+                const userTypeParent = findUserParent.fid_user_type
+
+
+                // console.log('trxData --', trxData)
+                console.log('userTypeParent ---', userTypeParent)
+                let commisionParent = 0;
+                let payloadTrx;
+                if (userTypeParent == 3) {
+                    commisionParent = trxData['master_price.commission_supervisor'];
+                    payloadTrx = {
+                        unit_commission_supervisor: commisionParent
+                    }
+                } else if (userTypeParent == 4) { 
+                    commisionParent = trxData['master_price.commission_group_leader'];
+                    payloadTrx = {
+                        unit_commission_group_leader: commisionParent
+                    }
+                }
+
+                console.log('commisionParent ---', commisionParent)
+
+                Object.assign(payloadTrx, {
+                    total_commission: parseInt(total_commission) + (commisionParent * trxData.qty)
+                }) 
+
+                console.log('payloadTrx ---', payloadTrx)
+                
+                const updTrx = await transaction.update(payloadTrx, { 
+                    where: { order_number: order_number}
+                });
+
+                console.log('updTrx --', updTrx)
+
+                const payComChild = {
+                    fid_user: userParentId, 
+                    order_number: order_number, 
+                    total_commission: commisionParent,
+                    fid_transaction: fid_transaction
+                }
+
+                console.log('payComChild ---', payComChild)
+
+                const addCom2 = await self.addCommisions(payComChild, trx)
+                console.log('addCom2 --', addCom2)
             }
 
             functions.auditLog('CREATE', 'Create Commission for Order No. #' + order_number, 'Any', 'commissions', commCreateBulk[0].id)
