@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const eventsGuest = sequelize.define("events_wedding", {
+    const eventsWedding = sequelize.define("events_wedding", {
         bride_name: {
             type: Sequelize.STRING
         },
@@ -32,9 +32,21 @@ module.exports = (sequelize, Sequelize) => {
         },
         family_invite: {
             type: Sequelize.TEXT
-        }
+        },
+        marriage_time: {
+            type: Sequelize.DATE
+        },
+        marriage_location_address: {
+            type: Sequelize.TEXT
+        },
+        marriage_location_map: {
+            type: Sequelize.TEXT
+        },
+        ceremony_type: {
+            type: Sequelize.STRING
+        },
 
     }
   );
-  return eventsGuest;
+  return eventsWedding;
 };

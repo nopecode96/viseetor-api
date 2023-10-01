@@ -18,6 +18,9 @@ module.exports = (sequelize, Sequelize) => {
     location_address: {
       type: Sequelize.TEXT
     },
+    location_map: {
+      type: Sequelize.TEXT
+    },
     location_coordinate_latitude: {
       type: Sequelize.STRING
     },
