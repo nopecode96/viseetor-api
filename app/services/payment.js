@@ -163,7 +163,7 @@ class Payment {
             throw new ViseetorError('Order number required', 400, 400);
         }
 
-        // try {
+        try {
             const trx = await transaction.findOne({
                 where: {
                     order_number: order_number
@@ -225,10 +225,10 @@ class Payment {
                 data: addComm
             }
 
-        /*} catch (err) {
+        } catch (err) {
             this.logger.error(err);
             return err;
-        }*/
+        }
         
     }
 
@@ -244,10 +244,11 @@ class Payment {
                         attributes: ['id', 'fid_user_type', 'parent_id']
                     }
                 ],
+                order: [
+                    ['id', 'DESC']
+                ],
                 raw: true
         });
-
-        console.log('parent id ---', commisionData['user.parent_id'])
 
         let balance = '0';
         if (!commisionData) {
@@ -263,7 +264,10 @@ class Payment {
 
             const commCreate = await commission.create(dataComm);
 
-            if (commisionData['user.parent_id'] != null && commisionData['user.parent_id'] > 0) {
+            if (commisionData && commisionData['user.parent_id'] != null && commisionData['user.parent_id'] > 0 
+               && (trxData['master_price.commission_supervisor'] > 0 || trxData['master_price.commission_group_leader'] > 0)
+               ) {
+
                 const userParentId = commisionData['user.parent_id'];
 
                 const findUserParent = await user.findOne({
@@ -274,9 +278,6 @@ class Payment {
 
                 const userTypeParent = findUserParent.fid_user_type
 
-
-                // console.log('trxData --', trxData)
-                console.log('userTypeParent ---', userTypeParent)
                 let commisionParent = 0;
                 let payloadTrx;
                 if (userTypeParent == 3) {
@@ -291,34 +292,29 @@ class Payment {
                     }
                 }
 
-                console.log('commisionParent ---', commisionParent)
+                const totalComissionParent = commisionParent * parseInt(trxData.qty)
 
                 Object.assign(payloadTrx, {
-                    total_commission: parseInt(total_commission) + (commisionParent * trxData.qty)
+                    total_commission: parseInt(total_commission) + totalComissionParent
                 }) 
-
-                console.log('payloadTrx ---', payloadTrx)
                 
                 const updTrx = await transaction.update(payloadTrx, { 
                     where: { order_number: order_number}
                 });
 
-                console.log('updTrx --', updTrx)
-
                 const payComChild = {
                     fid_user: userParentId, 
                     order_number: order_number, 
-                    total_commission: commisionParent,
+                    total_commission: totalComissionParent,
                     fid_transaction: fid_transaction
                 }
 
-                console.log('payComChild ---', payComChild)
-
-                const addCom2 = await self.addCommisions(payComChild, trx)
-                console.log('addCom2 --', addCom2)
+                return new Promise(resolve => {
+                    setTimeout(() => resolve(self.addCommisions(payComChild, trxData)), 500)
+                });
             }
 
-            functions.auditLog('CREATE', 'Create Commission for Order No. #' + order_number, 'Any', 'commissions', commCreateBulk[0].id)
+            functions.auditLog('CREATE', 'Create Commission for Order No. #' + order_number, 'Any', 'commissions', commCreate.id)
             return commCreate;
         } catch (err) {
             return err;
