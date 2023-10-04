@@ -50,6 +50,12 @@ module.exports = (sequelize, Sequelize) => {
         },
         tripay_response_data: {
             type: Sequelize.JSON
+        },
+        unit_commission_supervisor: {
+            type: Sequelize.DOUBLE
+        },
+        unit_commission_group_leader: {
+            type: Sequelize.DOUBLE
         }
     }
     );
