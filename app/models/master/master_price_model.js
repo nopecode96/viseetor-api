@@ -21,6 +21,12 @@ module.exports = (sequelize, Sequelize) => {
       published: {
         type: Sequelize.BOOLEAN
       },
+      commission_supervisor: {
+        type: Sequelize.DOUBLE
+      },
+      commission_group_leader: {
+        type: Sequelize.DOUBLE
+      },
     }
   );
   return masterPrice;
