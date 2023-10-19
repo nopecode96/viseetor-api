@@ -376,3 +376,49 @@ exports.socmedMaterialUpdate = (req, res) => {
 
 }
 
+exports.deleteSocmed = (req, res) => {
+    const fid_user = req.userid;
+    const { id } = req.query;
+
+    socmed.findAll({
+        where: { id: id}
+    }).then(dataEvent => {
+        if (dataEvent.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Event not found."
+            });
+            return;
+        }
+
+        socmed.destroy({
+            where: { id: id }
+        }).then(data => {
+            res.status(202).send({
+                code: 202,
+                success: true,
+                message: "Content Promotion has been deleted."
+            });
+            return;
+        }).catch(err => {
+            console.log(err);
+            res.status(400).send({
+                code: 400,
+                success: false,
+                message:
+                    err.message || "Some error occurred while retrieving data."
+            });
+            return;
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+        return;
+    });
+}
