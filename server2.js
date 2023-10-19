@@ -40,7 +40,7 @@ app.locals.db = db;
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
 // });
-// db.events.sync(
+// db.socmed.sync(
 //   { force: true, logging: console.log }
 // )
 // db.eventsMessage.sync(

@@ -10,5 +10,6 @@ module.exports = app => {
     router.get("/message", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getMessage);
     router.put("/message-read", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.updateRead);
     router.get("/promotion", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.getPromotionAll);
+    router.get("/socmed-material", authValidation.apiKeyValidation, authValidation.tokenValidation, controller.socmedMaterial);
     app.use('/' + process.env.ENVIRONMENT + '/marketing/info', router);
 };

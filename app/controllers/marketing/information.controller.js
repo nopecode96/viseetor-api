@@ -106,3 +106,31 @@ exports.getPromotionAll = (req, res) => {
     });
 
 }
+
+//==============//===============//=================
+
+exports.socmedMaterial = (req, res) => {
+    const fid_user = req.userid;
+
+    socmed.findAll({
+        where: {
+            published: true
+        },
+    }).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: data
+        });
+        return;
+    }).catch(err => {
+        // console.log(err);
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
