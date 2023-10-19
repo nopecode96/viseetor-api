@@ -203,28 +203,22 @@ exports.promoUpdate = (req, res) => {
 
 exports.getSocmedMaterial = (req, res) => {
     const fid_user = req.userid;
+    const { page, size, title } = req.query;
+    const { limit, offset } = functions.getPagination(page - 1, size);
 
-    socmed.findAll({
-        where: {
-            published: true
-        },
+    socmed.findAndCountAll({
+        where: condition, limit, offset,
+        order: [['updatedAt', 'DESC']],
     }).then(data => {
+        const response = functions.getPagingData(data, page, limit);
         res.status(200).send({
             code: 200,
             success: true,
-            message: "Datas Found.",
-            data: data
-        });
+            message: 'Data found',
+            data: response
+        })
         return;
-    }).catch(err => {
-        // console.log(err);
-        res.status(400).send({
-            code: 400,
-            success: false,
-            message:
-                err.message || "Some error occurred while retrieving data."
-        });
-    });
+    })
 }
 
 exports.getSocmedDetail = (req, res) => {
