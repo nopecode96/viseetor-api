@@ -4,7 +4,7 @@ const md5 = require('md5');
 const async = require('async')
 const axios = require("axios")
 var functions = require("../../../config/function");
-const { promotion, user } = require("../../models/index.model");
+const { promotion, user, socmed } = require("../../models/index.model");
 
 exports.getInformation = (req, res) => {
 
@@ -195,6 +195,188 @@ exports.promoUpdate = (req, res) => {
         })
     }
 
+}
+
+/////================Socmed Material==============/////////
+/////================Socmed Material==============/////////
+/////================Socmed Material==============/////////
+
+exports.getSocmedMaterial = (req, res) => {
+    const fid_user = req.userid;
+
+    socmed.findAll({
+        where: {
+            published: true
+        },
+    }).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: data
+        });
+        return;
+    }).catch(err => {
+        // console.log(err);
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
+}
+
+exports.getSocmedDetail = (req, res) => {
+    const fid_user = req.userid;
+    const { id } = req.query;
+
+    if (promoID.length == 0) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: 'Promoo ID not found'
+        })
+        return;
+    }
+
+    socmed.findAll({
+        where: { id: id }
+    }).then(data => {
+        if (data.length == 0) {
+            res.status(200).send({
+                code: 200,
+                success: false,
+                message: "Data not found."
+            });
+            return;
+        }
+
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Data Found.",
+            data: data[0]
+        });
+        return;
+    })
+}
+
+exports.postSocmed = (req, res) => {
+    const fid_user = req.userid;
+    const { title, description } = req.body;
+    const usage = 0;
+    const published = true;
+
+    if (!req.file) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Please insert Image."
+        });
+        return;
+    }
+
+    if (!title || !description ) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: "Error Insert: Field.",
+            field: {
+                'title': title,
+                'description': description
+            }
+        });
+        return;
+    }
+
+    const image = req.file.filename;
+    socmed.create({ image, title, description, published, fid_user })
+        .then(data => {
+            res.status(201).send({
+                code: 201,
+                success: true,
+                message: "Create data success.",
+            });
+            return;
+        }).catch(err => {
+            console.log(err);
+            res.status(400).send({
+                code: 400,
+                success: false,
+                message:
+                    err.message || "Some error occurred while retrieving data."
+            });
+            return;
+        });
+}
+
+exports.updateSocmedPublished = (req, res) => {
+    const fid_user = req.userid;
+    const { id, published } = req.query;
+
+    if (promoID.length == 0) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: 'Promoo ID not found'
+        })
+        return;
+    }
+
+    db.socmed.update(
+        { published, fid_user },
+        { where: { id: id } }
+    ).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Data Publish Status Updated."
+        });
+        return;
+    })
+}
+
+exports.socmedMaterialUpdate = (req, res) => {
+    const fid_user = req.userid;
+    const { id } = req.query;
+    const { title, description } = req.body;
+
+    if (id.length == 0) {
+        res.status(200).send({
+            code: 200,
+            success: false,
+            message: 'ID not found'
+        })
+        return;
+    }
+
+    if (req.file) {
+        const image = req.file.filename;
+        socmed.update(
+            { image, title, description, fid_user },
+            { where: { id: id } }
+        ).then(data => {
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: "Data Updated."
+            });
+            return;
+        })
+    } else {
+        socmed.update(
+            { title, description, fid_user },
+            { where: { id: promoID } }
+        ).then(data => {
+            res.status(200).send({
+                code: 200,
+                success: true,
+                message: "Data Updated."
+            });
+            return;
+        })
+    }
 
 }
 
