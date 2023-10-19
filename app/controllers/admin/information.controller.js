@@ -205,10 +205,12 @@ exports.getSocmedMaterial = (req, res) => {
     const fid_user = req.userid;
     const { page, size, title } = req.query;
     const { limit, offset } = functions.getPagination(page - 1, size);
+    var condition = null;
+    console.log('disini')
 
     socmed.findAndCountAll({
-        where: limit, offset,
-        order: [['updatedAt', 'DESC']],
+        where: condition, limit, offset,
+        // order: [['updatedAt', 'DESC']],
     }).then(data => {
         const response = functions.getPagingData(data, page, limit);
         res.status(200).send({
@@ -259,7 +261,7 @@ exports.getSocmedDetail = (req, res) => {
 exports.postSocmed = (req, res) => {
     const fid_user = req.userid;
     const { title, description } = req.body;
-    const usage = 0;
+    // const usage = 0;
     const published = true;
 
     if (!req.file) {
