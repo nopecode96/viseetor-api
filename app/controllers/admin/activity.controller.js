@@ -62,7 +62,7 @@ exports.getClient = (req, res) => {
                     { model: masterCompanyStatus, attributes: ['id', 'title'] },
                     {
                         model: user,
-                        attributes: ['id', 'name'],
+                        attributes: ['id', 'name', 'username'],
                         include: {
                             model: userType,
                             attributes: ['id', 'type_name']

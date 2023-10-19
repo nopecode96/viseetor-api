@@ -278,6 +278,7 @@ exports.getDetail = (req, res) => {
         eventDetail: function (callback) {
             events.findAll({
                 where: condition,
+                attributes: ['id', 'banner', 'title', 'description', 'event_video_url', 'venue_name', 'location_address', 'location_map', 'location_coordinate_latitude', 'location_coordinate_longitude', 'ticketing', 'gift_bank', 'guest', 'invitation_limit', 'event_date', 'published', 'createdAt', 'updatedAt'],
                 include: [
                     {
                         model: regRegencies,
@@ -289,8 +290,11 @@ exports.getDetail = (req, res) => {
                     },
                     { model: webTemplate, attributes: ['id', 'image', 'title'] },
                     { model: masterEvent, attributes: ['id', 'title'] },
-                    { model: company, attributes: ['id', 'title', 'logo', 'contact_person', 'contact_phone'] },
-                    { model: eventsWedding },
+                    { model: company, attributes: ['id', 'title', 'logo', 'contact_person', 'contact_phone', 'contact_email'] },
+                    { 
+                        model: eventsWedding,
+                        attributes: ['id','bride_name', 'groom_name', 'bride_photo', 'groom_photo', 'bride_parent', 'groom_parent', 'bride_ig_account', 'groom_ig_account', 'quote_word', 'family_invite', 'fid_events', 'ceremony_type', 'marriage_time', 'marriage_location_address', 'marriage_location_map']
+                    },
                     { model: eventsGiftBank, attributes: ['id', 'bank_name', 'bank_account_number', 'bank_account_name'] },
                     { model: eventsGallery },
                 ]
@@ -349,10 +353,10 @@ exports.getDetail = (req, res) => {
 exports.updateEvent = (req, res) => {
     const fid_user = req.userid;
     const { id } = req.query;
-    const { title, description, venue_name, event_video_url, event_date, location_address, fid_regencies, location_coordinate_latitude, location_coordinate_longitude } = req.body;
+    const { title, description, venue_name, event_video_url, event_date, location_address, location_map, fid_regencies, location_coordinate_latitude, location_coordinate_longitude } = req.body;
 
     // console.log(req.body);
-    if (!title || !description || !venue_name || !event_video_url || !event_date || !location_address || !fid_regencies || !location_coordinate_latitude || !location_coordinate_longitude) {
+    if (!title || !description || !venue_name || !event_video_url || !event_date || !location_address || !fid_regencies ) {
         res.status(200).send({
             code: 200,
             success: false,
@@ -361,7 +365,7 @@ exports.updateEvent = (req, res) => {
         return;
     }
 
-    events.update({ title, description, venue_name, event_video_url, event_date, location_address, fid_regencies, location_coordinate_latitude, location_coordinate_longitude }, {
+    events.update({ title, description, venue_name, event_video_url, event_date, location_address, location_map, fid_regencies, location_coordinate_latitude, location_coordinate_longitude }, {
         where: { id: id, fid_user: fid_user }
     }).then(data => {
         if (data[0] == 0) {
@@ -499,10 +503,10 @@ exports.create = (req, res) => {
     const ticketing = false; //for fid_type = 1;
     const guest = true; //for fid_type = 1;
 
-    const { title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, fid_company, fid_regencies, fid_type, fid_template } = req.body;
+    const { title, description, event_date, event_video_url, venue_name, location_address, location_map, location_coordinate_latitude, location_coordinate_longitude, fid_company, fid_regencies, fid_type, fid_template } = req.body;
     const invitation_limit = 0;
 
-    console.log(title, event_date, venue_name, location_address, fid_company, fid_type, fid_template)
+    // console.log(title, event_date, venue_name, location_address, fid_company, fid_type, fid_template)
 
     if (!title || !event_date || !venue_name || !location_address || !fid_company || !fid_type || !fid_template) {
         res.status(200).send({
@@ -513,7 +517,7 @@ exports.create = (req, res) => {
         return;
     }
 
-    events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template })
+    events.create({ title, description, event_date, event_video_url, venue_name, location_address, location_coordinate_latitude, location_coordinate_longitude, ticketing, gift_bank, guest, invitation_limit, fid_company, fid_regencies, published, fid_user, fid_type, fid_template, location_map })
         .then(data => {
             if (!data) {
                 res.status(200).send({
@@ -528,7 +532,7 @@ exports.create = (req, res) => {
             const id = data.id;
 
             if (fid_type == '1') {
-                eventsWedding.create({ fid_events: id })
+                eventsWedding.create({ fid_events: id, ceremony_type: 'None' })
                     .then(dat2 => {
                         masterEvent.findAll({
                             where: { id: fid_type }
@@ -731,7 +735,7 @@ exports.deleteBank = (req, res) => {
 ////EventWeddings===========
 
 exports.createWeddingDetail = (req, res) => {
-    const { bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, fid_events } = req.body;
+    const { bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, fid_events, ceremony_type, marriage_time, marriage_location_address, marriage_location_map } = req.body;
     if (!bride_name || !groom_name || !fid_events) {
         res.status(200).send({
             code: 200,
@@ -741,7 +745,7 @@ exports.createWeddingDetail = (req, res) => {
         return;
     }
 
-    eventsWedding.create({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, fid_events })
+    eventsWedding.create({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, fid_events, ceremony_type, marriage_time, marriage_location_address, marriage_location_map })
         .then(data => {
             res.status(201).send({
                 code: 201,
@@ -764,7 +768,7 @@ exports.createWeddingDetail = (req, res) => {
 }
 
 exports.updateWeddingDetail = (req, res) => {
-    const { bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite } = req.body;
+    const { bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, ceremony_type, marriage_time, marriage_location_address, marriage_location_map } = req.body;
     const { id } = req.query;
 
     if (!bride_name || !groom_name) {
@@ -780,7 +784,7 @@ exports.updateWeddingDetail = (req, res) => {
         where: { fid_events: id }
     }).then(data => {
         if (data.length == 0) {
-            eventsWedding.create({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, fid_events })
+            eventsWedding.create({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, fid_events, ceremony_type, marriage_time, marriage_location_address, marriage_location_map, ceremony_type })
                 .then(data => {
                     res.status(201).send({
                         code: 201,
@@ -801,7 +805,7 @@ exports.updateWeddingDetail = (req, res) => {
                     return;
                 });
         } else {
-            eventsWedding.update({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite },
+            eventsWedding.update({ bride_name, groom_name, bride_parent, groom_parent, bride_ig_account, groom_ig_account, quote_word, music_url, family_invite, marriage_time, marriage_location_address, marriage_location_map, ceremony_type },
                 { where: { fid_events: id } }
             ).then(data => {
                 res.status(202).send({

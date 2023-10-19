@@ -17,6 +17,12 @@ module.exports = (sequelize, Sequelize) => {
       },
       contact_phone: {
         type: Sequelize.STRING
+      },
+      contact_email: {
+        type: Sequelize.STRING
+      },
+      website_url: {
+        type: Sequelize.STRING
       }
     }
   );
