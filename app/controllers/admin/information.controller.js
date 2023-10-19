@@ -231,7 +231,7 @@ exports.getSocmedDetail = (req, res) => {
     const fid_user = req.userid;
     const { id } = req.query;
 
-    if (promoID.length == 0) {
+    if (id.length == 0) {
         res.status(200).send({
             code: 200,
             success: false,
