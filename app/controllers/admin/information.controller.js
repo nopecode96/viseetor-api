@@ -210,7 +210,7 @@ exports.getSocmedMaterial = (req, res) => {
 
     socmed.findAndCountAll({
         where: condition, limit, offset,
-        // order: [['updatedAt', 'DESC']],
+        order: [['updatedAt', 'DESC']],
     }).then(data => {
         const response = functions.getPagingData(data, page, limit);
         res.status(200).send({

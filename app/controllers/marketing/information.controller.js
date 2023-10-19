@@ -5,7 +5,7 @@ var randomstring = require("randomstring");
 const async = require('async')
 
 var functions = require("../../../config/function");
-const { user, information, informationFor, promotion } = require("../../models/index.model");
+const { user, information, informationFor, promotion, socmed } = require("../../models/index.model");
 
 exports.getMessage = (req, res) => {
     const fid_user = req.userid;
@@ -114,8 +114,10 @@ exports.socmedMaterial = (req, res) => {
 
     socmed.findAll({
         where: {
-            published: true
+            published: true,
+
         },
+        order: [['updatedAt', 'DESC']],
     }).then(data => {
         res.status(200).send({
             code: 200,
