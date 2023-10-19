@@ -207,7 +207,7 @@ exports.getSocmedMaterial = (req, res) => {
     const { limit, offset } = functions.getPagination(page - 1, size);
 
     socmed.findAndCountAll({
-        where: condition, limit, offset,
+        where: limit, offset,
         order: [['updatedAt', 'DESC']],
     }).then(data => {
         const response = functions.getPagingData(data, page, limit);
