@@ -41,6 +41,7 @@ module.exports = app => {
     router.post("/promo", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, upload.single('image'), controller.postPromo);
     /////======Socmed==========///
     router.get("/socmed", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, controller.getSocmedMaterial);
+    router.delete("/socmed", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, controller.deleteSocmed);
     router.get("/socmed-detail", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, controller.getSocmedDetail);
     router.put("/socmed-published", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, controller.updateSocmedPublished);
     router.put("/socmed", authValidation.apiKeyValidation, authValidation.tokenAdminValidation, upload2.single('image'), controller.socmedMaterialUpdate);
