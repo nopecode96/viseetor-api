@@ -5,7 +5,7 @@ var randomstring = require("randomstring");
 const async = require('async')
 
 var functions = require("../../../config/function");
-const { user, information, informationFor, promotion } = require("../../models/index.model");
+const { user, information, informationFor, promotion, socmed } = require("../../models/index.model");
 
 exports.getMessage = (req, res) => {
     const fid_user = req.userid;
@@ -105,4 +105,34 @@ exports.getPromotionAll = (req, res) => {
         });
     });
 
+}
+
+//==============//===============//=================
+
+exports.socmedMaterial = (req, res) => {
+    const fid_user = req.userid;
+
+    socmed.findAll({
+        where: {
+            published: true,
+
+        },
+        order: [['updatedAt', 'DESC']],
+    }).then(data => {
+        res.status(200).send({
+            code: 200,
+            success: true,
+            message: "Datas Found.",
+            data: data
+        });
+        return;
+    }).catch(err => {
+        // console.log(err);
+        res.status(400).send({
+            code: 400,
+            success: false,
+            message:
+                err.message || "Some error occurred while retrieving data."
+        });
+    });
 }

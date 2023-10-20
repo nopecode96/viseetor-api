@@ -401,8 +401,8 @@ exports.createTransaction = (req, res) => {
                 const tax_nominal = parseFloat(total_before_tax) * parseFloat(tax) / 100;
 
                 // const total_payment = parseFloat(total_price) + parseFloat(tax_nominal) + parseFloat(unixcode);
-                const total_payment = parseFloat(total_price) + parseFloat(tax_nominal);
-                console.log(total_payment);
+                const total_payment = parseFloat(total_price) - discount_nominal + parseFloat(tax_nominal);
+                // console.log(total_payment);
                 transaction.create({ order_number, qty, unit_price, unit_commission, total_price, discount_percent, discount_nominal, total_before_tax, tax, tax_nominal, total_payment, total_commission, status, published, fid_promotion, fid_events, fid_user, fid_bank_payment, fid_price })
                     .then(async data => {
                         await paymentService.createClose(order_number);

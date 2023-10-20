@@ -67,6 +67,7 @@ db.eventsMessage = require("./event/event_message_model")(sequelize, Sequelize);
 
 db.information = require("./information/information_model")(sequelize, Sequelize);
 db.informationFor = require("./information/information_for_model")(sequelize, Sequelize);
+db.socmed = require("./information/marketing_socmed")(sequelize, Sequelize);
 
 //Table Relation==========
 //Table Relation==========
