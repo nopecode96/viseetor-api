@@ -474,7 +474,7 @@ exports.getWebTemplate = (req, res) => {
     const { fid_type } = req.query;
 
     webTemplate.findAll({
-        where: { fid_type: fid_type }
+        where: { fid_type: fid_type, published: true }
     }).then(data => {
         if (data.length == 0) {
             res.status(200).send({
