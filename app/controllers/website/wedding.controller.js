@@ -33,7 +33,7 @@ exports.getData = (req, res) => {
                     },
                     {
                         model: company,
-                        attributes: ['title']
+                        attributes: ['title', 'website_url', 'contact_email', 'contact_phone', 'logo']
                     },
                     {
                         model: webTemplate,
