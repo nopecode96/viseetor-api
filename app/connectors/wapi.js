@@ -1,12 +1,12 @@
 const axios = require('axios');
+const fs = require('fs');
+
 
 class Wapi {
 
     constructor(logger, options) {
         this.logger = logger;
-        this.apiKey = options.apiKey;
-        this.deviceKey = options.deviceKey;
-        this.baseUrl = options.baseUrl;
+        Object.assign(this, options)
     }
 
     setDefaultBody () {
@@ -18,7 +18,7 @@ class Wapi {
     }
 
     async sendMessage(destinationNo, message) {
-        const url = `${this.baseUrl}send-message`;
+        const url = `${this.sendMsgUrl}`;
 
         const payload = {
             ...this.setDefaultBody(),
@@ -26,7 +26,7 @@ class Wapi {
             message: message
         }
 
-        this.logger.info(`[WAPI] Request ${url}, bodyx ${JSON.stringify(payload)}`)
+        this.logger.info(`[WAPI] Request ${url}, body ${JSON.stringify(payload)}`)
 
         try {
             const resp = await axios.post(url, payload, { 
@@ -39,6 +39,52 @@ class Wapi {
             console.log('err wapi conn --', err)
             this.logger.error(`[WAPI] Error ${err}`)
             return err;
+        }
+    }
+
+    async sendMessageImage(destination, caption, imgPath) {
+        const url = `${this.sendMsgImageUrl}`;
+
+        const config = {
+            method: 'post',
+            url: url,
+            headers: { 'Content-Type': 'multipart/form-data' },
+            data: { 
+                ...this.setDefaultBody(), 
+                destination, 
+                image: fs.createReadStream(imgPath),
+                caption
+            },
+        };
+
+        this.logger.info(`[WAPI] Request ${JSON.stringify(config)}`)
+
+        try {
+            const response = await axios(config);
+
+            if (response.data.status !== "ok") {
+                this.logger.error(`[WAPI] Response ${JSON.stringify(response)}`)
+                return {
+                    code: 200,
+                    success: false,
+                    message: response.data.message
+                }
+            }
+
+            this.logger.info(`[WAPI] Response ${JSON.stringify(response)}`)
+s
+            return {
+                success: true,
+                data: response.data.data
+            }
+
+        } catch (error) {
+            this.logger.error(`[WAPI] Response ${JSON.stringify(error)}`)
+            return {
+                code: 200,
+                success: false,
+                message: error
+            };
         }
     }
 }

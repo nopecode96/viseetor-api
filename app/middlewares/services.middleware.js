@@ -18,7 +18,9 @@ module.exports = (req, res, next) => {
     const wapiOptions = {
         apiKey: process.env.WAPI_API,
         deviceKey: process.env.WAPI_DEVICE,
-        baseUrl: process.env.WAPI_URL
+        baseUrl: process.env.WAPI_URL,
+        sendMsgUrl: process.env.WAPI_URL + process.env.WAPI_PATH_SEND_MSG,
+        sendMsgImageUrl: process.env.WAPI_URL + process.env.WAPI_PATH_SEND_MSG_IMAGE
     }
     
     req.app.locals.connectors = {

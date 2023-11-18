@@ -38,7 +38,7 @@ module.exports.notificationWhatsApp = function auditLog(phone, message, next) {
     });
     var config = {
         method: 'post',
-        url: process.env.WAPI_URL + 'send-message',
+        url: process.env.WAPI_URL + process.env.WAPI_PATH_SEND_MSG,
         headers: { 'Content-Type': 'application/json' },
         data: data
     };
@@ -82,8 +82,8 @@ module.exports.notificationWhatsAppWithImage = function auditLog(phone, imageURL
     });
     var config = {
         method: 'post',
-        url: process.env.WAPI_URL + 'send-image',
-        headers: { 'Content-Type': 'application/json' },
+        url: process.env.WAPI_URL + process.env.WAPI_PATH_SEND_MSG_IMAGE,
+        headers: { 'Content-Type': 'multipart/form-data' },
         data: data
     };
     axios(config).then(function (response) {
@@ -120,14 +120,13 @@ module.exports.notificationWhatsAppWithLogo = function auditLog(phone, caption, 
         "api_key": process.env.WAPI_API,
         "device_key": process.env.WAPI_DEVICE,
         "destination": phone,
-        "image": image,
-        "filename": 'viseetor.jpg',
+        "image": imageOri,
         "caption": caption
     });
     var config = {
         method: 'post',
-        url: process.env.WAPI_URL + 'send-image',
-        headers: { 'Content-Type': 'application/json' },
+        url: process.env.WAPI_URL + process.env.WAPI_PATH_SEND_MSG_IMAGE,
+        headers: { 'Content-Type': 'multipart/form-data' },
         data: data
     };
     axios(config).then(function (response) {
