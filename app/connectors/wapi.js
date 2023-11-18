@@ -57,14 +57,10 @@ class Wapi {
             },
         };
 
-        // console.log('-- wapi connector sendmsgimg config', config)
-
         this.logger.info(`[WAPI] Request ${JSON.stringify(config)}`)
 
         try {
             const response = await axios(config);
-
-            console.log('-- response', response);
 
             if (response.data.status !== "ok") {
                 this.logger.error(`[WAPI] Response ${JSON.stringify(response)}`)
@@ -75,8 +71,8 @@ class Wapi {
                 }
             }
 
-            this.logger.info(`[WAPI] Response ${config}`)
-
+            this.logger.info(`[WAPI] Response ${JSON.stringify(response)}`)
+s
             return {
                 success: true,
                 data: response.data.data
