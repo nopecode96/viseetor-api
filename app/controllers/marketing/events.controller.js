@@ -1350,6 +1350,8 @@ exports.updateAttendStatusGuest = (req, res) => {
 exports.guestInvitationSent = async (req, res) => {
     const { barcode } = req.query;
 
+    const logger = req.app.locals.logger;
+
     eventsGuest.findAll({
         where: { barcode: barcode }
     }).then(data => {
@@ -1382,7 +1384,7 @@ exports.guestInvitationSent = async (req, res) => {
                 { model: eventsWedding },
                 { model: eventsMessage }
             ]
-        }).then(data2 => {
+        }).then( async (data2) => {
             if (data2.length == 0) {
                 res.status(200).send({
                     code: 200,
@@ -1404,8 +1406,8 @@ exports.guestInvitationSent = async (req, res) => {
             }
             var eventMessage = data2[0].events_messages[0].content;
             const imageOri = process.env.MNT_PATH + 'event/thumbnail/' + data2[0].events_messages[0].image;
-            var image = base64_encode(imageOri);
-            const imageFilename = data2[0].events_messages[0].image;
+            //var image = base64_encode(imageOri);
+            // const imageFilename = data2[0].events_messages[0].image;
 
             const eventCompanyName = data2[0].company.title;
             const eventCompanyContactPerson = data2[0].company.contact_person;
@@ -1450,61 +1452,45 @@ exports.guestInvitationSent = async (req, res) => {
             const em10 = em9.replace('{{websiteURL}}', websiteURL);
             const woInfo = '\n\nJika ada pertanyaan, silahkan hubungi kami:\n' + eventCompanyContactPerson + ' ' + eventCompanyContactNumber + '\n' + eventCompanyName + '\n\n\n```Mohon reply dengan mengetik "Hi" untuk mengaktifkan Link URL/Website, lalu tutup chat ini dan buka kembali.```\n\nSender by Viseetor.com'
             const eventWAMessage = em10 + woInfo;
-            console.log('process sent invitation step 3');
+            logger.info('[INVITATION] process sent invitation step 3');
 
-            var data = JSON.stringify({
-                "api_key": process.env.WAPI_API,
-                "device_key": process.env.WAPI_DEVICE,
-                "destination": phone,
-                "image": image,
-                "filename": imageFilename,
-                "caption": eventWAMessage
-            });
+            const { wapiConnector } = req.app.locals.connectors;
+            const sendMsgImgWapi = await wapiConnector.sendMessageImage(phone, eventWAMessage, imageOri);
+            
+            logger.info('[INVITATION] process sent invitation step 4');
 
-            var config = {
-                method: 'post',
-                url: process.env.WAPI_URL + 'send-image',
-                headers: { 'Content-Type': 'application/json' },
-                data: data
-            };
-            axios(config).then(function (response) {
-                console.log('process sent invitation step 4');
-                console.log(response.data);
-                if (response.data.status !== "ok") {
-                    res.status(200).send({
-                        code: 200,
-                        success: false,
-                        message: response.data.message
-                    });
-                    return;
-                }
+            if (!sendMsgImgWapi.success) {
+                return res.status(200).send(sendMsgImgWapi.message);
+            }
 
-                const updateCount = parseFloat(existInvitationSentCount) + parseFloat('1');
-                const status = (existInvitationStatus == 'LISTED') ? 'INVITED' : existInvitationStatus;
-                eventsGuest.update({
+            const updateCount = parseFloat(existInvitationSentCount) + parseFloat('1');
+            const status = (existInvitationStatus == 'LISTED') ? 'INVITED' : existInvitationStatus;
+
+            try {
+                const datafinal = await eventsGuest.update({
                     invitation_status: status, invitation_send_count: updateCount
                 }, {
                     where: { barcode: barcode }
-                }).then(datafinal => {
-                    console.log('process sent invitation success');
-                    res.status(200).send({
-                        code: 200,
-                        success: true,
-                        message: 'Invitation has sent.',
-                        wapi_response: response.data
-                    });
-                    return;
-                })
+                });
 
-            }).catch(function (error) {
+                
+                logger.info(`[DB]EventGuest UPDATE ${datafinal}`);
+                
+                console.log('process sent invitation success');
+                return res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: 'Invitation has sent.',
+                    wapi_response: sendMsgImgWapi.data
+                });
+            } catch(error) {
                 console.log(error);
-                res.status(200).send({
+                return res.status(200).send({
                     code: 200,
                     success: false,
                     message: error,
                 });
-                return;
-            });
+            }
         })
     })
 }
@@ -1637,19 +1623,18 @@ exports.guestBarcodeSent = (req, res) => {
                 // });
 
                 // Body for WAPI
-                var data = JSON.stringify({
+                const data = {
                     "api_key": process.env.WAPI_API,
                     "device_key": process.env.WAPI_DEVICE,
                     "destination": phone,
-                    "image": image,
-                    "filename": imageFilename,
+                    "image": fs.createReadStream(imageOri),
                     "caption": eventWAMessage
-                });
+                };
 
                 var config = {
                     method: 'post',
-                    url: process.env.WAPI_URL + 'send-image',
-                    headers: { 'Content-Type': 'application/json' },
+                    url: process.env.WAPI_URL + process.env.WAPI_PATH_SEND_MSG_IMAGE,
+                    headers: { 'Content-Type': 'multipart/form-data' },
                     data: data
                 };
                 axios(config).then(function (response) {
